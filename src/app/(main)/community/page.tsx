@@ -87,7 +87,8 @@ export default function CommunityPage() {
       )}
 
       <Link href="/community/new"
-        className="fixed bottom-24 right-4 w-14 h-14 bg-primary rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center z-30 active:scale-95 transition-all">
+        className="fixed bottom-24 w-14 h-14 bg-primary rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center z-30 active:scale-95 transition-all"
+        style={{ right: 'max(16px, calc(50% - 224px))' }}>
         <Plus size={26} className="text-white" strokeWidth={2.5} />
       </Link>
     </div>
