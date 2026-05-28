@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 
-const SETTINGS_SECTIONS = [
+const SETTINGS_SECTIONS: Array<{ title: string; items: Array<{ label: string; desc?: string }> }> = [
   {
     title: '알림',
     items: [
