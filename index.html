@@ -599,24 +599,6 @@
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .sp-dots {
-      display: flex;
-      gap: 9px;
-      animation: spSlideUp 0.5s cubic-bezier(.16,1,.3,1) 0.75s both;
-    }
-    .sp-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.4);
-      animation: spDotBounce 1.3s ease-in-out infinite;
-    }
-    .sp-dot:nth-child(1) { animation-delay: 0.8s; }
-    .sp-dot:nth-child(2) { animation-delay: 0.95s; }
-    .sp-dot:nth-child(3) { animation-delay: 1.1s; }
-    @keyframes spDotBounce {
-      0%, 100% { transform: translateY(0);   opacity: 0.4; }
-      50%       { transform: translateY(-8px); opacity: 1; }
-    }
 
 
     /* ═══════════════════════════════════════
@@ -5502,11 +5484,6 @@
     <div class="sp-wrap">
       <div class="sp-title">Knitters</div>
       <div class="sp-sub">니터들을 위한 뜨개 커뮤니티</div>
-      <div class="sp-dots">
-        <span class="sp-dot"></span>
-        <span class="sp-dot"></span>
-        <span class="sp-dot"></span>
-      </div>
     </div>
   </div>
 
