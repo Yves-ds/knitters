@@ -71,7 +71,7 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-[22px] font-bold text-[#212121] tracking-[-0.5px]">오늘은 어떤 작품을 떠볼까요?</p>
+            <p className="text-[30px] font-bold text-[#212121] tracking-[-0.5px] leading-tight">오늘은 어떤 작품을<br />떠볼까요?</p>
             <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
               <Search size={20} className="text-[#212121]" />
             </button>
@@ -80,7 +80,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* 총 작품 수 */}
-      <div className="px-4 pb-3 pt-10">
+      <div className="px-4 pb-3 pt-[60px]">
         <p className="text-[14px] text-[#565656]">
           <span className="font-bold text-[#212121]">{mockProjects.length}</span>
           <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
