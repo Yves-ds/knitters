@@ -1,12 +1,29 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { User } from 'lucide-react'
 
 function HomeIconActive() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 17.0002V11.4522C20 10.9179 19.9995 10.6506 19.9346 10.4019C19.877 10.1816 19.7825 9.97307 19.6546 9.78464C19.5102 9.57201 19.3096 9.39569 18.9074 9.04383L14.1074 4.84383C13.3608 4.19054 12.9875 3.86406 12.5674 3.73982C12.1972 3.63035 11.8026 3.63035 11.4324 3.73982C11.0126 3.86397 10.6398 4.19014 9.89436 4.84244L5.09277 9.04383C4.69064 9.39569 4.49004 9.57201 4.3457 9.78464C4.21779 9.97307 4.12255 10.1816 4.06497 10.4019C4 10.6506 4 10.9179 4 11.4522V17.0002C4 17.932 4 18.3978 4.15224 18.7654C4.35523 19.2554 4.74432 19.6452 5.23438 19.8482C5.60192 20.0005 6.06786 20.0005 6.99974 20.0005C7.93163 20.0005 8.39808 20.0005 8.76562 19.8482C9.25568 19.6452 9.64467 19.2555 9.84766 18.7654C9.9999 18.3979 10 17.932 10 17.0001V16.0001C10 14.8955 10.8954 14.0001 12 14.0001C13.1046 14.0001 14 14.8955 14 16.0001V17.0001C14 17.932 14 18.3979 14.1522 18.7654C14.3552 19.2555 14.7443 19.6452 15.2344 19.8482C15.6019 20.0005 16.0679 20.0005 16.9997 20.0005C17.9316 20.0005 18.3981 20.0005 18.7656 19.8482C19.2557 19.6452 19.6447 19.2554 19.8477 18.7654C19.9999 18.3978 20 17.932 20 17.0002Z" fill="#646464"/>
+    </svg>
+  )
+}
+
+function MyIconActive() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.5 9C12.8807 9 14 7.88071 14 6.5C14 5.11929 12.8807 4 11.5 4C10.1193 4 9 5.11929 9 6.5C9 7.88071 10.1193 9 11.5 9Z" fill="#646464" stroke="#646464" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M11.5 12C9.01472 12 7 14.8206 7 18.3V19H11.5H16V18.3C16 14.8206 13.9853 12 11.5 12Z" fill="#646464" stroke="#646464" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function MyIconInactive() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.5 9C12.8807 9 14 7.88071 14 6.5C14 5.11929 12.8807 4 11.5 4C10.1193 4 9 5.11929 9 6.5C9 7.88071 10.1193 9 11.5 9Z" fill="#BFBEB8" stroke="#BFBEB8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M11.5 12C9.01472 12 7 14.8206 7 18.3V19H11.5H16V18.3C16 14.8206 13.9853 12 11.5 12Z" fill="#BFBEB8" stroke="#BFBEB8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -81,7 +98,7 @@ const navItems = [
   { href: '/projects', label: '기록' },
   { href: '/community', label: '커뮤니티' },
   { href: '/explore', label: '탐색' },
-  { href: '/mypage', icon: User, label: '마이' },
+  { href: '/mypage', label: '마이' },
 ]
 
 export default function BottomNav() {
@@ -89,13 +106,14 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-border z-50" style={{ height: 80 }}>
       <div className="flex items-center justify-around h-full">
-        {navItems.map(({ href, icon: Icon, label }) => {
+        {navItems.map(({ href, label }) => {
           const isActive = pathname.startsWith(href)
           const isHome = href === '/feed'
           const isRecord = href === '/projects'
           const isCommunity = href === '/community'
           const isExplore = href === '/explore'
-          const useCustomColor = isHome || isRecord || isCommunity || isExplore
+          const isMy = href === '/mypage'
+          const useCustomColor = isHome || isRecord || isCommunity || isExplore || isMy
           return (
             <Link key={href} href={href} className="flex flex-col items-center gap-1 py-2 px-4 min-w-[44px]">
               {isHome ? (
@@ -106,9 +124,9 @@ export default function BottomNav() {
                 isActive ? <CommunityIconActive /> : <CommunityIconInactive />
               ) : isExplore ? (
                 isActive ? <ExploreIconActive /> : <ExploreIconInactive />
-              ) : (
-                Icon && <Icon size={22} className={isActive ? 'text-primary' : 'text-sub'} strokeWidth={isActive ? 2.5 : 1.8} />
-              )}
+              ) : isMy ? (
+                isActive ? <MyIconActive /> : <MyIconInactive />
+              ) : null}
               {useCustomColor ? (
                 <span className="text-[10px] font-medium" style={{ color: isActive ? '#646464' : '#BFBEB8' }}>{label}</span>
               ) : (
