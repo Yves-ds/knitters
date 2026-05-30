@@ -1,12 +1,30 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, Compass, User } from 'lucide-react'
+import { Compass, User } from 'lucide-react'
 
 function HomeIconActive() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 17.0002V11.4522C20 10.9179 19.9995 10.6506 19.9346 10.4019C19.877 10.1816 19.7825 9.97307 19.6546 9.78464C19.5102 9.57201 19.3096 9.39569 18.9074 9.04383L14.1074 4.84383C13.3608 4.19054 12.9875 3.86406 12.5674 3.73982C12.1972 3.63035 11.8026 3.63035 11.4324 3.73982C11.0126 3.86397 10.6398 4.19014 9.89436 4.84244L5.09277 9.04383C4.69064 9.39569 4.49004 9.57201 4.3457 9.78464C4.21779 9.97307 4.12255 10.1816 4.06497 10.4019C4 10.6506 4 10.9179 4 11.4522V17.0002C4 17.932 4 18.3978 4.15224 18.7654C4.35523 19.2554 4.74432 19.6452 5.23438 19.8482C5.60192 20.0005 6.06786 20.0005 6.99974 20.0005C7.93163 20.0005 8.39808 20.0005 8.76562 19.8482C9.25568 19.6452 9.64467 19.2555 9.84766 18.7654C9.9999 18.3979 10 17.932 10 17.0001V16.0001C10 14.8955 10.8954 14.0001 12 14.0001C13.1046 14.0001 14 14.8955 14 16.0001V17.0001C14 17.932 14 18.3979 14.1522 18.7654C14.3552 19.2555 14.7443 19.6452 15.2344 19.8482C15.6019 20.0005 16.0679 20.0005 16.9997 20.0005C17.9316 20.0005 18.3981 20.0005 18.7656 19.8482C19.2557 19.6452 19.6447 19.2554 19.8477 18.7654C19.9999 18.3978 20 17.932 20 17.0002Z" fill="#646464"/>
+    </svg>
+  )
+}
+
+function CommunityIconActive() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8.9862 15.2409C11.9674 15.0766 14.3337 12.6252 14.3337 9.62495C14.3337 6.51837 11.7965 4 8.66684 4C5.53713 4 3 6.51837 3 9.62495C3 10.7318 3.32201 11.764 3.87825 12.6343L3.47777 13.8268L3.47713 13.8286C3.32374 14.2853 3.24701 14.5138 3.30165 14.6659C3.34926 14.7984 3.45494 14.9029 3.58845 14.9502C3.74115 15.0042 3.96973 14.9286 4.42681 14.7773L4.43331 14.7754L5.63512 14.3779C6.51183 14.93 7.55175 15.2497 8.66689 15.2497C8.77405 15.2497 8.88051 15.2468 8.9862 15.2409ZM8.9862 15.2409C9.76155 17.4304 11.863 19 14.3338 19C15.449 19 16.4886 18.68 17.3653 18.1278L18.5668 18.5254L18.5692 18.5258C19.0293 18.6781 19.2599 18.7543 19.4131 18.7001C19.5466 18.6529 19.6509 18.5484 19.6985 18.4159C19.7533 18.2636 19.6767 18.0348 19.5229 17.5768L19.1224 16.3842L19.2566 16.1636C19.7302 15.3417 20 14.3896 20 13.3749C20 10.2683 17.4634 7.74996 14.3337 7.74996L14.1215 7.75384L14.0145 7.75903" stroke="#646464" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M8.5 4C11.5376 4 14 6.46243 14 9.5C14 12.5376 11.5376 15 8.5 15C7.3458 15 6.27521 14.6436 5.39062 14.0361L4 14.5L4.43164 13.2021C3.54194 12.225 3 10.9256 3 9.5C3 6.46243 5.46243 4 8.5 4Z" fill="#646464"/>
+    </svg>
+  )
+}
+
+function CommunityIconInactive() {
+  return (
+    <svg width="41" height="24" viewBox="0 0 41 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.8381 15.9905C20.9946 15.8151 23.5 13.2003 23.5 10C23.5 6.68629 20.8137 4 17.5 4C14.1863 4 11.5 6.68629 11.5 10C11.5 11.1807 11.8409 12.2817 12.4299 13.21L12.0059 14.482L12.0052 14.4839C11.8428 14.9711 11.7615 15.2149 11.8194 15.3771C11.8698 15.5184 11.9817 15.6299 12.123 15.6803C12.2847 15.7379 12.5267 15.6573 13.0107 15.4959L13.0176 15.4939L14.29 15.0698C15.2183 15.6588 16.3194 15.9998 17.5001 15.9998C17.6135 15.9998 17.7262 15.9967 17.8381 15.9905ZM17.8381 15.9905C18.6591 18.3259 20.8841 20.0002 23.5001 20.0002C24.6808 20.0002 25.7817 19.6588 26.7099 19.0698L27.982 19.4939L27.9845 19.4944C28.4717 19.6567 28.7158 19.7381 28.878 19.6803C29.0194 19.6299 29.1299 19.5184 29.1803 19.3771C29.2382 19.2146 29.1572 18.9706 28.9943 18.4821L28.5703 17.21L28.7123 16.9746C29.2138 16.0979 29.4995 15.0823 29.4995 14C29.4995 10.6863 26.8137 8 23.5 8L23.2754 8.00414L23.1621 8.00967" stroke="#BFBEB8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M17 4C20.0376 4 23.5 6.96243 23.5 10C23.5 13.0376 20.5376 16 17.5 16C16.2921 16 15.0973 15.4511 14.0947 14.6006L12.5 15L12.9131 13.3438C12.0476 12.1898 11.5 10.8057 11.5 9.5C11.5 6.46243 13.9624 4 17 4Z" fill="#BFBEB8"/>
     </svg>
   )
 }
@@ -43,7 +61,7 @@ function HomeIconInactive() {
 const navItems = [
   { href: '/feed', label: '홈' },
   { href: '/projects', label: '기록' },
-  { href: '/community', icon: Users, label: '커뮤니티' },
+  { href: '/community', label: '커뮤니티' },
   { href: '/explore', icon: Compass, label: '탐색' },
   { href: '/mypage', icon: User, label: '마이' },
 ]
@@ -57,18 +75,20 @@ export default function BottomNav() {
           const isActive = pathname.startsWith(href)
           const isHome = href === '/feed'
           const isRecord = href === '/projects'
+          const isCommunity = href === '/community'
+          const useCustomColor = isHome || isRecord || isCommunity
           return (
             <Link key={href} href={href} className="flex flex-col items-center gap-1 py-2 px-4 min-w-[44px]">
               {isHome ? (
                 isActive ? <HomeIconActive /> : <HomeIconInactive />
               ) : isRecord ? (
                 isActive ? <RecordIconActive /> : <RecordIconInactive />
+              ) : isCommunity ? (
+                isActive ? <CommunityIconActive /> : <CommunityIconInactive />
               ) : (
                 Icon && <Icon size={22} className={isActive ? 'text-primary' : 'text-sub'} strokeWidth={isActive ? 2.5 : 1.8} />
               )}
-              {isHome ? (
-                <span className="text-[10px] font-medium" style={{ color: isActive ? '#646464' : '#BFBEB8' }}>{label}</span>
-              ) : isRecord ? (
+              {useCustomColor ? (
                 <span className="text-[10px] font-medium" style={{ color: isActive ? '#646464' : '#BFBEB8' }}>{label}</span>
               ) : (
                 <span className={`text-[10px] font-medium ${isActive ? 'text-primary' : 'text-sub'}`}>{label}</span>
