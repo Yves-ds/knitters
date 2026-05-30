@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { mockProjects } from '@/lib/mockData'
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일']
@@ -20,6 +21,7 @@ const GUIDES = [
 ]
 
 export default function FeedPage() {
+  const router = useRouter()
   const [guideTab, setGuideTab] = useState('전체')
   const [savedGuides, setSavedGuides] = useState<Record<number, boolean>>({ 2: true })
   const [hasNewNotification, setHasNewNotification] = useState(true)
@@ -49,14 +51,14 @@ export default function FeedPage() {
         </span>
         <div className="flex items-center gap-2">
           {/* 메시지 아이콘 */}
-          <button className="w-8 h-8 flex items-center justify-center">
+          <button className="w-8 h-8 flex items-center justify-center" onClick={() => router.push('/chat')}>
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path opacity="0.3" d="M12 4C16.4184 4 20 7.5816 20 12C20 16.4184 16.4184 20 12 20H5.6C5.17565 20 4.76869 19.8314 4.46863 19.5314C4.16857 19.2313 4 18.8243 4 18.4V12C4 7.5816 7.5816 4 12 4Z" fill="#F72E00"/>
               <path d="M14.2507 10H9.7501C9.55892 10.0002 9.37503 10.0816 9.23601 10.2274C9.09698 10.3732 9.01333 10.5725 9.00212 10.7845C8.99092 10.9965 9.05301 11.2053 9.17572 11.3682C9.29843 11.5311 9.47249 11.6357 9.66234 11.6608L9.7501 11.6667H14.2507C14.4419 11.6664 14.6258 11.5851 14.7648 11.4393C14.9038 11.2935 14.9875 11.0942 14.9987 10.8822C15.0099 10.6701 14.9478 10.4614 14.8251 10.2985C14.7024 10.1356 14.5283 10.0309 14.3385 10.0058L14.2507 10ZM12.0004 13.3333H9.7501C9.55116 13.3333 9.36037 13.4211 9.2197 13.5774C9.07903 13.7337 9 13.9457 9 14.1667C9 14.3877 9.07903 14.5996 9.2197 14.7559C9.36037 14.9122 9.55116 15 9.7501 15H12.0004C12.1994 15 12.3901 14.9122 12.5308 14.7559C12.6715 14.5996 12.7505 14.3877 12.7505 14.1667C12.7505 13.9457 12.6715 13.7337 12.5308 13.5774C12.3901 13.4211 12.1994 13.3333 12.0004 13.3333Z" fill="#F72E00"/>
             </svg>
           </button>
           {/* 알림 아이콘 */}
-          <button className="w-8 h-8 flex items-center justify-center relative" onClick={() => setHasNewNotification(false)}>
+          <button className="w-8 h-8 flex items-center justify-center relative" onClick={() => { setHasNewNotification(false); router.push('/notifications') }}>
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M10.1268 17.1C9.9746 17.4168 9.90526 17.7671 9.92524 18.118C9.94521 18.4689 10.0539 18.809 10.241 19.1065C10.4282 19.404 10.6877 19.6492 10.9954 19.8192C11.3031 19.9891 11.6488 20.0783 12.0003 20.0783C12.3518 20.0783 12.6975 19.9891 13.0052 19.8192C13.3128 19.6492 13.5724 19.404 13.7595 19.1065C13.9467 18.809 14.0553 18.4689 14.0753 18.118C14.0953 17.7671 14.026 17.4168 13.8738 17.1H10.1268Z" fill="#F72E00"/>
               <path fillRule="evenodd" clipRule="evenodd" d="M11.8883 5.1C10.6154 5.10003 9.39456 5.60571 8.49442 6.5058L8.30602 6.6942C7.40593 7.59434 6.90025 8.81515 6.90022 10.0881V10.9698C6.90022 12.5898 6.25672 14.1438 5.11072 15.2898C4.96246 15.4381 4.86151 15.6271 4.82064 15.8328C4.77976 16.0385 4.80078 16.2517 4.88106 16.4454C4.96133 16.6392 5.09724 16.8048 5.27162 16.9213C5.446 17.0378 5.651 17.1 5.86072 17.1H18.1397C18.3495 17.1 18.5546 17.0379 18.729 16.9213C18.9035 16.8048 19.0394 16.6392 19.1197 16.4454C19.2 16.2516 19.221 16.0383 19.1801 15.8325C19.1391 15.6268 19.0381 15.4378 18.8897 15.2895C18.3223 14.7222 17.8723 14.0488 17.5652 13.3075C17.2582 12.5663 17.1002 11.7718 17.1002 10.9695V10.0881C17.1002 8.81515 16.5945 7.59434 15.6944 6.6942L15.506 6.5058C14.6059 5.60571 13.3851 5.10003 12.1121 5.1H11.8883Z" fill="#FBB4A4"/>
