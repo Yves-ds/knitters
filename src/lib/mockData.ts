@@ -6,9 +6,11 @@ export const mockUsers = [
 ]
 
 export const mockProjects = [
-  { id: '1', title: '아이보리 케이블 니트 스웨터', status: '진행 중', progress: 65, yarn: 'Drops Lima / 아이보리', needle: '5.0mm 대바늘', startDate: '2026-04-12', imageUrl: '', tags: ['스웨터','케이블','대바늘'], memo: '소매 부분이 까다롭다. 조금씩 진행 중.', rows: 142, targetRows: 220 },
-  { id: '2', title: '핑크 버킷햇', status: '완료', progress: 100, yarn: 'Scheepjes Catona / Rose', needle: '3.5mm 코바늘', startDate: '2026-03-01', endDate: '2026-03-18', imageUrl: '', tags: ['모자','코바늘','봄'], memo: '', rows: 60, targetRows: 60 },
-  { id: '3', title: '머스타드 숄더백', status: '시작 전', progress: 0, yarn: 'Paintbox Simply DK / Mustard', needle: '4.0mm 코바늘', startDate: '', imageUrl: '', tags: ['가방','코바늘'], memo: '', rows: 0, targetRows: 180 },
+  { id: '1', title: '아이보리 케이블 니트 스웨터', status: '진행 중', progress: 65, yarn: 'Drops Lima / 아이보리', needle: '5.0mm 대바늘', startDate: '2026-04-12', endDate: '', imageUrl: '', emoji: '🧶', tags: ['스웨터','케이블','대바늘'], memo: '소매 부분이 까다롭다. 조금씩 진행 중.', rows: 142, targetRows: 220 },
+  { id: '2', title: '핑크 버킷햇', status: '완성', progress: 100, yarn: 'Scheepjes Catona / Rose', needle: '3.5mm 코바늘', startDate: '2026-03-01', endDate: '2026-03-18', imageUrl: '', emoji: '👒', tags: ['모자','코바늘','봄'], memo: '', rows: 60, targetRows: 60 },
+  { id: '3', title: '머스타드 숄더백', status: '시작 안 함', progress: 0, yarn: 'Paintbox Simply DK / Mustard', needle: '4.0mm 코바늘', startDate: '', endDate: '', imageUrl: '', emoji: '👜', tags: ['가방','코바늘'], memo: '', rows: 0, targetRows: 180 },
+  { id: '4', title: '그레이 터틀넥 풀오버', status: '쉬는 중', progress: 30, yarn: 'Lang Yarns Merino 150 / Grey', needle: '4.5mm 대바늘', startDate: '2026-02-10', endDate: '', imageUrl: '', emoji: '🩶', tags: ['스웨터','대바늘','겨울'], memo: '잠시 쉬는 중. 봄이 지나면 다시 시작할 예정.', rows: 66, targetRows: 220 },
+  { id: '5', title: '민트 레이스 숄', status: '완성', progress: 100, yarn: 'Drops Kid-Silk / Mint', needle: '4.0mm 대바늘', startDate: '2026-01-05', endDate: '2026-02-01', imageUrl: '', emoji: '🌿', tags: ['숄','레이스','대바늘'], memo: '', rows: 95, targetRows: 95 },
 ]
 
 export const mockPosts = [

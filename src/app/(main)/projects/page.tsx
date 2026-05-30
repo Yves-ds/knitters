@@ -1,87 +1,191 @@
 'use client'
-import { useState } from 'react'
-import { Plus } from 'lucide-react'
-import { mockProjects } from '@/lib/mockData'
-import ProgressBar from '@/components/ui/ProgressBar'
-import Badge from '@/components/ui/Badge'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { Search, X, ChevronDown, Plus } from 'lucide-react'
+import { mockProjects } from '@/lib/mockData'
 
-const STATUS_FILTER = ['전체', '진행 중', '완료', '시작 전']
-const statusVariant: Record<string, 'default' | 'primary' | 'success' | 'warning'> = {
-  '진행 중': 'primary', '완료': 'success', '시작 전': 'warning',
+type Status = '전체' | '시작 안 함' | '진행 중' | '쉬는 중' | '완성'
+type SortKey = '생성일' | '제목' | '시작일' | '종료일'
+
+const STATUS_FILTERS: Status[] = ['전체', '시작 안 함', '진행 중', '쉬는 중', '완성']
+const SORT_OPTIONS: SortKey[] = ['생성일', '제목', '시작일', '종료일']
+
+const STATUS_DOT: Record<string, string> = {
+  '시작 안 함': '#b0b0b0',
+  '진행 중':    '#4A90D9',
+  '쉬는 중':    '#FF8C69',
+  '완성':       '#3CB371',
 }
-const STATUS_EMOJI: Record<string, string> = { '진행 중': '🧶', '완료': '✅', '시작 전': '⏳' }
+
+function formatDateRange(start: string, end: string, status: string) {
+  if (!start && !end) return '날짜 미정'
+  if (start && !end) return status === '완성' ? start : `${start} ~ 진행 중`
+  return `${start} ~ ${end}`
+}
 
 export default function ProjectsPage() {
-  const [filter, setFilter] = useState('전체')
-  const filtered = filter === '전체' ? mockProjects : mockProjects.filter(p => p.status === filter)
-  const stats = {
-    total: mockProjects.length,
-    inProgress: mockProjects.filter(p => p.status === '진행 중').length,
-    done: mockProjects.filter(p => p.status === '완료').length,
-  }
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<Status>('전체')
+  const [sortKey, setSortKey] = useState<SortKey>('생성일')
+  const [sortOpen, setSortOpen] = useState(false)
+
+  const filtered = useMemo(() => {
+    let list = [...mockProjects]
+    if (query.trim()) list = list.filter(p => p.title.includes(query.trim()))
+    if (statusFilter !== '전체') list = list.filter(p => p.status === statusFilter)
+    list.sort((a, b) => {
+      if (sortKey === '제목') return a.title.localeCompare(b.title)
+      if (sortKey === '시작일') return (a.startDate || '').localeCompare(b.startDate || '')
+      if (sortKey === '종료일') return (a.endDate || '').localeCompare(b.endDate || '')
+      return parseInt(a.id) - parseInt(b.id)
+    })
+    return list
+  }, [query, statusFilter, sortKey])
+
+  const closeSearch = () => { setSearchOpen(false); setQuery('') }
 
   return (
-    <div className="page-container bg-bg-light">
-      <header className="bg-white sticky top-0 z-40 border-b border-border">
-        <div className="flex items-center justify-between h-14 px-4">
-          <h1 className="text-base font-bold text-dark">내 프로젝트</h1>
-          <Link href="/projects/new" className="flex items-center gap-1.5 text-primary font-semibold text-sm">
-            <Plus size={18} />새 프로젝트
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#fafafa] pb-28">
 
-      <div className="bg-white px-4 py-5 border-b border-border">
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div><p className="text-2xl font-bold text-dark">{stats.total}</p><p className="text-xs text-sub mt-1">전체</p></div>
-          <div><p className="text-2xl font-bold text-primary">{stats.inProgress}</p><p className="text-xs text-sub mt-1">진행 중</p></div>
-          <div><p className="text-2xl font-bold text-green-500">{stats.done}</p><p className="text-xs text-sub mt-1">완료</p></div>
-        </div>
-      </div>
-
-      <div className="bg-white border-b border-border overflow-x-auto">
-        <div className="flex gap-2 px-4 py-3" style={{ width: 'max-content' }}>
-          {STATUS_FILTER.map(s => (
-            <button key={s} onClick={() => setFilter(s)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${filter === s ? 'bg-primary text-white' : 'bg-bg-light text-sub'}`}>
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="px-4 pt-4 space-y-3">
-        {filtered.map(project => (
-          <Link key={project.id} href={`/projects/${project.id}`}>
-            <div className="bg-white rounded-2xl overflow-hidden border border-border active:scale-[0.99] transition-all">
-              <div className="w-full h-36 bg-gradient-to-br from-primary/5 to-primary/15 flex items-center justify-center">
-                <span className="text-5xl opacity-30">{STATUS_EMOJI[project.status]}</span>
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-sm font-bold text-dark flex-1 pr-2 leading-tight">{project.title}</h3>
-                  <Badge label={project.status} variant={statusVariant[project.status]} />
-                </div>
-                <div className="space-y-1 mb-3">
-                  <p className="text-xs text-sub">실: {project.yarn}</p>
-                  <p className="text-xs text-sub">바늘: {project.needle}</p>
-                  {project.startDate && <p className="text-xs text-sub">시작일: {project.startDate}</p>}
-                </div>
-                {project.status !== '시작 전' && <ProgressBar value={project.progress} showLabel />}
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {project.tags.map(tag => <span key={tag} className="tag">#{tag}</span>)}
-                </div>
-              </div>
+      {/* 헤더 */}
+      <div className="px-4 pt-14 pb-3">
+        {searchOpen ? (
+          <div className="flex items-center gap-2">
+            <div className="flex-1 flex items-center gap-2 bg-[#ededed] rounded-[10px] px-3 h-10">
+              <Search size={15} className="text-[#9e9e9e] shrink-0" />
+              <input
+                autoFocus
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="프로젝트 이름 검색"
+                className="flex-1 bg-transparent text-[14px] text-[#212121] placeholder:text-[#b0b0b0] outline-none"
+              />
+              {query && (
+                <button onClick={() => setQuery('')}>
+                  <X size={14} className="text-[#9e9e9e]" />
+                </button>
+              )}
             </div>
-          </Link>
+            <button onClick={closeSearch} className="text-[14px] font-medium text-[#f72e00] shrink-0">취소</button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <p className="text-[18px] font-bold text-[#212121] tracking-[-0.5px]">오늘은 어떤 작품을 떠볼까요?</p>
+            <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
+              <Search size={20} className="text-[#212121]" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* 총 작품 수 */}
+      <div className="px-4 pb-3">
+        <p className="text-[14px] text-[#565656]">
+          <span className="font-bold text-[#212121]">{mockProjects.length}</span>
+          <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
+        </p>
+      </div>
+
+      {/* 정렬 + 상태 필터 */}
+      <div className="px-4 pb-4 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <div className="relative shrink-0">
+          <button
+            onClick={() => setSortOpen(v => !v)}
+            className="flex items-center gap-1 h-8 px-3 rounded-full text-[13px] font-medium border border-[#e0e0e0] bg-white text-[#212121]"
+          >
+            {sortKey} <ChevronDown size={13} />
+          </button>
+          {sortOpen && (
+            <div className="absolute top-10 left-0 bg-white rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.12)] z-20 w-28 overflow-hidden">
+              {SORT_OPTIONS.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => { setSortKey(opt); setSortOpen(false) }}
+                  className="w-full text-left px-4 py-2.5 text-[13px] font-medium"
+                  style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {STATUS_FILTERS.map(s => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className="h-8 px-3 rounded-full shrink-0 text-[13px] font-medium transition-colors"
+            style={
+              statusFilter === s
+                ? { background: '#f72e00', color: '#fff' }
+                : { background: 'white', color: '#646464', border: '1px solid #e0e0e0' }
+            }
+          >
+            {s}
+          </button>
         ))}
       </div>
 
-      <Link href="/projects/new"
-        className="fixed bottom-[100px] w-14 h-14 bg-primary rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center z-30 active:scale-95 transition-all"
-        style={{ right: 'max(16px, calc(50% - 224px))' }}>
-        <Plus size={26} className="text-white" strokeWidth={2.5} />
+      {/* 드롭다운 오버레이 */}
+      {sortOpen && <div className="fixed inset-0 z-10" onClick={() => setSortOpen(false)} />}
+
+      {/* 프로젝트 카드 목록 */}
+      <div className="px-4 flex flex-col gap-3">
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <span className="text-5xl">🧶</span>
+            <p className="text-[14px] text-[#a7a7a7]">
+              {query ? `"${query}"에 해당하는 작품이 없어요` : '해당하는 작품이 없어요'}
+            </p>
+          </div>
+        ) : (
+          filtered.map(project => (
+            <Link key={project.id} href={`/projects/${project.id}`}>
+              <div className="bg-white rounded-[14px] flex items-center gap-3 px-4 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)] active:scale-[0.99] transition-all">
+                {/* 썸네일 */}
+                <div className="w-[60px] h-[60px] rounded-[10px] bg-[#f5f5f5] flex items-center justify-center shrink-0 text-3xl">
+                  {(project as any).emoji ?? '🧶'}
+                </div>
+
+                {/* 정보 */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ background: STATUS_DOT[project.status] ?? '#b0b0b0' }}
+                    />
+                    <p className="text-[15px] font-semibold text-[#212121] truncate">{project.title}</p>
+                  </div>
+                  <p className="text-[12px] text-[#a7a7a7]">
+                    {formatDateRange(project.startDate, (project as any).endDate ?? '', project.status)}
+                  </p>
+                </div>
+
+                {/* 상태 배지 */}
+                <span
+                  className="text-[12px] font-medium shrink-0 px-2.5 py-1 rounded-full"
+                  style={{
+                    color: STATUS_DOT[project.status] ?? '#b0b0b0',
+                    background: `${STATUS_DOT[project.status] ?? '#b0b0b0'}1a`,
+                  }}
+                >
+                  {project.status}
+                </span>
+              </div>
+            </Link>
+          ))
+        )}
+      </div>
+
+      {/* FAB */}
+      <Link
+        href="/projects/new"
+        className="fixed bottom-[100px] flex items-center gap-2 bg-[#f72e00] text-white font-semibold text-[14px] px-5 py-3.5 rounded-2xl shadow-lg shadow-[#f72e00]/30 active:scale-95 transition-all z-30"
+        style={{ right: 'max(16px, calc(50% - 224px))' }}
+      >
+        <Plus size={18} strokeWidth={2.5} />
+        기록하기
       </Link>
     </div>
   )
