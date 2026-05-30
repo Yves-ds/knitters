@@ -71,7 +71,7 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-[18px] font-bold text-[#212121] tracking-[-0.5px]">오늘은 어떤 작품을 떠볼까요?</p>
+            <p className="text-[22px] font-bold text-[#212121] tracking-[-0.5px]">오늘은 어떤 작품을 떠볼까요?</p>
             <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
               <Search size={20} className="text-[#212121]" />
             </button>
@@ -130,8 +130,8 @@ export default function ProjectsPage() {
       {/* 드롭다운 오버레이 */}
       {sortOpen && <div className="fixed inset-0 z-10" onClick={() => setSortOpen(false)} />}
 
-      {/* 프로젝트 카드 목록 */}
-      <div className="px-4 flex flex-col gap-3">
+      {/* 프로젝트 카드 2열 그리드 */}
+      <div className="px-4">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <span className="text-5xl">🧶</span>
@@ -140,41 +140,23 @@ export default function ProjectsPage() {
             </p>
           </div>
         ) : (
-          filtered.map(project => (
-            <Link key={project.id} href={`/projects/${project.id}`}>
-              <div className="bg-white rounded-[14px] flex items-center gap-3 px-4 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)] active:scale-[0.99] transition-all">
-                {/* 썸네일 */}
-                <div className="w-[60px] h-[60px] rounded-[10px] bg-[#f5f5f5] flex items-center justify-center shrink-0 text-3xl">
-                  {(project as any).emoji ?? '🧶'}
-                </div>
-
-                {/* 정보 */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ background: STATUS_DOT[project.status] ?? '#b0b0b0' }}
-                    />
-                    <p className="text-[15px] font-semibold text-[#212121] truncate">{project.title}</p>
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.map(project => (
+              <Link key={project.id} href={`/projects/${project.id}`}>
+                <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all">
+                  {/* 이미지 / 이모지 영역 — 정사각형 */}
+                  <div className="aspect-square w-full bg-[#f5f5f5] flex items-center justify-center text-5xl">
+                    {(project as any).emoji ?? '🧶'}
                   </div>
-                  <p className="text-[12px] text-[#a7a7a7]">
-                    {formatDateRange(project.startDate, (project as any).endDate ?? '', project.status)}
-                  </p>
+                  {/* 프로젝트 이름 + 타이머 */}
+                  <div className="px-3 py-2.5">
+                    <p className="text-[13px] font-semibold text-[#212121] truncate mb-1">{project.title}</p>
+                    <p className="text-[12px] text-[#a7a7a7] font-medium tracking-wide">00:00:00</p>
+                  </div>
                 </div>
-
-                {/* 상태 배지 */}
-                <span
-                  className="text-[12px] font-medium shrink-0 px-2.5 py-1 rounded-full"
-                  style={{
-                    color: STATUS_DOT[project.status] ?? '#b0b0b0',
-                    background: `${STATUS_DOT[project.status] ?? '#b0b0b0'}1a`,
-                  }}
-                >
-                  {project.status}
-                </span>
-              </div>
-            </Link>
-          ))
+              </Link>
+            ))}
+          </div>
         )}
       </div>
 
