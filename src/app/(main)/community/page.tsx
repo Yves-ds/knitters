@@ -5,7 +5,7 @@ import { mockPosts, mockQnA } from '@/lib/mockData'
 import Avatar from '@/components/ui/Avatar'
 import Link from 'next/link'
 
-const TABS = ['작품 피드', 'Q&A'] as const
+const TABS = ['작품 피드', 'Q&A', '함뜨해요'] as const
 
 export default function CommunityPage() {
   const [tab, setTab] = useState<typeof TABS[number]>('작품 피드')
@@ -16,7 +16,7 @@ export default function CommunityPage() {
         <div className="flex items-center justify-between h-14 px-4">
           <h1 className="text-base font-bold text-dark">커뮤니티</h1>
           <div className="flex items-center gap-3">
-            <Link href="/community/search">
+            <Link href={`/community/search?tab=${tab === '함뜨해요' ? '함뜨해요' : '커뮤니티'}`}>
               <Search size={20} className="text-dark" />
             </Link>
             <Link href="/community/new" className="flex items-center gap-1.5 text-primary font-semibold text-sm">
@@ -88,6 +88,14 @@ export default function CommunityPage() {
               </div>
             </Link>
           ))}
+        </div>
+      )}
+
+      {tab === '함뜨해요' && (
+        <div className="flex flex-col items-center justify-center py-24 gap-3">
+          <span className="text-5xl">🧶</span>
+          <p className="text-sm font-semibold text-dark">함께 뜨개할 모임을 찾아보세요</p>
+          <p className="text-xs text-sub">검색 아이콘으로 원하는 모임을 찾을 수 있어요</p>
         </div>
       )}
 

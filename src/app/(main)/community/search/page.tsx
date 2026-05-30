@@ -1,11 +1,17 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, X } from 'lucide-react'
 
 const SEARCH_TABS = ['커뮤니티', '함뜨해요'] as const
+type SearchTab = typeof SEARCH_TABS[number]
 
 const INITIAL_RECENT = ['단추', '울 니트 키트']
+
+const RECOMMENDED: Record<SearchTab, string[]> = {
+  '커뮤니티': ['목도리', '미트장갑', '레이스 숄', '베이비 슈즈'],
+  '함뜨해요': ['온라인 뜨개', '초보 환영', '숄 뜨기', '주말 뜨개 모임', '오프라인 모임', '케이블 니트', '요가', '함뜨 카페'],
+}
 
 const POPULAR = [
   { rank: 1, keyword: '코바늘 모티브' },
@@ -20,11 +26,12 @@ const POPULAR = [
   { rank: 10, keyword: '블로킹 방법' },
 ]
 
-const RECOMMENDED = ['목도리', '미트장갑', '레이스 숄', '베이비 슈즈']
-
-export default function CommunitySearchPage() {
+function CommunitySearchInner() {
   const router = useRouter()
-  const [tab, setTab] = useState<typeof SEARCH_TABS[number]>('커뮤니티')
+  const searchParams = useSearchParams()
+  const initialTab = (searchParams.get('tab') === '함뜨해요' ? '함뜨해요' : '커뮤니티') as SearchTab
+
+  const [tab, setTab] = useState<SearchTab>(initialTab)
   const [query, setQuery] = useState('')
   const [recentSearches, setRecentSearches] = useState<string[]>(INITIAL_RECENT)
   const [saveEnabled, setSaveEnabled] = useState(true)
@@ -39,6 +46,8 @@ export default function CommunitySearchPage() {
     }
     setQuery(keyword)
   }
+
+  const isHamtto = tab === '함뜨해요'
 
   return (
     <div className="min-h-screen bg-white">
@@ -128,11 +137,16 @@ export default function CommunitySearchPage() {
           <span className="text-[12px] text-[#a7a7a7]">최근 검색 내역 기반으로 골라봤어요.</span>
         </div>
         <div className="flex flex-wrap gap-2">
-          {RECOMMENDED.map(keyword => (
+          {RECOMMENDED[tab].map(keyword => (
             <button
               key={keyword}
               onClick={() => handleSearch(keyword)}
-              className="h-8 px-3 rounded-full border border-[#e0e0e0] text-[13px] text-[#212121] bg-white"
+              className="h-8 px-3 rounded-full text-[13px] transition-colors"
+              style={
+                isHamtto
+                  ? { background: '#feeae5', color: '#f72e00', border: 'none' }
+                  : { background: 'white', color: '#212121', border: '1px solid #e0e0e0' }
+              }
             >
               {keyword}
             </button>
@@ -167,5 +181,13 @@ export default function CommunitySearchPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CommunitySearchPage() {
+  return (
+    <Suspense>
+      <CommunitySearchInner />
+    </Suspense>
   )
 }
