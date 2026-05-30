@@ -30,8 +30,8 @@ const navItems = [
 export default function BottomNav() {
   const pathname = usePathname()
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-border z-50">
-      <div className="flex items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-border z-50" style={{ height: 80 }}>
+      <div className="flex items-center justify-around h-full">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname.startsWith(href)
           const isHome = href === '/feed'
@@ -42,7 +42,11 @@ export default function BottomNav() {
               ) : (
                 Icon && <Icon size={22} className={isActive ? 'text-primary' : 'text-sub'} strokeWidth={isActive ? 2.5 : 1.8} />
               )}
-              <span className={`text-[10px] font-medium ${isActive ? 'text-primary' : 'text-sub'}`}>{label}</span>
+              {isHome ? (
+                <span className="text-[10px] font-medium" style={{ color: isActive ? '#646464' : '#BFBEB8' }}>{label}</span>
+              ) : (
+                <span className={`text-[10px] font-medium ${isActive ? 'text-primary' : 'text-sub'}`}>{label}</span>
+              )}
             </Link>
           )
         })}
