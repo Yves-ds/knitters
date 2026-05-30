@@ -80,7 +80,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* 총 작품 수 */}
-      <div className="px-4 pb-3">
+      <div className="px-4 pb-3 pt-10">
         <p className="text-[14px] text-[#565656]">
           <span className="font-bold text-[#212121]">{mockProjects.length}</span>
           <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
@@ -150,7 +150,18 @@ export default function ProjectsPage() {
                   </div>
                   {/* 프로젝트 이름 + 타이머 */}
                   <div className="px-3 py-2.5">
-                    <p className="text-[13px] font-semibold text-[#212121] truncate mb-1">{project.title}</p>
+                    <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                      <span
+                        className="text-[10px] font-semibold px-1.5 py-0.5 rounded-[4px] shrink-0"
+                        style={{
+                          color: STATUS_DOT[project.status] ?? '#b0b0b0',
+                          background: `${STATUS_DOT[project.status] ?? '#b0b0b0'}1a`,
+                        }}
+                      >
+                        {project.status}
+                      </span>
+                      <p className="text-[13px] font-semibold text-[#212121] truncate">{project.title}</p>
+                    </div>
                     <p className="text-[12px] text-[#a7a7a7] font-medium tracking-wide">00:00:00</p>
                   </div>
                 </div>
