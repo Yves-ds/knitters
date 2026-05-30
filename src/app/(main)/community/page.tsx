@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Plus, MessageSquare, Eye, ChevronRight } from 'lucide-react'
+import { Plus, MessageSquare, Eye, Search } from 'lucide-react'
 import { mockPosts, mockQnA } from '@/lib/mockData'
 import Avatar from '@/components/ui/Avatar'
 import Link from 'next/link'
@@ -15,9 +15,14 @@ export default function CommunityPage() {
       <header className="bg-white sticky top-0 z-40 border-b border-border">
         <div className="flex items-center justify-between h-14 px-4">
           <h1 className="text-base font-bold text-dark">커뮤니티</h1>
-          <Link href="/community/new" className="flex items-center gap-1.5 text-primary font-semibold text-sm">
-            <Plus size={18} />글쓰기
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/community/search">
+              <Search size={20} className="text-dark" />
+            </Link>
+            <Link href="/community/new" className="flex items-center gap-1.5 text-primary font-semibold text-sm">
+              <Plus size={18} />글쓰기
+            </Link>
+          </div>
         </div>
         <div className="flex px-4 gap-6">
           {TABS.map(t => (
