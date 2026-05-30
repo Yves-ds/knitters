@@ -96,6 +96,7 @@ export default function FeedPage() {
       </Link>
 
       {/* 연속 뜨개 카드 */}
+      <Link href="/streak">
       <div className="mx-4 mb-6 bg-white rounded-[10px] shadow-[4px_4px_8px_4px_rgba(0,0,0,0.04)] px-4 py-4 flex items-center gap-3">
         <span className="text-[20px] shrink-0">🧶</span>
         <div className="flex-1">
@@ -122,6 +123,7 @@ export default function FeedPage() {
           <path d="M1 1l6 6-6 6" stroke="#212121" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
+      </Link>
 
       {/* 니터즈 매거진 */}
       <div className="px-4 mb-3 flex items-center justify-between">

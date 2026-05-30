@@ -28,6 +28,49 @@ export const mockPatterns = [
   { id: '6', title: '버킷햇', author: '뜨개마을', category: '모자', difficulty: '초급', price: 1500, likes: 430, imageUrl: '', tags: ['모자','코바늘'] },
 ]
 
+export const mockChallenges = [
+  {
+    id: '1',
+    title: '30일 매일 뜨개 챌린지',
+    period: '2026.05.01 ~ 2026.05.30',
+    status: '진행 중',
+    achievement: 67,
+    participants: 1240,
+    reward: '뜨개 키트 증정',
+    emoji: '🔥',
+  },
+  {
+    id: '2',
+    title: '여름 니트 완성 챌린지',
+    period: '2026.06.01 ~ 2026.06.30',
+    status: '예정',
+    achievement: 0,
+    participants: 382,
+    reward: '실 할인 쿠폰 30%',
+    emoji: '☀️',
+  },
+  {
+    id: '3',
+    title: '코바늘 입문자 챌린지',
+    period: '2026.03.01 ~ 2026.03.31',
+    status: '완료',
+    achievement: 100,
+    participants: 2104,
+    reward: '완료',
+    emoji: '🪡',
+  },
+  {
+    id: '4',
+    title: '숄·스톨 한 달 완성',
+    period: '2026.07.01 ~ 2026.07.31',
+    status: '예정',
+    achievement: 0,
+    participants: 95,
+    reward: '작품 인증 배지',
+    emoji: '🧣',
+  },
+]
+
 export const mockQnA = [
   { id: '1', user: { name:'초보니터', username:'beginner_knit' }, title: '코바늘 시작코 잡는 방법이 헷갈려요 ㅠㅠ', content: '매직링이랑 사슬뜨기 시작 중 어떤 게 나을까요?', answers: 5, views: 142, createdAt: '1시간 전', tags: ['코바늘','입문'] },
   { id: '2', user: { name:'뜨개마을', username:'knit_village' }, title: '울 실 세탁 어떻게 하시나요?', content: '손세탁 vs 울코스 세탁기 의견 궁금합니다!', answers: 12, views: 380, createdAt: '3시간 전', tags: ['실관리','세탁'] },
