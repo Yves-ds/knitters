@@ -29,12 +29,17 @@ export default function FeedPage() {
 
   return (
     <div className="relative bg-[#fafafa] min-h-screen pb-24 overflow-x-hidden">
-      {/* 장식 타원 */}
-      <div className="pointer-events-none absolute left-[-17px] top-[45px] w-[267px] h-[267px] rounded-full bg-[#ffd6cc] opacity-70 blur-[60px]" />
-      <div className="pointer-events-none absolute left-[calc(50%-50px)] top-[135px] w-[244px] h-[244px] rounded-full bg-[#fecec4] opacity-50 blur-[70px]" />
+      {/* 장식 타원 — 모든 콘텐츠 아래 배경 레이어 */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>
+        <div className="absolute left-[-17px] top-[45px] w-[267px] h-[267px] rounded-full bg-[#ffd6cc] opacity-70 blur-[60px]" />
+        <div className="absolute left-[calc(50%-50px)] top-[135px] w-[244px] h-[244px] rounded-full bg-[#fecec4] opacity-50 blur-[70px]" />
+      </div>
+
+      {/* 콘텐츠 레이어 — 타원 위 */}
+      <div className="relative" style={{ zIndex: 1 }}>
 
       {/* 헤더 */}
-      <div className="relative z-10 flex items-center justify-between px-4 pt-14 pb-3">
+      <div className="flex items-center justify-between px-4 pt-14 pb-3">
         <span
           className="text-[28px] text-[#f72e00] not-italic leading-normal"
           style={{ fontFamily: "'Rubik Bubbles', cursive" }}
@@ -180,6 +185,7 @@ export default function FeedPage() {
         <button className="w-full bg-[#f72e00] text-[#fff2ef] font-semibold text-[14px] tracking-[-0.42px] py-5 rounded-[10px] active:opacity-80 transition-opacity">
           뜨개 가이드 더보기
         </button>
+      </div>
       </div>
     </div>
   )
