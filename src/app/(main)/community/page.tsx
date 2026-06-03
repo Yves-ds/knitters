@@ -121,7 +121,7 @@ export default function CommunityPage() {
             </div>
             <div className="flex flex-col gap-2">
               {mockNotices.map(notice => (
-                <div key={notice.id} className="bg-white rounded-[10px] px-4 py-3 border border-[#efefef]">
+                <div key={notice.id} className="bg-[#feeae5] rounded-[10px] px-4 py-3">
                   <p className="text-[14px] font-semibold text-[#212121] mb-1.5">{notice.title}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-[#a7a7a7]">{notice.date} · 조회 {notice.views}</span>
