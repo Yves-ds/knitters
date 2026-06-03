@@ -58,14 +58,22 @@ function CommentIcon({ active }: { active: boolean }) {
   )
 }
 
+type SortKey = '최신순' | '인기순'
+
 export default function CommunityPage() {
   const router = useRouter()
   const [mainTab, setMainTab] = useState<MainTab>('커뮤니티')
   const [category, setCategory] = useState('전체')
+  const [sortKey, setSortKey] = useState<SortKey>('최신순')
+  const [sortOpen, setSortOpen] = useState(false)
 
-  const filtered = category === '전체'
-    ? mockPosts
-    : mockPosts.filter(p => (p as any).category === category)
+  const filtered = (() => {
+    let list = category === '전체' ? [...mockPosts] : mockPosts.filter(p => (p as any).category === category)
+    if (sortKey === '인기순') list.sort((a, b) => b.likes - a.likes)
+    // 최신순: mockPosts 순서가 최신순이므로 기본 순서 유지 (id 역순)
+    else list.sort((a, b) => parseInt(b.id) - parseInt(a.id))
+    return list
+  })()
 
   return (
     <div className="min-h-screen bg-[#fafafa] pb-28">
@@ -113,7 +121,7 @@ export default function CommunityPage() {
             </div>
             <div className="flex flex-col gap-2">
               {mockNotices.map(notice => (
-                <div key={notice.id} className="bg-[#fafafa] rounded-[10px] px-4 py-3 border border-[#efefef]">
+                <div key={notice.id} className="bg-white rounded-[10px] px-4 py-3 border border-[#efefef]">
                   <p className="text-[14px] font-semibold text-[#212121] mb-1.5">{notice.title}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-[#a7a7a7]">{notice.date} · 조회 {notice.views}</span>
@@ -135,10 +143,33 @@ export default function CommunityPage() {
 
           {/* 필터 바 */}
           <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none bg-white mt-2">
-            <button className="flex items-center gap-1 h-8 px-3 rounded-full shrink-0 text-[13px] font-semibold"
-              style={{ background: '#feeae5', color: '#f72e00' }}>
-              최신순 <ChevronDown size={13} />
-            </button>
+            {/* 정렬 드롭다운 */}
+            <div className="relative shrink-0">
+              <button
+                onClick={() => setSortOpen(v => !v)}
+                className="flex items-center gap-1 h-8 px-3 rounded-full text-[13px] font-semibold"
+                style={{ background: '#feeae5', color: '#f72e00' }}
+              >
+                {sortKey} <ChevronDown size={13} />
+              </button>
+              {sortOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setSortOpen(false)} />
+                  <div className="absolute top-10 left-0 bg-white rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.12)] z-20 w-24 overflow-hidden">
+                    {(['최신순', '인기순'] as SortKey[]).map(opt => (
+                      <button
+                        key={opt}
+                        onClick={() => { setSortKey(opt); setSortOpen(false) }}
+                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium"
+                        style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
