@@ -13,10 +13,18 @@ export const mockProjects = [
   { id: '5', title: '민트 레이스 숄', status: '완성', progress: 100, yarn: 'Drops Kid-Silk / Mint', needle: '4.0mm 대바늘', startDate: '2026-01-05', endDate: '2026-02-01', imageUrl: '', emoji: '🌿', tags: ['숄','레이스','대바늘'], memo: '', rows: 95, targetRows: 95 },
 ]
 
+export const mockNotices = [
+  { id: 'n1', title: '커뮤니티 이용 규칙 (*활동 전 필독)', date: '11월 21일', views: 210, likes: 2, comments: 13 },
+  { id: 'n2', title: '자투리 마켓 거래 유의사항 안내', date: '11월 21일', views: 210, likes: 8, comments: 20 },
+]
+
 export const mockPosts = [
-  { id: '1', user: { id:'1', name:'실뭉치언니', username:'yarnlover_', avatar:'' }, imageUrl: '', description: '3주 만에 완성한 케이블 스웨터! 처음 도전한 케이블 패턴이었는데 생각보다 어렵지 않았어요 🧶', likes: 342, comments: 28, saved: false, liked: false, tags: ['스웨터','케이블니트','뜨개완성'], createdAt: '2시간 전' },
-  { id: '2', user: { id:'2', name:'니팅러버', username:'knitting.lover', avatar:'' }, imageUrl: '', description: '봄 맞이 파스텔 토트백 완성 ✨ 도안 공유 원하시는 분 댓글 남겨주세요!', likes: 189, comments: 54, saved: false, liked: true, tags: ['토트백','코바늘','봄뜨개'], createdAt: '5시간 전' },
-  { id: '3', user: { id:'3', name:'코바늘김씨', username:'crochet_kim', avatar:'' }, imageUrl: '', description: '진행 중인 그래니스퀘어 담요 WIP 🌈 색 조합 어떤가요?', likes: 95, comments: 19, saved: true, liked: false, tags: ['담요','그래니스퀘어','WIP'], createdAt: '어제' },
+  { id: '1', category: '뜨개 잡담', title: '민트', user: { id:'1', name:'뜨뜨미지근', username:'kknitter_', avatar:'', avatarColor:'#C9956C', following: false }, imageUrl: '', description: '민트색 니트 만들고 싶은데, 원하는 색 실이 없어서 합사 고민이에요. 실 합사 많이들 하시던데 다들 자랑해주세요!', likes: 2, comments: 13, views: 210, saved: false, liked: false, tags: ['합사','실추천'], createdAt: '11월 21일' },
+  { id: '2', category: '뜨개 질문', title: '니트 소매 폭 좁게 변경 가능할까요?', user: { id:'2', name:'푸르시오지욱', username:'purr_knit', avatar:'', avatarColor:'#E07B4F', following: true }, imageUrl: '', description: '원작 도안은 소매가 좀 넓넓한 편인데, 제가 쫀쫀한 소매를 선호해서 좁게 변형하면 어떨까요? 변경해보신 분 후기 궁금해요!', likes: 2, comments: 13, views: 210, saved: false, liked: true, tags: ['도안수정','소매'], createdAt: '11월 21일' },
+  { id: '3', category: '뜨개 질문', title: '도안 다들 어디서 찾아보세요?', user: { id:'3', name:'타래비', username:'tarae_b', avatar:'', avatarColor:'#A0785A', following: true }, imageUrl: '', description: '원작 도안은 소매가 좀 넓넓한 편인데, 제가 쫀쫀한 소매를 선호해서 좁게 변형하면 어떨까요? 변경해보신 분 후기 궁금해요!', likes: 5, comments: 8, views: 143, saved: false, liked: false, tags: ['도안','추천'], createdAt: '11월 21일' },
+  { id: '4', category: '완성 인증', title: '드디어 첫 스웨터 완성했어요 🎉', user: { id:'4', name:'실뭉치언니', username:'yarnlover_', avatar:'', avatarColor:'#D4A373', following: true }, imageUrl: '', description: '3주 만에 완성한 케이블 스웨터! 처음 도전한 케이블 패턴이었는데 생각보다 어렵지 않았어요. 다음엔 카디건에 도전해볼까 해요!', likes: 342, comments: 28, views: 1204, saved: false, liked: false, tags: ['스웨터','케이블니트','뜨개완성'], createdAt: '2시간 전' },
+  { id: '5', category: '실속 장터', title: '메리노울 실 나눔합니다 (무료)', user: { id:'5', name:'니팅러버', username:'knitting.lover', avatar:'', avatarColor:'#B5838D', following: false }, imageUrl: '', description: '봄 맞이 정리하다 보니 메리노울 실이 남았어요. 필요하신 분 댓글 달아주세요. 직거래 우선, 택배 가능!', likes: 89, comments: 54, views: 620, saved: false, liked: true, tags: ['실나눔','메리노울'], createdAt: '5시간 전' },
+  { id: '6', category: '뜨개 잡담', title: '그래니스퀘어 색 조합 어떻게 생각하세요?', user: { id:'6', name:'코바늘김씨', username:'crochet_kim', avatar:'', avatarColor:'#6B9080', following: true }, imageUrl: '', description: '진행 중인 그래니스퀘어 담요인데요 🌈 색 조합이 너무 어렵네요. 다들 어떻게 정하세요? 추천 부탁드려요!', likes: 95, comments: 19, views: 388, saved: true, liked: false, tags: ['담요','그래니스퀘어','코바늘'], createdAt: '어제' },
 ]
 
 export const mockPatterns = [
