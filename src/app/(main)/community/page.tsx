@@ -90,7 +90,7 @@ function CommunityPageInner() {
                 key={t}
                 onClick={() => setMainTab(t)}
                 className="text-[24px] font-bold pb-3 transition-colors"
-                style={{ color: mainTab === t ? '#f72e00' : '#c4c4c4' }}
+                style={{ color: mainTab === t ? '#F72E00' : '#E0DCD3' }}
               >
                 {t}
               </button>
