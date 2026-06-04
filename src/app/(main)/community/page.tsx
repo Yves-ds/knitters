@@ -111,7 +111,7 @@ export default function CommunityPage() {
       {mainTab === '커뮤니티' && (
         <>
           {/* 공지사항 */}
-          <div className="px-4 pt-5 pb-2">
+          <div className="bg-white px-4 pt-5 pb-2">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-1.5">
                 <LoudspeakerIcon />
@@ -142,9 +142,9 @@ export default function CommunityPage() {
           </div>
 
           {/* 필터 바 */}
-          <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none bg-white mt-2">
-            {/* 정렬 드롭다운 */}
-            <div className="relative shrink-0">
+          <div className="bg-white mt-2">
+            {/* 정렬 버튼 — overflow 영역 밖에 독립 배치 */}
+            <div className="relative px-4 pt-3 pb-0">
               <button
                 onClick={() => setSortOpen(v => !v)}
                 className="flex items-center gap-1 h-8 px-3 rounded-full text-[13px] font-semibold"
@@ -154,8 +154,8 @@ export default function CommunityPage() {
               </button>
               {sortOpen && (
                 <>
-                  <div className="fixed inset-0 z-10" onClick={() => setSortOpen(false)} />
-                  <div className="absolute top-10 left-0 bg-white rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.12)] z-20 w-24 overflow-hidden">
+                  <div className="fixed inset-0 z-40" onClick={() => setSortOpen(false)} />
+                  <div className="absolute top-10 left-4 bg-white rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.15)] z-50 w-24 overflow-hidden">
                     {(['최신순', '인기순'] as SortKey[]).map(opt => (
                       <button
                         key={opt}
@@ -170,6 +170,8 @@ export default function CommunityPage() {
                 </>
               )}
             </div>
+            {/* 카테고리 칩 스크롤 영역 */}
+            <div className="px-4 py-2 flex items-center gap-2 overflow-x-auto scrollbar-none">
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
@@ -184,6 +186,7 @@ export default function CommunityPage() {
                 {cat}
               </button>
             ))}
+            </div>
           </div>
 
           {/* 게시글 목록 */}
