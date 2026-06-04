@@ -192,10 +192,12 @@ function CommunityPageInner() {
           </div>
 
           {/* 게시글 목록 */}
-          <div className="bg-white divide-y divide-[#f5f5f5] -mt-3">
-            {filtered.map(post => (
-              <Link key={post.id} href={`/community/${post.id}`}>
-                <div className="px-4 py-5 active:bg-[#fafafa] transition-colors">
+          <div className="bg-white -mt-3">
+            {filtered.map((post, idx) => (
+              <div key={post.id}>
+                {idx > 0 && <div className="mx-4 h-px bg-[#F0F0F0]" />}
+              <Link href={`/community/${post.id}`}>
+                <div className="px-4 py-4 active:bg-[#fafafa] transition-colors">
                   {/* 카테고리 배지 */}
                   <span className="inline-block text-[12px] font-medium text-[#646464] bg-[#F6F6F6] rounded-[6px] px-2 py-0.5 mb-3">
                     {(post as any).category ?? '일반'}
@@ -243,6 +245,7 @@ function CommunityPageInner() {
                   </div>
                 </div>
               </Link>
+              </div>
             ))}
           </div>
         </>
