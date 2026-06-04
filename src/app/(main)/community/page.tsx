@@ -1,9 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Plus, Search, ChevronDown } from 'lucide-react'
 import { mockPosts, mockNotices } from '@/lib/mockData'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const MAIN_TABS = ['커뮤니티', '함뜨해요'] as const
 type MainTab = typeof MAIN_TABS[number]
@@ -60,9 +60,11 @@ function CommentIcon({ active }: { active: boolean }) {
 
 type SortKey = '최신순' | '인기순'
 
-export default function CommunityPage() {
+function CommunityPageInner() {
   const router = useRouter()
-  const [mainTab, setMainTab] = useState<MainTab>('커뮤니티')
+  const searchParams = useSearchParams()
+  const initialTab = (searchParams.get('tab') === '함뜨해요' ? '함뜨해요' : '커뮤니티') as MainTab
+  const [mainTab, setMainTab] = useState<MainTab>(initialTab)
   const [category, setCategory] = useState('전체')
   const [sortKey, setSortKey] = useState<SortKey>('최신순')
   const [sortOpen, setSortOpen] = useState(false)
@@ -264,5 +266,13 @@ export default function CommunityPage() {
         <Plus size={26} className="text-white" strokeWidth={2.5} />
       </Link>
     </div>
+  )
+}
+
+export default function CommunityPage() {
+  return (
+    <Suspense>
+      <CommunityPageInner />
+    </Suspense>
   )
 }

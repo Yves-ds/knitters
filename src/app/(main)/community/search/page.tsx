@@ -87,7 +87,7 @@ function CommunitySearchInner() {
           )}
         </div>
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push(`/community?tab=${initialTab}`)}
           className="text-[#f72e00] text-[14px] font-medium shrink-0"
         >
           취소
