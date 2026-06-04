@@ -117,7 +117,7 @@ function CommunityPageInner() {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-1.5">
                 <LoudspeakerIcon />
-                <span className="text-[16px] font-bold text-[#212121]">니터즈 공지사항</span>
+                <span className="text-[20px] font-bold text-[#212121]">니터즈 공지사항</span>
               </div>
               <button className="text-[13px] text-[#a7a7a7]">전체보기</button>
             </div>
@@ -150,7 +150,7 @@ function CommunityPageInner() {
               <button
                 onClick={() => setSortOpen(v => !v)}
                 className="flex items-center gap-1 h-8 px-3 rounded-full text-[13px] font-semibold"
-                style={{ background: '#feeae5', color: '#f72e00' }}
+                style={{ background: '#F72E00', color: '#fff' }}
               >
                 {sortKey} <ChevronDown size={13} />
               </button>
@@ -182,7 +182,7 @@ function CommunityPageInner() {
                   style={
                     category === cat
                       ? { background: '#f72e00', color: '#fff' }
-                      : { background: 'white', color: '#646464', border: '1px solid #e0e0e0' }
+                      : { background: '#F6F6F6', color: '#646464' }
                   }
                 >
                   {cat}
@@ -192,12 +192,12 @@ function CommunityPageInner() {
           </div>
 
           {/* 게시글 목록 */}
-          <div className="bg-white divide-y divide-[#f5f5f5]">
+          <div className="bg-white divide-y divide-[#f5f5f5] -mt-3">
             {filtered.map(post => (
               <Link key={post.id} href={`/community/${post.id}`}>
                 <div className="px-4 py-5 active:bg-[#fafafa] transition-colors">
                   {/* 카테고리 배지 */}
-                  <span className="inline-block text-[12px] font-medium text-[#646464] border border-[#e0e0e0] rounded-[6px] px-2 py-0.5 mb-3">
+                  <span className="inline-block text-[12px] font-medium text-[#646464] bg-[#F6F6F6] rounded-[6px] px-2 py-0.5 mb-3">
                     {(post as any).category ?? '일반'}
                   </span>
 
