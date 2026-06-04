@@ -141,10 +141,10 @@ export default function CommunityPage() {
             </div>
           </div>
 
-          {/* 필터 바 */}
-          <div className="bg-white mt-2">
-            {/* 정렬 버튼 — overflow 영역 밖에 독립 배치 */}
-            <div className="relative px-4 pt-3 pb-0">
+          {/* 필터 바 — 정렬 버튼 + 카테고리 칩 같은 행 */}
+          <div className="bg-white flex items-center py-3">
+            {/* 정렬 버튼: shrink-0으로 고정, overflow 바깥에 relative 유지 */}
+            <div className="relative shrink-0 pl-4 pr-2">
               <button
                 onClick={() => setSortOpen(v => !v)}
                 className="flex items-center gap-1 h-8 px-3 rounded-full text-[13px] font-semibold"
@@ -170,22 +170,22 @@ export default function CommunityPage() {
                 </>
               )}
             </div>
-            {/* 카테고리 칩 스크롤 영역 */}
-            <div className="px-4 py-2 flex items-center gap-2 overflow-x-auto scrollbar-none">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setCategory(cat)}
-                className="h-8 px-3 rounded-full shrink-0 text-[13px] font-medium transition-colors"
-                style={
-                  category === cat
-                    ? { background: '#f72e00', color: '#fff' }
-                    : { background: 'white', color: '#646464', border: '1px solid #e0e0e0' }
-                }
-              >
-                {cat}
-              </button>
-            ))}
+            {/* 카테고리 칩: 나머지 영역에서 가로 스크롤 */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pr-4">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className="h-8 px-3 rounded-full shrink-0 text-[13px] font-medium transition-colors"
+                  style={
+                    category === cat
+                      ? { background: '#f72e00', color: '#fff' }
+                      : { background: 'white', color: '#646464', border: '1px solid #e0e0e0' }
+                  }
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
 
