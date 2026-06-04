@@ -149,7 +149,7 @@ function CommunityPageInner() {
             <div className="relative shrink-0 pl-4 pr-2">
               <button
                 onClick={() => setSortOpen(v => !v)}
-                className="flex items-center gap-1 h-8 px-3 rounded-full text-[13px] font-semibold"
+                className="flex items-center gap-1 h-8 px-3 rounded-[10px] text-[13px] font-semibold"
                 style={{ background: '#F72E00', color: '#fff' }}
               >
                 {sortKey} <ChevronDown size={13} />
@@ -178,7 +178,7 @@ function CommunityPageInner() {
                 <button
                   key={cat}
                   onClick={() => setCategory(cat)}
-                  className="h-8 px-3 rounded-full shrink-0 text-[13px] font-medium transition-colors"
+                  className="h-8 px-3 rounded-[10px] shrink-0 text-[13px] font-medium transition-colors"
                   style={
                     category === cat
                       ? { background: '#f72e00', color: '#fff' }

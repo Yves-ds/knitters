@@ -65,11 +65,13 @@ function CommunitySearchInner() {
     <div className="min-h-screen bg-white">
       {/* 검색바 */}
       <div className="flex items-center gap-2 px-4 pt-14 pb-3">
-        {isResultView && (
-          <button onClick={handleClear} className="shrink-0">
-            <ChevronLeft size={24} className="text-[#212121]" />
-          </button>
-        )}
+        {/* 뒤로가기: 결과뷰 → 제안뷰, 제안뷰 → 커뮤니티 */}
+        <button
+          onClick={isResultView ? handleClear : () => router.push(`/community?tab=${initialTab}`)}
+          className="shrink-0"
+        >
+          <ChevronLeft size={24} className="text-[#212121]" />
+        </button>
         <div className="flex-1 flex items-center gap-2 bg-[#ededed] rounded-[10px] px-3 h-10">
           <Search size={16} className="text-[#9e9e9e] shrink-0" />
           <input
