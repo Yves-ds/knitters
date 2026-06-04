@@ -32,26 +32,26 @@ function LoudspeakerIcon() {
   )
 }
 
-function HeartIcon({ active }: { active: boolean }) {
+function HeartIcon({ active, size = 15 }: { active: boolean; size?: number }) {
   return active ? (
-    <svg width="15" height="15" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M15.3931 10.716C13.5181 14.9989 8.92815 17.2076 8.73315 17.3026C8.58368 17.3644 8.41762 17.3644 8.26815 17.3026C8.08065 17.2076 3.48315 14.9989 1.60815 10.716C0.445649 8.04806 1.09065 5.17431 2.35815 3.93931C2.80212 3.53771 3.32999 3.25298 3.89842 3.10848C4.46685 2.96398 5.05965 2.96384 5.62815 3.10806C6.7914 3.38717 7.80728 4.13042 8.46315 5.18222C9.12023 4.12816 10.1393 3.38453 11.3056 3.10806C11.8741 2.96384 12.4669 2.96398 13.0354 3.10848C13.6038 3.25298 14.1317 3.53771 14.5756 3.93931C15.9106 5.17431 16.5631 8.04806 15.3931 10.716Z" fill="#FBB4A4"/>
     </svg>
   ) : (
-    <svg width="15" height="15" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M15.3931 10.716C13.5181 14.9989 8.92815 17.2076 8.73315 17.3026C8.58368 17.3644 8.41762 17.3644 8.26815 17.3026C8.08065 17.2076 3.48315 14.9989 1.60815 10.716C0.445649 8.04806 1.09065 5.17431 2.35815 3.93931C2.80212 3.53771 3.32999 3.25298 3.89842 3.10848C4.46685 2.96398 5.05965 2.96384 5.62815 3.10806C6.7914 3.38717 7.80728 4.13042 8.46315 5.18222C9.12023 4.12816 10.1393 3.38453 11.3056 3.10806C11.8741 2.96384 12.4669 2.96398 13.0354 3.10848C13.6038 3.25298 14.1317 3.53771 14.5756 3.93931C15.9106 5.17431 16.5631 8.04806 15.3931 10.716Z" fill="#D8C4BF"/>
     </svg>
   )
 }
 
-function CommentIcon({ active }: { active: boolean }) {
+function CommentIcon({ active, size = 16 }: { active: boolean; size?: number }) {
   return active ? (
-    <svg width="16" height="16" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fillRule="evenodd" clipRule="evenodd" d="M4.95617 5.91516C3.83301 7.03737 3.83301 8.84478 3.83301 12.4587V17.8119C3.83301 18.6648 4.86513 19.0932 5.46888 18.4894L7.52642 16.4319C7.59542 16.3629 7.62992 16.3284 7.67401 16.3102C7.71809 16.292 7.76697 16.292 7.86567 16.292H13.4163C15.2027 16.292 16.0958 16.292 16.7993 15.9997C17.7385 15.6109 18.4848 14.8649 18.874 13.9259C19.1663 13.2215 19.1663 12.3283 19.1663 10.542C19.1663 8.75566 19.1663 7.86249 18.874 7.15908C18.6816 6.69385 18.3994 6.27108 18.0436 5.91492C17.6878 5.55876 17.2653 5.27618 16.8002 5.08333C16.0958 4.79199 15.2027 4.79199 13.4163 4.79199H11.4997C7.8858 4.79199 6.07838 4.79199 4.95617 5.91516Z" fill="#FBB4A4"/>
       <path d="M8.14551 9.10449H14.8538M8.14551 11.9795H12.9372" stroke="#FA8B72" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ) : (
-    <svg width="16" height="16" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fillRule="evenodd" clipRule="evenodd" d="M4.95617 5.91516C3.83301 7.03737 3.83301 8.84478 3.83301 12.4587V17.8119C3.83301 18.6648 4.86513 19.0932 5.46888 18.4894L7.52642 16.4319C7.59542 16.3629 7.62992 16.3284 7.67401 16.3102C7.71809 16.292 7.76697 16.292 7.86567 16.292H13.4163C15.2027 16.292 16.0958 16.292 16.7993 15.9997C17.7385 15.6109 18.4848 14.8649 18.874 13.9259C19.1663 13.2215 19.1663 12.3283 19.1663 10.542C19.1663 8.75566 19.1663 7.86249 18.874 7.15908C18.6816 6.69385 18.3994 6.27108 18.0436 5.91492C17.6878 5.55876 17.2653 5.27618 16.8002 5.08333C16.0958 4.79199 15.2027 4.79199 13.4163 4.79199H11.4997C7.8858 4.79199 6.07838 4.79199 4.95617 5.91516Z" fill="#D8C4BF"/>
       <path d="M8.14551 9.10449H14.8538M8.14551 11.9795H12.9372" stroke="#B7A39E" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
@@ -234,12 +234,12 @@ function CommunityPageInner() {
                     </span>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1">
-                        <HeartIcon active={post.liked} />
-                        <span className="text-[12px] text-[#b0b0b0]">{post.likes}</span>
+                        <HeartIcon active={post.liked} size={19} />
+                        <span className="text-[16px] text-[#b0b0b0]">{post.likes}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <CommentIcon active={false} />
-                        <span className="text-[12px] text-[#b0b0b0]">{post.comments}</span>
+                        <CommentIcon active={false} size={20} />
+                        <span className="text-[16px] text-[#b0b0b0]">{post.comments}</span>
                       </div>
                     </div>
                   </div>
