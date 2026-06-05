@@ -1,155 +1,143 @@
 'use client'
 import { useState } from 'react'
-import { Settings, Grid, FolderOpen, Heart, ChevronRight, LogOut } from 'lucide-react'
-import { mockProjects, mockPosts } from '@/lib/mockData'
-import ProgressBar from '@/components/ui/ProgressBar'
+import { MoreHorizontal, Heart, Bookmark, Package, CalendarDays, Bell } from 'lucide-react'
+import { mockProjects } from '@/lib/mockData'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
-const ME = { name: '내 닉네임', username: 'my_knitters', bio: '뜨개질로 일상을 따뜻하게 🧶 대바늘/코바늘 모두 좋아해요', followers: 234, following: 128 }
-const TABS = ['내 작품', '내 프로젝트', '저장'] as const
+const ME = {
+  name: '이브방',
+  username: 'yves_knit',
+  bio: '안녕하세요 대바늘 러버입니다.\n출퇴근길 프로 뜨개러의 기록장 ◡‿◡ *',
+  followers: 22,
+  following: 40,
+}
+
+const TABS = ['피드', '태그', '게시글'] as const
+type Tab = typeof TABS[number]
+
+const ACTION_ITEMS = [
+  { label: '좋아요',   icon: <Heart    size={24} fill="#F72E00" className="text-[#F72E00]" /> },
+  { label: '저장',     icon: <Bookmark size={24} fill="#FF8C5A" className="text-[#FF8C5A]" /> },
+  { label: '실장고',   icon: <Package  size={24} className="text-[#FF8C5A]" /> },
+  { label: '함뜨 일정', icon: <CalendarDays size={24} className="text-[#F72E00]" /> },
+]
 
 export default function MyPage() {
-  const router = useRouter()
-  const [tab, setTab] = useState<typeof TABS[number]>('내 작품')
+  const [tab, setTab] = useState<Tab>('피드')
+  const projectCount = mockProjects.length
 
   return (
-    <div className="page-container bg-bg-light">
-      {/* Header */}
-      <header className="bg-white sticky top-0 z-40 border-b border-border">
-        <div className="flex items-center justify-between h-14 px-4">
-          <span className="text-base font-bold text-dark">마이페이지</span>
-          <Link href="/mypage/settings"><Settings size={22} className="text-dark" /></Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white pb-28">
 
-      {/* Profile Section */}
-      <div className="bg-white px-4 pt-6 pb-5">
+      {/* 헤더 */}
+      <div className="flex items-center justify-between px-4 pt-14 pb-4">
+        <h1 className="text-[22px] font-bold text-[#212121]">마이페이지</h1>
+        <button className="w-8 h-8 flex items-center justify-center">
+          <MoreHorizontal size={22} className="text-[#212121]" />
+        </button>
+      </div>
+
+      {/* 프로필 카드 */}
+      <div className="mx-4 mb-4 bg-[#feeae5] rounded-[16px] px-4 pt-5 pb-5">
+        {/* 아바타 + 이름 + 통계 */}
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-18 h-18 w-[72px] h-[72px] rounded-2xl bg-primary/10 flex items-center justify-center text-3xl flex-shrink-0">
+          <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-[#f4c8b0] to-[#e88060] flex items-center justify-center text-3xl shrink-0 overflow-hidden border-2 border-white shadow-sm">
             🧶
           </div>
           <div className="flex-1">
-            <h2 className="text-lg font-bold text-dark">{ME.name}</h2>
-            <p className="text-sm text-sub">@{ME.username}</p>
+            <p className="text-[18px] font-bold text-[#212121] mb-2">{ME.name}</p>
+            <div className="flex items-center gap-5">
+              <div className="text-center">
+                <p className="text-[16px] font-bold text-[#212121] leading-none">{projectCount}</p>
+                <p className="text-[12px] text-[#9e9e9e] mt-0.5">프로젝트</p>
+              </div>
+              <div className="text-center">
+                <p className="text-[16px] font-bold text-[#212121] leading-none">{ME.followers}</p>
+                <p className="text-[12px] text-[#9e9e9e] mt-0.5">팔로워</p>
+              </div>
+              <div className="text-center">
+                <p className="text-[16px] font-bold text-[#212121] leading-none">{ME.following}</p>
+                <p className="text-[12px] text-[#9e9e9e] mt-0.5">팔로잉</p>
+              </div>
+            </div>
           </div>
-          <Link href="/mypage/edit" className="px-4 py-2 border border-border rounded-xl text-xs font-semibold text-dark">
-            프로필 편집
-          </Link>
         </div>
 
-        <p className="text-sm text-dark leading-relaxed mb-4">{ME.bio}</p>
+        {/* 바이오 */}
+        <p className="text-[13px] text-[#565656] leading-relaxed mb-4 whitespace-pre-line">{ME.bio}</p>
 
-        <div className="flex gap-6">
-          <div className="text-center">
-            <p className="text-lg font-bold text-dark">{mockProjects.length}</p>
-            <p className="text-xs text-sub">프로젝트</p>
-          </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-dark">{ME.followers}</p>
-            <p className="text-xs text-sub">팔로워</p>
-          </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-dark">{ME.following}</p>
-            <p className="text-xs text-sub">팔로잉</p>
-          </div>
+        {/* 구분선 */}
+        <div className="h-px bg-[#f5c9bc] mb-4" />
+
+        {/* 액션 아이콘 4개 */}
+        <div className="flex items-stretch">
+          {ACTION_ITEMS.map((item, i) => (
+            <div key={item.label} className="flex items-stretch flex-1">
+              {i > 0 && <div className="w-px bg-[#f5c9bc] self-stretch" />}
+              <button className="flex-1 flex flex-col items-center gap-1.5 py-1">
+                {item.icon}
+                <span className="text-[11px] text-[#9e9e9e] font-medium">{item.label}</span>
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Active Project */}
-      {mockProjects.filter(p => p.status === '진행 중').length > 0 && (
-        <div className="mx-4 mt-4 bg-white rounded-2xl p-4 border border-border">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-sub uppercase tracking-wide">진행 중인 프로젝트</h3>
-            <Link href="/projects" className="text-xs text-primary font-medium">전체 보기</Link>
-          </div>
-          {mockProjects.filter(p => p.status === '진행 중').slice(0, 1).map(p => (
-            <Link key={p.id} href={`/projects/${p.id}`}>
-              <div className="flex items-center gap-3">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🧶</div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-dark truncate mb-2">{p.title}</p>
-                  <ProgressBar value={p.progress} showLabel />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* Content Tabs */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl overflow-hidden border border-border">
-        <div className="flex border-b border-border">
+      {/* 콘텐츠 탭 */}
+      <div className="border-b border-[#f0f0f0]">
+        <div className="flex">
           {TABS.map(t => (
-            <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 py-3 text-xs font-semibold transition-all ${tab === t ? 'text-primary border-b-2 border-primary' : 'text-sub'}`}>
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className="flex-1 py-3 text-[14px] font-semibold transition-colors"
+              style={{
+                color: tab === t ? '#F72E00' : '#a7a7a7',
+                borderBottom: tab === t ? '2px solid #F72E00' : '2px solid transparent',
+              }}
+            >
               {t}
             </button>
           ))}
         </div>
-
-        {tab === '내 작품' && (
-          <div className="grid grid-cols-3 gap-0.5 bg-border">
-            {mockPosts.map(post => (
-              <Link key={post.id} href={`/community/${post.id}`}>
-                <div className="aspect-square bg-gradient-to-br from-primary/5 to-primary/20 flex items-center justify-center">
-                  <span className="text-3xl opacity-30">🧶</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {tab === '내 프로젝트' && (
-          <div className="divide-y divide-border">
-            {mockProjects.map(p => (
-              <Link key={p.id} href={`/projects/${p.id}`}>
-                <div className="flex items-center gap-3 px-4 py-3 active:bg-bg-light">
-                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-lg flex-shrink-0">🧶</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-dark truncate">{p.title}</p>
-                    <p className="text-xs text-sub">{p.status} · {p.progress}%</p>
-                  </div>
-                  <ChevronRight size={16} className="text-sub" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {tab === '저장' && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <span className="text-4xl mb-3">🔖</span>
-            <p className="text-sm font-semibold text-dark mb-1">저장한 도안이 없어요</p>
-            <p className="text-xs text-sub">마음에 드는 도안을 저장해보세요</p>
-            <Link href="/explore" className="mt-4 px-5 py-2 bg-primary text-white text-sm font-semibold rounded-full">
-              도안 탐색하기
-            </Link>
-          </div>
-        )}
       </div>
 
-      {/* Settings Menu */}
-      <div className="mx-4 mt-4 mb-4 bg-white rounded-2xl overflow-hidden border border-border">
-        {[
-          { label: '알림 설정', icon: '🔔' },
-          { label: '계정 설정', icon: '⚙️' },
-          { label: '도움말', icon: '❓' },
-        ].map(item => (
-          <button key={item.label} className="w-full flex items-center gap-4 px-4 py-4 border-b border-border last:border-0 active:bg-bg-light">
-            <span className="text-lg">{item.icon}</span>
-            <span className="text-sm font-medium text-dark flex-1 text-left">{item.label}</span>
-            <ChevronRight size={16} className="text-sub" />
-          </button>
-        ))}
-        <button
-          onClick={() => router.push('/onboarding')}
-          className="w-full flex items-center gap-4 px-4 py-4 active:bg-bg-light"
-        >
-          <LogOut size={18} className="text-red-400" />
-          <span className="text-sm font-medium text-red-400 flex-1 text-left">로그아웃</span>
-        </button>
-      </div>
+      {/* 탭 콘텐츠 */}
+      {tab === '피드' && (
+        <div className="flex flex-col items-center justify-center py-24 gap-3">
+          <Bell size={48} className="text-[#d0d0d0]" strokeWidth={1.5} />
+          <p className="text-[17px] font-bold text-[#212121] mt-2">아직 공유된 기록이 없어요</p>
+          <p className="text-[13px] text-[#a7a7a7]">새로운 뜨개 프로젝트를 기록해 보세요</p>
+          <Link
+            href="/projects/new"
+            className="mt-3 px-6 py-3 bg-[#F72E00] text-white text-[14px] font-semibold rounded-full active:opacity-80 transition-opacity"
+          >
+            + 기록하기
+          </Link>
+        </div>
+      )}
+
+      {tab === '태그' && (
+        <div className="flex flex-col items-center justify-center py-24 gap-3">
+          <Bell size={48} className="text-[#d0d0d0]" strokeWidth={1.5} />
+          <p className="text-[17px] font-bold text-[#212121] mt-2">태그된 게시물이 없어요</p>
+          <p className="text-[13px] text-[#a7a7a7]">커뮤니티에서 활동을 시작해보세요</p>
+        </div>
+      )}
+
+      {tab === '게시글' && (
+        <div className="flex flex-col items-center justify-center py-24 gap-3">
+          <Bell size={48} className="text-[#d0d0d0]" strokeWidth={1.5} />
+          <p className="text-[17px] font-bold text-[#212121] mt-2">작성한 게시글이 없어요</p>
+          <p className="text-[13px] text-[#a7a7a7]">커뮤니티에 첫 글을 작성해보세요</p>
+          <Link
+            href="/community/new"
+            className="mt-3 px-6 py-3 bg-[#F72E00] text-white text-[14px] font-semibold rounded-full active:opacity-80 transition-opacity"
+          >
+            글쓰기
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
