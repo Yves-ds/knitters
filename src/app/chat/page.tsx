@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, Search, X } from 'lucide-react'
+import Link from 'next/link'
 
 const MOCK_CHATS = [
   {
@@ -110,7 +111,7 @@ export default function ChatPage() {
           </div>
         ) : (
           filtered.map((chat, i) => (
-            <button key={chat.id} className="w-full flex items-center gap-3 px-4 py-4 active:bg-[#fafafa] text-left">
+            <Link key={chat.id} href={`/chat/${chat.id}`} className="w-full flex items-center gap-3 px-4 py-4 active:bg-[#fafafa] text-left">
               {/* 아바타 */}
               <div className="relative shrink-0">
                 <div
@@ -139,7 +140,7 @@ export default function ChatPage() {
                   )}
                 </div>
               </div>
-            </button>
+            </Link>
           ))
         )}
       </div>
