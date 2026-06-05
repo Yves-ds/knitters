@@ -86,9 +86,6 @@ export default function MyPage() {
         {/* 바이오 */}
         <p className="text-[13px] text-[#565656] leading-relaxed mb-4 whitespace-pre-line">{ME.bio}</p>
 
-        {/* 구분선 */}
-        <div className="h-px bg-[#f5c9bc] mb-4" />
-
         {/* 액션 아이콘 4개 */}
         <div className="flex items-stretch">
           {ACTION_ITEMS.map((item, i) => (
