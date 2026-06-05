@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { Search, X, ChevronDown, Plus } from 'lucide-react'
 import { mockProjects } from '@/lib/mockData'
@@ -29,6 +29,13 @@ export default function ProjectsPage() {
   const [statusFilter, setStatusFilter] = useState<Status>('전체')
   const [sortKey, setSortKey] = useState<SortKey>('생성일')
   const [sortOpen, setSortOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const filtered = useMemo(() => {
     let list = [...mockProjects]
@@ -174,11 +181,19 @@ export default function ProjectsPage() {
       {/* FAB */}
       <Link
         href="/projects/new"
-        className="fixed bottom-[100px] flex items-center gap-2 bg-[#f72e00] text-white font-semibold text-[14px] px-5 py-3.5 rounded-2xl shadow-lg shadow-[#f72e00]/30 active:scale-95 transition-all z-30"
-        style={{ right: 'max(16px, calc(50% - 224px))' }}
+        className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-30"
+        style={{
+          right: 'max(16px, calc(50% - 224px))',
+          borderRadius: scrolled ? '50%' : '16px',
+          width: scrolled ? '52px' : 'auto',
+          height: scrolled ? '52px' : 'auto',
+          padding: scrolled ? '0' : '14px 20px',
+          gap: scrolled ? '0' : '8px',
+          transition: 'border-radius 0.25s, width 0.25s, height 0.25s, padding 0.25s',
+        }}
       >
         <Plus size={18} strokeWidth={2.5} />
-        기록하기
+        {!scrolled && '기록하기'}
       </Link>
     </div>
   )
