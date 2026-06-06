@@ -289,26 +289,27 @@ export default function NewProjectPage() {
   const dropIndicatorRef = useRef<HTMLDivElement>(null)
   const coverBlockRef    = useRef<HTMLElement | null>(null)
 
-  /* 대표 사진/대표 사진 설정 배지 갱신 */
+  /* 대표 사진/대표 사진 설정 배지 갱신 — 블록별 개별 정리로 중복 방지 */
+  const COVER_SVG = `<svg width="63" height="28" viewBox="0 0 63 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="63" height="28" rx="10" fill="#F72E00"/><path d="M17.3984 8.49609V18.9961H16.332V13.5703H14.9727V18.457H13.9531V8.70703H14.9727V12.6562H16.332V8.49609H17.3984ZM12.6758 9.76172V10.6641H9.85156V15.5273C11.1406 15.5156 12.1133 15.457 13.2383 15.2461L13.3203 16.1602C12.0547 16.418 10.9766 16.4648 9.44141 16.4766H8.73828V9.76172H12.6758ZM28.9672 16.8398V17.7539H19.3578V16.8398H21.9359V14.5078H20.2016V13.6055H21.7719V10.3359H20.1781V9.42188H28.0883V10.3359H26.4828V13.6055H28.0531V14.5078H26.3305V16.8398H28.9672ZM22.8734 13.6055H25.393V10.3359H22.8734V13.6055ZM23.0492 16.8398H25.2172V14.5078H23.0492V16.8398ZM37.5031 11.168C37.4914 13.0312 38.5695 14.9297 40.1398 15.6914L39.4484 16.582C38.3059 15.9902 37.4211 14.8125 36.9641 13.4062C36.4895 14.9062 35.5695 16.1602 34.3742 16.7812L33.6828 15.8789C35.3 15.1055 36.3898 13.0898 36.3898 11.168V9.375H37.5031V11.168ZM42.0383 8.49609V12.6797H43.7258V13.6289H42.0383V18.9961H40.925V8.49609H42.0383ZM48.7203 10.6875C48.7203 12.0469 49.7281 13.3242 51.3453 13.8398L50.7711 14.707C49.5641 14.3086 48.65 13.4824 48.1813 12.4336C47.7066 13.5762 46.775 14.4785 45.5211 14.918L44.9469 14.0391C46.5758 13.4883 47.5836 12.1289 47.5953 10.6875V10.2305H45.2398V9.32812H51.0289V10.2305H48.7203V10.6875ZM53.5367 8.50781V16.1719H52.4234V8.50781H53.5367ZM53.8531 17.8711V18.7734H46.6695V15.4453H47.7945V17.8711H53.8531Z" fill="#FFEEEA"/></svg>`
+
   const updateCoverBadge = (editor: HTMLDivElement) => {
-    editor.querySelectorAll('.cover-badge, .set-cover-badge').forEach(b => b.remove())
     const blocks = Array.from(editor.querySelectorAll('.img-block')) as HTMLElement[]
     if (blocks.length === 0) { coverBlockRef.current = null; return }
 
-    // 현재 대표 사진이 에디터 안에 없으면 첫 번째로 초기화
     if (!coverBlockRef.current || !editor.contains(coverBlockRef.current)) {
       coverBlockRef.current = blocks[0]
     }
 
     blocks.forEach(block => {
+      // 이 블록의 기존 배지만 제거 (전역 제거 대신 블록별 정리)
+      block.querySelectorAll('.cover-badge, .set-cover-badge').forEach(b => b.remove())
+
+      const badge = document.createElement('div')
       if (block === coverBlockRef.current) {
-        const badge = document.createElement('div')
         badge.className = 'cover-badge'
         badge.style.cssText = 'position:absolute;top:8px;left:8px;pointer-events:none;z-index:2;line-height:0;'
-        badge.innerHTML = `<svg width="63" height="28" viewBox="0 0 63 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="63" height="28" rx="10" fill="#F72E00"/><path d="M17.3984 8.49609V18.9961H16.332V13.5703H14.9727V18.457H13.9531V8.70703H14.9727V12.6562H16.332V8.49609H17.3984ZM12.6758 9.76172V10.6641H9.85156V15.5273C11.1406 15.5156 12.1133 15.457 13.2383 15.2461L13.3203 16.1602C12.0547 16.418 10.9766 16.4648 9.44141 16.4766H8.73828V9.76172H12.6758ZM28.9672 16.8398V17.7539H19.3578V16.8398H21.9359V14.5078H20.2016V13.6055H21.7719V10.3359H20.1781V9.42188H28.0883V10.3359H26.4828V13.6055H28.0531V14.5078H26.3305V16.8398H28.9672ZM22.8734 13.6055H25.393V10.3359H22.8734V13.6055ZM23.0492 16.8398H25.2172V14.5078H23.0492V16.8398ZM37.5031 11.168C37.4914 13.0312 38.5695 14.9297 40.1398 15.6914L39.4484 16.582C38.3059 15.9902 37.4211 14.8125 36.9641 13.4062C36.4895 14.9062 35.5695 16.1602 34.3742 16.7812L33.6828 15.8789C35.3 15.1055 36.3898 13.0898 36.3898 11.168V9.375H37.5031V11.168ZM42.0383 8.49609V12.6797H43.7258V13.6289H42.0383V18.9961H40.925V8.49609H42.0383ZM48.7203 10.6875C48.7203 12.0469 49.7281 13.3242 51.3453 13.8398L50.7711 14.707C49.5641 14.3086 48.65 13.4824 48.1813 12.4336C47.7066 13.5762 46.775 14.4785 45.5211 14.918L44.9469 14.0391C46.5758 13.4883 47.5836 12.1289 47.5953 10.6875V10.2305H45.2398V9.32812H51.0289V10.2305H48.7203V10.6875ZM53.5367 8.50781V16.1719H52.4234V8.50781H53.5367ZM53.8531 17.8711V18.7734H46.6695V15.4453H47.7945V17.8711H53.8531Z" fill="#FFEEEA"/></svg>`
-        block.insertBefore(badge, block.firstChild)
+        badge.innerHTML = COVER_SVG
       } else {
-        const badge = document.createElement('div')
         badge.className = 'set-cover-badge'
         badge.dataset.action = 'set-cover'
         badge.textContent = '대표 사진 설정'
@@ -316,8 +317,9 @@ export default function NewProjectPage() {
           'position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.52);color:#FFFFFF;' +
           'font-size:12px;font-weight:500;padding:6px 8px;border-radius:10px;' +
           'cursor:pointer;z-index:2;letter-spacing:0.6px;white-space:nowrap;'
-        block.insertBefore(badge, block.firstChild)
       }
+      // firstChild는 정리 후 항상 img 요소 — 그 앞에 배지 삽입
+      block.insertBefore(badge, block.firstChild)
     })
   }
   const statusBtnRef = useRef<HTMLDivElement>(null)
@@ -520,15 +522,16 @@ export default function NewProjectPage() {
 
     const onDragEnd = () => { draggedImgRef.current = null; hideIndicator() }
 
-    editor.addEventListener('dragstart', onDragStart)
-    editor.addEventListener('dragover',  onDragOver)
-    editor.addEventListener('drop',      onDrop)
-    editor.addEventListener('dragend',   onDragEnd)
+    // capture:true — contenteditable 기본 드롭 처리보다 먼저 실행되어 배지 중복 차단
+    editor.addEventListener('dragstart', onDragStart, { capture: true })
+    editor.addEventListener('dragover',  onDragOver,  { capture: true })
+    editor.addEventListener('drop',      onDrop,      { capture: true })
+    editor.addEventListener('dragend',   onDragEnd,   { capture: true })
     return () => {
-      editor.removeEventListener('dragstart', onDragStart)
-      editor.removeEventListener('dragover',  onDragOver)
-      editor.removeEventListener('drop',      onDrop)
-      editor.removeEventListener('dragend',   onDragEnd)
+      editor.removeEventListener('dragstart', onDragStart, { capture: true })
+      editor.removeEventListener('dragover',  onDragOver,  { capture: true })
+      editor.removeEventListener('drop',      onDrop,      { capture: true })
+      editor.removeEventListener('dragend',   onDragEnd,   { capture: true })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
