@@ -1,5 +1,5 @@
 'use client'
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import { Plus, Search, ChevronDown } from 'lucide-react'
 import { mockPosts, mockNotices } from '@/lib/mockData'
 import Link from 'next/link'
@@ -68,6 +68,13 @@ function CommunityPageInner() {
   const [category, setCategory] = useState('전체')
   const [sortKey, setSortKey] = useState<SortKey>('최신순')
   const [sortOpen, setSortOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const filtered = (() => {
     let list = category === '전체' ? [...mockPosts] : mockPosts.filter(p => (p as any).category === category)
@@ -263,10 +270,19 @@ function CommunityPageInner() {
       {/* FAB */}
       <Link
         href="/community/new"
-        className="fixed bottom-[100px] w-14 h-14 bg-[#f72e00] rounded-2xl shadow-lg shadow-[#f72e00]/30 flex items-center justify-center z-30 active:scale-95 transition-all"
-        style={{ right: 'max(16px, calc(50% - 224px))' }}
+        className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-30"
+        style={{
+          right: 'max(16px, calc(50% - 224px))',
+          borderRadius: scrolled ? '50%' : '16px',
+          width: scrolled ? '52px' : 'auto',
+          height: scrolled ? '52px' : 'auto',
+          padding: scrolled ? '0' : '14px 20px',
+          gap: scrolled ? '0' : '8px',
+          transition: 'border-radius 0.25s, width 0.25s, height 0.25s, padding 0.25s',
+        }}
       >
-        <Plus size={26} className="text-white" strokeWidth={2.5} />
+        <Plus size={18} strokeWidth={2.5} />
+        {!scrolled && '글쓰기'}
       </Link>
     </div>
   )
