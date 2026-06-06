@@ -39,11 +39,11 @@ function formatDateRange(start: string, end: string, status: string) {
   return `${start} ~ ${end}`
 }
 
-function SearchIcon() {
+function SearchIcon({ color = '#FFAF9D' }: { color?: string }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10.5" cy="10.5" r="5.5" stroke="#FFAF9D" strokeWidth="2"/>
-      <path d="M15 15L19 19" stroke="#FFAF9D" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="10.5" cy="10.5" r="5.5" stroke={color} strokeWidth="2"/>
+      <path d="M15 15L19 19" stroke={color} strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -94,7 +94,7 @@ export default function ProjectsPage() {
         {searchOpen ? (
           <div className="flex items-center gap-2">
             <div className="flex-1 flex items-center gap-2 bg-[#ededed] rounded-[10px] px-3 h-10">
-              <SearchIcon />
+              <SearchIcon color="#A2A2A2" />
               <input
                 autoFocus
                 value={query}
