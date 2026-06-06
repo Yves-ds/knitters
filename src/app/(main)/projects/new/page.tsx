@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
@@ -70,6 +70,14 @@ export default function NewProjectPage() {
   const [timerSecs, setTimerSecs] = useState(0)
   const [inputFocused, setInputFocused] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const titleInputRef = useRef<HTMLInputElement>(null)
+  const titleSizerRef = useRef<HTMLSpanElement>(null)
+
+  useLayoutEffect(() => {
+    if (titleSizerRef.current && titleInputRef.current) {
+      titleInputRef.current.style.width = titleSizerRef.current.offsetWidth + 'px'
+    }
+  }, [title])
 
   const addProject = useProjectStore(s => s.addProject)
   const canSubmit = title.trim().length > 0
@@ -112,12 +120,29 @@ export default function NewProjectPage() {
         <button onClick={() => router.back()} className="w-8 shrink-0 flex items-center">
           <ChevronLeft size={22} className="text-[#646464]" />
         </button>
-        <div className="flex-1 flex items-center justify-center" style={{ gap: '2px' }}>
+        <div className="flex-1 flex items-center justify-center gap-[2px]">
+          {/* 텍스트 너비 측정용 숨김 span */}
+          <span
+            ref={titleSizerRef}
+            aria-hidden
+            className="text-[18px] font-semibold"
+            style={{
+              position: 'absolute',
+              visibility: 'hidden',
+              whiteSpace: 'pre',
+              pointerEvents: 'none',
+              fontFamily: 'inherit',
+            }}
+          >
+            {title || '프로젝트 제목'}
+          </span>
           <input
+            ref={titleInputRef}
             value={title}
             onChange={e => setTitle(e.target.value)}
             placeholder="프로젝트 제목"
-            className="text-[18px] font-semibold text-[#212121] text-center bg-transparent outline-none placeholder:text-[#c8c8c8] min-w-0 max-w-[200px] p-0"
+            className="text-[18px] font-semibold text-[#212121] text-center bg-transparent outline-none placeholder:text-[#c8c8c8] p-0"
+            style={{ width: 0 }}
           />
           <span className="text-[#F72E00] text-[18px] font-semibold leading-none shrink-0">*</span>
         </div>
