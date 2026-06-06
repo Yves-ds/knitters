@@ -3,7 +3,49 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, Camera, Video, FileText } from 'lucide-react'
 
-const STATUS_OPTIONS = ['뜨는 중', '쉬는 중', '완성', '시작 안 함']
+const STATUS_OPTIONS = ['준비 중', '뜨는 중', '쉬는 중', '완성']
+
+// 상태별 배지 컴포넌트
+function StatusBadge({ status }: { status: string }) {
+  if (status === '뜨는 중') return (
+    <div className="flex items-center gap-1.5 h-8 px-3 rounded-[10px]" style={{ background: '#DDEDFF' }}>
+      <div className="flex items-end gap-[3px]" style={{ height: 14 }}>
+        <span className="w-[7px] h-[7px] rounded-full inline-block" style={{ background: '#209BFF', marginBottom: 0 }} />
+        <span className="w-[7px] h-[7px] rounded-full inline-block" style={{ background: '#209BFF', opacity: 0.5, marginBottom: 3 }} />
+        <span className="w-[7px] h-[7px] rounded-full inline-block" style={{ background: '#209BFF', marginBottom: 6 }} />
+      </div>
+      <span className="text-[13px] font-semibold" style={{ color: '#209BFF' }}>뜨는 중</span>
+    </div>
+  )
+  if (status === '쉬는 중') return (
+    <div className="flex items-center gap-1.5 h-8 px-3 rounded-[10px]" style={{ background: '#FFEEEA' }}>
+      <div className="flex items-center gap-[5px]">
+        <span className="w-[8px] h-[8px] rounded-full inline-block" style={{ background: '#F72E00' }} />
+        <span className="w-[8px] h-[8px] rounded-full inline-block" style={{ background: '#F72E00' }} />
+      </div>
+      <span className="text-[13px] font-semibold" style={{ color: '#F72E00' }}>쉬는 중</span>
+    </div>
+  )
+  if (status === '완성') return (
+    <div className="flex items-center gap-1.5 h-8 px-3 rounded-[10px]" style={{ background: '#E9FFE6' }}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12l5 5L19 7" stroke="#13C100" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <span className="text-[13px] font-semibold" style={{ color: '#13C100' }}>완성</span>
+    </div>
+  )
+  // 준비 중 (기본)
+  return (
+    <div className="flex items-center gap-1.5 h-8 px-3 rounded-[10px]" style={{ background: '#EDEDED' }}>
+      <div className="flex items-center gap-[3px]">
+        <span className="w-[7px] h-[7px] rounded-full inline-block" style={{ background: '#3B3B3B' }} />
+        <span className="w-[7px] h-[7px] rounded-full inline-block" style={{ background: '#3B3B3B', opacity: 0.5 }} />
+        <span className="w-[7px] h-[7px] rounded-full inline-block" style={{ background: '#3B3B3B' }} />
+      </div>
+      <span className="text-[13px] font-semibold" style={{ color: '#3B3B3B' }}>준비 중</span>
+    </div>
+  )
+}
 
 function CalendarIcon() {
   return (
@@ -18,7 +60,7 @@ function CalendarIcon() {
 export default function NewProjectPage() {
   const router = useRouter()
   const [title, setTitle] = useState('')
-  const [status, setStatus] = useState('뜨는 중')
+  const [status, setStatus] = useState('준비 중')
   const [startDate, setStartDate] = useState('')
   const [content, setContent] = useState('')
   const [statusSheetOpen, setStatusSheetOpen] = useState(false)
@@ -76,31 +118,20 @@ export default function NewProjectPage() {
       {/* 상태·날짜 배지 */}
       <div className="flex items-center gap-2 px-4 pb-4">
         {/* 상태 배지 */}
-        <button
-          onClick={() => setStatusSheetOpen(true)}
-          className="flex items-center gap-1.5 h-8 px-3 rounded-full text-[13px] font-semibold"
-          style={{ background: '#feeae5', color: '#F72E00' }}
-        >
-          <span className="flex items-center gap-[3px]">
-            {[0, 150, 300].map(delay => (
-              <span
-                key={delay}
-                className="w-[5px] h-[5px] rounded-full bg-[#F72E00] inline-block animate-bounce"
-                style={{ animationDelay: `${delay}ms`, animationDuration: '0.9s' }}
-              />
-            ))}
-          </span>
-          {status}
+        <button onClick={() => setStatusSheetOpen(true)}>
+          <StatusBadge status={status} />
         </button>
 
-        {/* 시작일 배지 */}
-        <button
-          onClick={() => setDateSheetOpen(true)}
-          className="flex items-center gap-1.5 h-8 px-3 rounded-full text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464]"
-        >
-          <CalendarIcon />
-          {startDate || '시작일'}
-        </button>
+        {/* 시작일 배지 — 준비 중일 때 숨김 */}
+        {status !== '준비 중' && (
+          <button
+            onClick={() => setDateSheetOpen(true)}
+            className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464]"
+          >
+            <CalendarIcon />
+            {startDate || '시작일'}
+          </button>
+        )}
       </div>
 
       {/* 자유 입력 영역 — 툴바 높이만큼 하단 패딩 확보 */}
@@ -156,24 +187,30 @@ export default function NewProjectPage() {
       {statusSheetOpen && (
         <>
           <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setStatusSheetOpen(false)} />
-          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 pb-10 px-6 pt-3">
+          <div
+            className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 px-6 pt-3"
+            style={{ paddingBottom: 'max(40px, env(safe-area-inset-bottom, 40px))' }}
+          >
             <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-5" />
-            <p className="text-[17px] font-bold text-[#212121] mb-3">상태 선택</p>
-            {STATUS_OPTIONS.map(opt => (
-              <button
-                key={opt}
-                onClick={() => { setStatus(opt); setStatusSheetOpen(false) }}
-                className="w-full text-left py-3.5 text-[16px] font-medium border-b border-[#f5f5f5] last:border-0 flex items-center justify-between"
-                style={{ color: status === opt ? '#F72E00' : '#212121' }}
-              >
-                {opt}
-                {status === opt && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 12l5 5L19 7" stroke="#F72E00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-              </button>
-            ))}
+            <p className="text-[17px] font-bold text-[#212121] mb-4">상태 선택</p>
+            <div className="flex flex-wrap gap-3">
+              {STATUS_OPTIONS.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => { setStatus(opt); setStatusSheetOpen(false) }}
+                  className="relative"
+                >
+                  <StatusBadge status={opt} />
+                  {status === opt && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#212121] rounded-full flex items-center justify-center">
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12l5 5L19 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </>
       )}
@@ -182,7 +219,7 @@ export default function NewProjectPage() {
       {dateSheetOpen && (
         <>
           <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setDateSheetOpen(false)} />
-          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 pb-10 px-6 pt-3">
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 px-6 pt-3" style={{ paddingBottom: 'max(40px, env(safe-area-inset-bottom, 40px))' }}>
             <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-5" />
             <p className="text-[17px] font-bold text-[#212121] mb-4">시작일</p>
             <input
