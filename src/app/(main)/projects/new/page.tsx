@@ -72,6 +72,64 @@ export default function NewProjectPage() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
   const titleSizerRef = useRef<HTMLSpanElement>(null)
+  const editorRef = useRef<HTMLDivElement>(null)
+  const savedRangeRef = useRef<Range | null>(null)
+  const [isEditorEmpty, setIsEditorEmpty] = useState(true)
+
+  const saveRange = () => {
+    const sel = window.getSelection()
+    if (sel && sel.rangeCount > 0 && editorRef.current?.contains(sel.anchorNode)) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange()
+    }
+  }
+
+  const insertImageAtCursor = (src: string) => {
+    const editor = editorRef.current
+    if (!editor) return
+    const sel = window.getSelection()
+    let range: Range
+
+    if (savedRangeRef.current) {
+      range = savedRangeRef.current.cloneRange()
+      sel?.removeAllRanges()
+      sel?.addRange(range)
+    } else {
+      range = document.createRange()
+      range.selectNodeContents(editor)
+      range.collapse(false)
+      sel?.removeAllRanges()
+      sel?.addRange(range)
+    }
+
+    const img = document.createElement('img')
+    img.src = src
+    img.style.cssText = 'max-width:100%;border-radius:10px;display:block;margin:6px 0;'
+
+    range.deleteContents()
+    range.insertNode(img)
+    range.setStartAfter(img)
+    range.collapse(true)
+    sel?.removeAllRanges()
+    sel?.addRange(range)
+    editor.focus()
+
+    savedRangeRef.current = null
+    setContent(editor.innerHTML)
+    setIsEditorEmpty(false)
+  }
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+    Array.from(files).forEach(file => {
+      const reader = new FileReader()
+      reader.onload = ev => {
+        if (ev.target?.result) insertImageAtCursor(ev.target.result as string)
+      }
+      reader.readAsDataURL(file)
+    })
+    e.target.value = ''
+  }
 
   useLayoutEffect(() => {
     if (titleSizerRef.current && titleInputRef.current) {
@@ -89,7 +147,7 @@ export default function NewProjectPage() {
       status: status === '뜨는 중' ? '진행 중' : status === '준비 중' ? '시작 안 함' : status,
       startDate,
       endDate: '',
-      content,
+      content: editorRef.current?.innerHTML || content,
       emoji: '🧶',
       timerSecs,
     })
@@ -175,28 +233,45 @@ export default function NewProjectPage() {
         )}
       </div>
 
-      {/* 자유 입력 영역 — 네비게이션 바 높이만큼 하단 패딩 확보 */}
-      <div className="flex-1 px-4 pb-[72px]">
-        <textarea
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          onFocus={() => setInputFocused(true)}
-          onBlur={() => setInputFocused(false)}
-          placeholder="기록하고 싶은 내용을 자유롭게 입력해주세요"
-          className="w-full h-full min-h-[400px] text-[15px] text-[#212121] placeholder:text-[#c8c8c8] outline-none resize-none leading-relaxed"
+      {/* 자유 입력 영역 */}
+      <div className="relative flex-1 px-4 pb-[72px]">
+        {isEditorEmpty && (
+          <p className="absolute top-0 left-4 text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
+            기록하고 싶은 내용을 자유롭게 입력해주세요
+          </p>
+        )}
+        <div
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={() => {
+            const el = editorRef.current
+            if (!el) return
+            setContent(el.innerHTML)
+            setIsEditorEmpty(!el.textContent?.trim() && !el.querySelector('img'))
+          }}
+          onMouseUp={saveRange}
+          onKeyUp={saveRange}
+          onTouchEnd={saveRange}
+          className="w-full min-h-[400px] text-[15px] text-[#212121] outline-none leading-relaxed"
+          style={{ wordBreak: 'break-word' }}
         />
       </div>
 
       {/* 하단 네비게이션 바 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#F0F0F0] z-20 flex items-center px-5" style={{ height: 72, gap: 12 }}>
-        <label className="flex items-center gap-[6px] cursor-pointer active:opacity-50">
+        <label
+          className="flex items-center gap-[6px] cursor-pointer active:opacity-50"
+          onMouseDown={saveRange}
+          onTouchStart={saveRange}
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9.778 21H14.222C17.343 21 18.904 21 20.025 20.265C20.5088 19.9482 20.9254 19.5391 21.251 19.061C22 17.961 22 16.428 22 13.364C22 10.3 22 8.76705 21.251 7.66705C20.9254 7.18904 20.5088 6.77991 20.025 6.46305C19.305 5.99005 18.403 5.82105 17.022 5.76105C16.363 5.76105 15.796 5.27105 15.667 4.63605C15.5684 4.17092 15.3123 3.75408 14.9418 3.456C14.5714 3.15791 14.1095 2.99686 13.634 3.00005H10.366C9.378 3.00005 8.527 3.68505 8.333 4.63605C8.204 5.27105 7.637 5.76105 6.978 5.76105C5.598 5.82105 4.696 5.99105 3.975 6.46305C3.49154 6.78001 3.07527 7.18914 2.75 7.66705C2 8.76705 2 10.299 2 13.364C2 16.429 2 17.96 2.749 19.061C3.073 19.537 3.489 19.946 3.975 20.265C5.096 21 6.657 21 9.778 21Z" fill="#838383"/>
             <path d="M17.5561 9.27201C17.4477 9.27109 17.3401 9.29154 17.2395 9.3322C17.1389 9.37286 17.0474 9.43293 16.97 9.50898C16.8927 9.58503 16.831 9.67558 16.7887 9.77544C16.7463 9.87531 16.7241 9.98254 16.7231 10.091C16.7231 10.543 17.0961 10.909 17.5561 10.909H18.6671C19.1271 10.909 19.5011 10.542 19.5011 10.091C19.5002 9.98245 19.4779 9.87514 19.4355 9.77521C19.3931 9.67528 19.3314 9.58469 19.2539 9.50863C19.1765 9.43256 19.0848 9.37251 18.9841 9.33191C18.8834 9.29131 18.7757 9.27096 18.6671 9.27201H17.5561Z" fill="#D2D2D2"/>
             <path fillRule="evenodd" clipRule="evenodd" d="M12 9.27197C9.69998 9.27197 7.83398 11.104 7.83398 13.363C7.83398 15.622 9.69898 17.454 12.001 17.454C14.301 17.454 16.167 15.623 16.167 13.364C16.167 11.105 14.302 9.27197 12.001 9.27197M12.001 10.909C10.621 10.909 9.50098 12.008 9.50098 13.363C9.50098 14.718 10.621 15.818 12.001 15.818C13.382 15.818 14.501 14.719 14.501 13.363C14.501 12.008 13.382 10.909 12.001 10.909Z" fill="#D2D2D2"/>
           </svg>
           <span className="text-[12px] font-normal text-[#646464]">사진</span>
-          <input type="file" accept="image/*" multiple className="hidden" />
+          <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoChange} />
         </label>
         <button className="flex items-center gap-[6px] active:opacity-50">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
