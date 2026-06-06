@@ -12,6 +12,7 @@ export interface Project {
   emoji: string
   timerSecs: number
   createdAt: number    // Date.now()
+  coverPhoto?: string  // 대표 사진 data URL
 }
 
 // mockProjects를 스토어 초기값으로 변환

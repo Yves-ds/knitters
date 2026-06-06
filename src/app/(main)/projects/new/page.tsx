@@ -272,6 +272,23 @@ export default function NewProjectPage() {
   const editorRef = useRef<HTMLDivElement>(null)
   const savedRangeRef = useRef<Range | null>(null)
   const draggedImgRef = useRef<HTMLElement | null>(null)
+  const dropIndicatorRef = useRef<HTMLDivElement>(null)
+
+  /* 에디터 내 첫 번째 이미지에 대표 사진 배지 부여 */
+  const updateCoverBadge = (editor: HTMLDivElement) => {
+    editor.querySelectorAll('.cover-badge').forEach(b => b.remove())
+    const first = editor.querySelector('.img-block') as HTMLElement | null
+    if (first) {
+      const badge = document.createElement('div')
+      badge.className = 'cover-badge'
+      badge.textContent = '대표 사진'
+      badge.style.cssText =
+        'position:absolute;top:8px;left:8px;background:#F72E00;color:#FFFFFF;' +
+        'font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;' +
+        'pointer-events:none;z-index:2;letter-spacing:0.3px;'
+      first.insertBefore(badge, first.firstChild)
+    }
+  }
   const statusBtnRef = useRef<HTMLDivElement>(null)
 
   /* 상태 드롭다운 외부 클릭 닫기 */
@@ -359,6 +376,7 @@ export default function NewProjectPage() {
     sel?.addRange(range)
     editor.focus()
     savedRangeRef.current = null
+    updateCoverBadge(editor)
     setContent(editor.innerHTML)
     setIsEditorEmpty(false)
   }
@@ -373,6 +391,7 @@ export default function NewProjectPage() {
       if (block && editorRef.current?.contains(block)) {
         block.remove()
         const el = editorRef.current
+        updateCoverBadge(el!)
         setContent(el?.innerHTML || '')
         setIsEditorEmpty(!el?.textContent?.trim() && !el?.querySelector('img'))
       }
@@ -395,24 +414,52 @@ export default function NewProjectPage() {
       e.dataTransfer!.setData('text/plain', 'img-block')
     }
 
+    const showIndicator = (x: number, y: number) => {
+      const ind = dropIndicatorRef.current
+      if (!ind) return
+      const range = document.caretRangeFromPoint(x, y)
+      if (range && editor.contains(range.startContainer)) {
+        const rects = range.getClientRects()
+        const editorRect = editor.getBoundingClientRect()
+        const r = rects.length > 0 ? rects[0] : null
+        if (r) {
+          ind.style.display = 'block'
+          ind.style.left    = `${r.left - editorRect.left}px`
+          ind.style.top     = `${r.top  - editorRect.top}px`
+          ind.style.height  = `${r.height || 18}px`
+          return
+        }
+      }
+      // 에디터 끝(하단 빈 공간) 드래그 → 마지막 위치에 표시
+      const editorRect = editor.getBoundingClientRect()
+      ind.style.display = 'block'
+      ind.style.left    = `${x - editorRect.left}px`
+      ind.style.top     = `${y - editorRect.top}px`
+      ind.style.height  = '18px'
+    }
+
+    const hideIndicator = () => {
+      if (dropIndicatorRef.current) dropIndicatorRef.current.style.display = 'none'
+    }
+
     const onDragOver = (e: DragEvent) => {
       if (!draggedImgRef.current) return
       e.preventDefault()
       e.stopPropagation()
       e.dataTransfer!.dropEffect = 'move'
+      showIndicator(e.clientX, e.clientY)
     }
 
     const onDrop = (e: DragEvent) => {
       if (!draggedImgRef.current) return
       e.preventDefault()
-      e.stopPropagation()   // contenteditable 기본 복사 완전 차단
+      e.stopPropagation()
+      hideIndicator()
 
       const dragged = draggedImgRef.current
-      // 원본 위치 백업 (드롭 실패 시 복원용)
       const parent = dragged.parentNode
       const next   = dragged.nextSibling
-
-      dragged.remove()  // 원본 제거
+      dragged.remove()
 
       const range = document.caretRangeFromPoint(e.clientX, e.clientY)
       if (range && editor.contains(range.startContainer)) {
@@ -423,16 +470,16 @@ export default function NewProjectPage() {
         sel?.removeAllRanges()
         sel?.addRange(range)
       } else {
-        // 에디터 밖 드롭 → 원위치 복원
         parent ? parent.insertBefore(dragged, next) : editor.appendChild(dragged)
       }
 
       draggedImgRef.current = null
+      updateCoverBadge(editor)
       setContent(editor.innerHTML)
       setIsEditorEmpty(!editor.textContent?.trim() && !editor.querySelector('img'))
     }
 
-    const onDragEnd = () => { draggedImgRef.current = null }
+    const onDragEnd = () => { draggedImgRef.current = null; hideIndicator() }
 
     editor.addEventListener('dragstart', onDragStart)
     editor.addEventListener('dragover',  onDragOver)
@@ -465,6 +512,7 @@ export default function NewProjectPage() {
 
   const handleRegister = () => {
     if (!canSubmit) return
+    const firstImg = editorRef.current?.querySelector('.img-block img') as HTMLImageElement | null
     addProject({
       title: title.trim(),
       status: status === '뜨는 중' ? '진행 중' : status === '준비 중' ? '시작 안 함' : status,
@@ -473,6 +521,7 @@ export default function NewProjectPage() {
       content: editorRef.current?.innerHTML || content,
       emoji: '🧶',
       timerSecs,
+      coverPhoto: firstImg?.src || undefined,
     })
     router.push('/projects')
   }
@@ -576,7 +625,7 @@ export default function NewProjectPage() {
 
         {/* 자유 입력 영역: 상태 배지 하단 ~ 하단 바 상단 전체 커버 */}
         <div
-          className="flex-1 px-4 pb-[72px] flex flex-col cursor-text"
+          className="relative flex-1 px-4 pb-[72px] flex flex-col cursor-text"
           onClick={(e) => {
             const target = e.target as HTMLElement
             if (target.closest('[data-action="delete-img"]')) return
@@ -628,6 +677,19 @@ export default function NewProjectPage() {
             onTouchEnd={saveRange}
             className="flex-1 w-full text-[15px] text-[#212121] outline-none leading-relaxed"
             style={{ wordBreak: 'break-word', minHeight: 200 }}
+          />
+          {/* 드래그 드롭 위치 커서 표시 */}
+          <div
+            ref={dropIndicatorRef}
+            style={{
+              display: 'none',
+              position: 'absolute',
+              width: 2,
+              background: '#F72E00',
+              borderRadius: 1,
+              pointerEvents: 'none',
+              zIndex: 10,
+            }}
           />
         </div>
 

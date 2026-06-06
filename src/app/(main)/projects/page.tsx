@@ -229,9 +229,13 @@ export default function ProjectsPage() {
                 <Link key={project.id} href={`/projects/${project.id}`}>
                   <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] active:scale-[0.98] transition-all">
                     {/* 이미지 */}
-                    <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
-                      {project.emoji ?? '🧶'}
-                    </div>
+                    {project.coverPhoto ? (
+                      <img src={project.coverPhoto} alt={project.title} className="aspect-square w-full object-cover" />
+                    ) : (
+                      <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
+                        {project.emoji ?? '🧶'}
+                      </div>
+                    )}
                     {/* 정보 */}
                     <div className="px-3 pt-3 pb-3">
                       <p className="text-[15px] font-bold text-[#212121] mb-2 leading-snug line-clamp-1">
