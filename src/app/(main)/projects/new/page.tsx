@@ -25,7 +25,10 @@ export default function NewProjectPage() {
   const [dateSheetOpen, setDateSheetOpen] = useState(false)
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
+  const [inputFocused, setInputFocused] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const canSubmit = title.trim().length > 0 && content.trim().length > 0
 
   useEffect(() => {
     if (timerRunning) {
@@ -51,7 +54,7 @@ export default function NewProjectPage() {
         <button onClick={() => router.back()} className="w-8 shrink-0 flex items-center">
           <ChevronLeft size={22} className="text-[#646464]" />
         </button>
-        <div className="flex-1 flex items-center justify-center gap-0.5">
+        <div className="flex-1 flex items-center justify-center" style={{ gap: '2px' }}>
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -61,8 +64,10 @@ export default function NewProjectPage() {
           <span className="text-[#F72E00] text-[18px] font-bold leading-none">*</span>
         </div>
         <button
-          onClick={() => router.push('/projects')}
-          className="text-[15px] font-semibold text-[#646464] shrink-0"
+          onClick={() => canSubmit && router.push('/projects')}
+          disabled={!canSubmit}
+          className="text-[15px] font-semibold shrink-0 transition-colors"
+          style={{ color: canSubmit ? '#F72E00' : '#c8c8c8' }}
         >
           등록
         </button>
@@ -98,18 +103,20 @@ export default function NewProjectPage() {
         </button>
       </div>
 
-      {/* 자유 입력 영역 */}
-      <div className="flex-1 px-4">
+      {/* 자유 입력 영역 — 툴바 높이만큼 하단 패딩 확보 */}
+      <div className="flex-1 px-4 pb-[58px]">
         <textarea
           value={content}
           onChange={e => setContent(e.target.value)}
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => setInputFocused(false)}
           placeholder="기록하고 싶은 내용을 자유롭게 입력해주세요"
           className="w-full h-full min-h-[400px] text-[15px] text-[#212121] placeholder:text-[#c8c8c8] outline-none resize-none leading-relaxed"
         />
       </div>
 
-      {/* 하단 툴바 */}
-      <div className="sticky bottom-0 bg-white border-t border-[#f0f0f0] px-5 py-3 flex items-center gap-5">
+      {/* 하단 툴바 — 웹: 뷰포트 하단 고정 / 모바일: 키보드 바로 위 */}
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#f0f0f0] px-5 py-3 flex items-center gap-5 z-20">
         <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
           <Camera size={20} className="text-[#F72E00]" />
           사진
