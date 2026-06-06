@@ -72,7 +72,7 @@ export default function NewProjectPage() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const addProject = useProjectStore(s => s.addProject)
-  const canSubmit = title.trim().length > 0 && content.trim().length > 0
+  const canSubmit = title.trim().length > 0
 
   const handleRegister = () => {
     if (!canSubmit) return
@@ -150,8 +150,8 @@ export default function NewProjectPage() {
         )}
       </div>
 
-      {/* 자유 입력 영역 — 툴바 높이만큼 하단 패딩 확보 */}
-      <div className="flex-1 px-4 pb-[58px]">
+      {/* 자유 입력 영역 — 네비게이션 바 높이만큼 하단 패딩 확보 */}
+      <div className="flex-1 px-4 pb-[72px]">
         <textarea
           value={content}
           onChange={e => setContent(e.target.value)}
@@ -162,41 +162,29 @@ export default function NewProjectPage() {
         />
       </div>
 
-      {/* 하단 툴바 — 웹: 뷰포트 하단 고정 / 모바일: 키보드 바로 위 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#f0f0f0] px-5 py-3 flex items-center gap-5 z-20">
-        <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
-          <Camera size={20} className="text-[#F72E00]" />
-          사진
+      {/* 하단 네비게이션 바 */}
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#F0F0F0] z-20 flex items-center" style={{ height: 72 }}>
+        <label className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full cursor-pointer active:opacity-50">
+          <Camera size={24} color="#646464" />
+          <span className="text-[12px] font-normal text-[#646464]">사진</span>
+          <input type="file" accept="image/*" multiple className="hidden" />
+        </label>
+        <button className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full active:opacity-50">
+          <Video size={24} color="#646464" />
+          <span className="text-[12px] font-normal text-[#646464]">영상</span>
         </button>
-        <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
-          <Video size={20} className="text-[#F72E00]" />
-          영상
+        <button className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full active:opacity-50">
+          <FileText size={24} color="#646464" />
+          <span className="text-[12px] font-normal text-[#646464]">도안</span>
         </button>
-        <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
-          <FileText size={20} className="text-[#F72E00]" />
-          도안
+        <button className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full active:opacity-50">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2Z" stroke="#646464" strokeWidth="1.8" strokeLinejoin="round"/>
+            <path d="M12 12V21" stroke="#646464" strokeWidth="1.8" strokeLinecap="round"/>
+            <path d="M9 21H15" stroke="#646464" strokeWidth="1.8" strokeLinecap="round"/>
+          </svg>
+          <span className="text-[12px] font-normal text-[#646464]">정보</span>
         </button>
-        {/* 타이머 */}
-        <div className="flex-1 flex items-center justify-end gap-2">
-          <button
-            onClick={() => setTimerRunning(v => !v)}
-            className="w-7 h-7 flex items-center justify-center"
-          >
-            {timerRunning ? (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#F72E00">
-                <rect x="6" y="4" width="4" height="16" rx="1"/>
-                <rect x="14" y="4" width="4" height="16" rx="1"/>
-              </svg>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#F72E00">
-                <path d="M5 3l14 9-14 9V3z"/>
-              </svg>
-            )}
-          </button>
-          <span className="text-[14px] font-semibold tabular-nums" style={{ color: '#F72E00' }}>
-            {formatTimer(timerSecs)}
-          </span>
-        </div>
       </div>
 
       {/* 상태 선택 바텀시트 */}
