@@ -1,6 +1,6 @@
 'use client'
 import { useState, Suspense, useEffect } from 'react'
-import { Plus, Search, ChevronDown } from 'lucide-react'
+import { Plus, ChevronDown } from 'lucide-react'
 import { mockPosts, mockNotices } from '@/lib/mockData'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -9,6 +9,15 @@ const MAIN_TABS = ['커뮤니티', '함뜨해요'] as const
 type MainTab = typeof MAIN_TABS[number]
 
 const CATEGORIES = ['전체', '뜨개 질문', '뜨개 잡담', '실속 장터', '구매 후기', '완성 인증'] as const
+
+function SearchIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="10.5" cy="10.5" r="5.5" stroke="#FFAF9D" strokeWidth="2"/>
+      <path d="M15 15L19 19" stroke="#FFAF9D" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  )
+}
 
 // 알림 벨 아이콘 (기존 feed 페이지와 동일)
 function BellIcon() {
@@ -107,7 +116,7 @@ function CommunityPageInner() {
           {/* 우측 아이콘 */}
           <div className="flex items-center gap-3 pb-3">
             <Link href={`/community/search?tab=${mainTab === '함뜨해요' ? '함뜨해요' : '커뮤니티'}`}>
-              <Search size={22} className="text-[#f72e00]" />
+              <SearchIcon />
             </Link>
             <button onClick={() => router.push('/notifications')}>
               <BellIcon />
