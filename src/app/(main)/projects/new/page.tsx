@@ -1,79 +1,198 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Camera } from 'lucide-react'
+import { ChevronLeft, Camera, Video, FileText } from 'lucide-react'
 
-const CATEGORIES = ['스웨터','카디건','모자','장갑','양말','가방','담요','인형','소품','기타']
-const NEEDLE_TYPES = ['대바늘','코바늘','튜닝바늘']
+const STATUS_OPTIONS = ['뜨는 중', '쉬는 중', '완성', '시작 안 함']
+
+function CalendarIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="16" rx="2" stroke="#646464" strokeWidth="1.5"/>
+      <path d="M3 9h18" stroke="#646464" strokeWidth="1.5"/>
+      <path d="M8 2v2M16 2v2" stroke="#646464" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
 
 export default function NewProjectPage() {
   const router = useRouter()
-  const [form, setForm] = useState({ title:'', yarn:'', needle:'', needleSize:'', status:'시작 전', targetRows:'', memo:'', category:'' })
-  const update = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+  const [title, setTitle] = useState('')
+  const [status, setStatus] = useState('뜨는 중')
+  const [startDate, setStartDate] = useState('')
+  const [content, setContent] = useState('')
+  const [statusSheetOpen, setStatusSheetOpen] = useState(false)
+  const [dateSheetOpen, setDateSheetOpen] = useState(false)
+  const [timerRunning, setTimerRunning] = useState(false)
+  const [timerSecs, setTimerSecs] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (timerRunning) {
+      intervalRef.current = setInterval(() => setTimerSecs(s => s + 1), 1000)
+    } else {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [timerRunning])
+
+  const formatTimer = (s: number) => {
+    const h = String(Math.floor(s / 3600)).padStart(2, '0')
+    const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0')
+    const sec = String(s % 60).padStart(2, '0')
+    return `${h}:${m}:${sec}`
+  }
 
   return (
-    <div className="min-h-screen bg-bg-light pb-8">
-      <header className="bg-white sticky top-0 z-40 border-b border-border">
-        <div className="flex items-center justify-between h-14 px-4">
-          <button onClick={() => router.back()} className="p-2 -ml-2"><ArrowLeft size={22} className="text-dark" /></button>
-          <h1 className="text-base font-bold text-dark">새 프로젝트</h1>
-          <button onClick={() => router.push('/projects')} className="text-primary font-semibold text-sm">저장</button>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
 
-      <div className="px-4 pt-4 space-y-4">
-        <div className="bg-white rounded-2xl border-2 border-dashed border-border aspect-video flex flex-col items-center justify-center gap-3 cursor-pointer active:bg-bg-light">
-          <div className="w-12 h-12 bg-bg-light rounded-xl flex items-center justify-center">
-            <Camera size={22} className="text-sub" />
-          </div>
-          <p className="text-sm text-sub">사진 추가하기</p>
+      {/* 헤더 */}
+      <div className="flex items-center px-4 pt-14 pb-3">
+        <button onClick={() => router.back()} className="w-8 shrink-0 flex items-center">
+          <ChevronLeft size={22} className="text-[#646464]" />
+        </button>
+        <div className="flex-1 flex items-center justify-center gap-0.5">
+          <input
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="프로젝트 제목"
+            className="text-[18px] font-bold text-[#212121] text-center bg-transparent outline-none placeholder:text-[#c8c8c8] min-w-0 max-w-[200px]"
+          />
+          <span className="text-[#F72E00] text-[18px] font-bold leading-none">*</span>
         </div>
+        <button
+          onClick={() => router.push('/projects')}
+          className="text-[15px] font-semibold text-[#646464] shrink-0"
+        >
+          등록
+        </button>
+      </div>
 
-        <div className="bg-white rounded-2xl p-4 space-y-4">
-          <h2 className="text-sm font-bold text-dark">기본 정보</h2>
-          <input className="input-field" placeholder="프로젝트 이름 (예: 아이보리 스웨터)" value={form.title} onChange={e => update('title', e.target.value)} />
-          <div>
-            <label className="text-xs text-sub mb-2 block">진행 상태</label>
-            <div className="flex gap-2">
-              {['시작 전','진행 중','완료'].map(s => (
-                <button key={s} onClick={() => update('status', s)}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${form.status === s ? 'border-primary bg-primary/5 text-primary' : 'border-border text-sub'}`}>
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label className="text-xs text-sub mb-2 block">카테고리</label>
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(c => (
-                <button key={c} onClick={() => update('category', c)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${form.category === c ? 'border-primary bg-primary/5 text-primary' : 'border-border text-sub'}`}>
-                  {c}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* 상태·날짜 배지 */}
+      <div className="flex items-center gap-2 px-4 pb-4">
+        {/* 상태 배지 */}
+        <button
+          onClick={() => setStatusSheetOpen(true)}
+          className="flex items-center gap-1.5 h-8 px-3 rounded-full text-[13px] font-semibold"
+          style={{ background: '#feeae5', color: '#F72E00' }}
+        >
+          <span className="flex items-center gap-[3px]">
+            {[0, 150, 300].map(delay => (
+              <span
+                key={delay}
+                className="w-[5px] h-[5px] rounded-full bg-[#F72E00] inline-block animate-bounce"
+                style={{ animationDelay: `${delay}ms`, animationDuration: '0.9s' }}
+              />
+            ))}
+          </span>
+          {status}
+        </button>
 
-        <div className="bg-white rounded-2xl p-4 space-y-4">
-          <h2 className="text-sm font-bold text-dark">재료 정보</h2>
-          <input className="input-field" placeholder="사용 실 (예: Drops Lima / 아이보리)" value={form.yarn} onChange={e => update('yarn', e.target.value)} />
-          <div className="grid grid-cols-2 gap-3">
-            <select className="input-field" value={form.needle} onChange={e => update('needle', e.target.value)}>
-              <option value="">바늘 종류</option>
-              {NEEDLE_TYPES.map(n => <option key={n}>{n}</option>)}
-            </select>
-            <input className="input-field" placeholder="사이즈 (예: 4.5mm)" value={form.needleSize} onChange={e => update('needleSize', e.target.value)} />
-          </div>
-          <input className="input-field" type="number" placeholder="목표 단수 (선택)" value={form.targetRows} onChange={e => update('targetRows', e.target.value)} />
-        </div>
+        {/* 시작일 배지 */}
+        <button
+          onClick={() => setDateSheetOpen(true)}
+          className="flex items-center gap-1.5 h-8 px-3 rounded-full text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464]"
+        >
+          <CalendarIcon />
+          {startDate || '시작일'}
+        </button>
+      </div>
 
-        <div className="bg-white rounded-2xl p-4">
-          <h2 className="text-sm font-bold text-dark mb-3">메모</h2>
-          <textarea className="input-field resize-none" rows={4} placeholder="도안 메모, 수정 사항 등을 기록해보세요" value={form.memo} onChange={e => update('memo', e.target.value)} />
+      {/* 자유 입력 영역 */}
+      <div className="flex-1 px-4">
+        <textarea
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder="기록하고 싶은 내용을 자유롭게 입력해주세요"
+          className="w-full h-full min-h-[400px] text-[15px] text-[#212121] placeholder:text-[#c8c8c8] outline-none resize-none leading-relaxed"
+        />
+      </div>
+
+      {/* 하단 툴바 */}
+      <div className="sticky bottom-0 bg-white border-t border-[#f0f0f0] px-5 py-3 flex items-center gap-5">
+        <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
+          <Camera size={20} className="text-[#F72E00]" />
+          사진
+        </button>
+        <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
+          <Video size={20} className="text-[#F72E00]" />
+          영상
+        </button>
+        <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#646464]">
+          <FileText size={20} className="text-[#F72E00]" />
+          도안
+        </button>
+        {/* 타이머 */}
+        <div className="flex-1 flex items-center justify-end gap-2">
+          <button
+            onClick={() => setTimerRunning(v => !v)}
+            className="w-7 h-7 flex items-center justify-center"
+          >
+            {timerRunning ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#F72E00">
+                <rect x="6" y="4" width="4" height="16" rx="1"/>
+                <rect x="14" y="4" width="4" height="16" rx="1"/>
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#F72E00">
+                <path d="M5 3l14 9-14 9V3z"/>
+              </svg>
+            )}
+          </button>
+          <span className="text-[14px] font-semibold tabular-nums" style={{ color: '#F72E00' }}>
+            {formatTimer(timerSecs)}
+          </span>
         </div>
       </div>
+
+      {/* 상태 선택 바텀시트 */}
+      {statusSheetOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setStatusSheetOpen(false)} />
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 pb-10 px-6 pt-3">
+            <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-5" />
+            <p className="text-[17px] font-bold text-[#212121] mb-3">상태 선택</p>
+            {STATUS_OPTIONS.map(opt => (
+              <button
+                key={opt}
+                onClick={() => { setStatus(opt); setStatusSheetOpen(false) }}
+                className="w-full text-left py-3.5 text-[16px] font-medium border-b border-[#f5f5f5] last:border-0 flex items-center justify-between"
+                style={{ color: status === opt ? '#F72E00' : '#212121' }}
+              >
+                {opt}
+                {status === opt && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12l5 5L19 7" stroke="#F72E00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* 시작일 선택 바텀시트 */}
+      {dateSheetOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setDateSheetOpen(false)} />
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 pb-10 px-6 pt-3">
+            <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-5" />
+            <p className="text-[17px] font-bold text-[#212121] mb-4">시작일</p>
+            <input
+              type="date"
+              value={startDate}
+              onChange={e => setStartDate(e.target.value)}
+              className="w-full border border-[#e0e0e0] rounded-[10px] px-4 py-3 text-[15px] text-[#212121] outline-none focus:border-[#F72E00]"
+            />
+            <button
+              onClick={() => setDateSheetOpen(false)}
+              className="mt-4 w-full py-3.5 bg-[#F72E00] text-white text-[15px] font-semibold rounded-[12px] active:opacity-80"
+            >
+              확인
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
