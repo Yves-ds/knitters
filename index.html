@@ -3676,10 +3676,10 @@
     }
     .proj-card-info {
       padding: 10px 12px 12px;
-      display: flex; flex-direction: column; gap: 6px;
+      display: flex; flex-direction: column; gap: 0;
     }
     .proj-card-row { display: flex; align-items: center; gap: 7px; }
-    .proj-card-name { font-size: 14px; font-weight: 700; color: #0a0a0a; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .proj-card-name { font-size: 14px; font-weight: 600; color: #0a0a0a; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .proj-card-timer-val { font-size: 13px; font-weight: 600; color: #9ca3af; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
     .proj-card-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
     .proj-card-status {
@@ -4447,7 +4447,7 @@
     }
     /* 상태 선택 시트 */
     .status-picker-overlay {
-      display: none; position: absolute; inset: 0; z-index: 9100;
+      display: none; position: fixed; inset: 0; z-index: 9100;
       background: rgba(0,0,0,0); transition: background 0.3s;
       align-items: flex-end; justify-content: center;
     }
@@ -8619,7 +8619,7 @@
       <input id="recName" placeholder="프로젝트 이름" oninput="recNameLimit(this)"
         style="width:100%;font-size:18px;font-weight:600;color:#141414;letter-spacing:-0.3px;
                background:none;border:none;outline:none;
-               padding-bottom:4px;font-family:inherit;caret-color:transparent;">
+               padding-bottom:4px;font-family:inherit;">
     </div>
 
     <!-- 메모 + 사진 에디터 -->
@@ -10899,6 +10899,9 @@
       const logTA = document.getElementById('recLogInput');
       if (logTA) { logTA.value = ''; }
       recRemoveLogPhoto();
+      // 프로젝트 이름 초기화
+      const recNameEl = document.getElementById('recName');
+      if (recNameEl) { recNameEl.value = ''; recNameEl.style.border = ''; }
       // 상태 초기화
       _recStatus = 'none';
       _updateStatusBadge('rec');
