@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { X, Plus } from 'lucide-react'
 import { mockProjects } from '@/lib/mockData'
@@ -63,12 +63,19 @@ export default function ProjectsPage() {
   const [statusDisplay, setStatusDisplay] = useState<StatusDisplay>('전체')
   const [sortPanelOpen, setSortPanelOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    if (searchOpen) {
+      setTimeout(() => inputRef.current?.focus(), 50)
+    }
+  }, [searchOpen])
 
   const filtered = useMemo(() => {
     const dataStatus = STATUS_DATA[statusDisplay]
@@ -90,28 +97,17 @@ export default function ProjectsPage() {
     <div className="min-h-screen bg-[#fafafa] pb-28">
 
       {/* 헤더 */}
-      <div className="px-4 pt-14 pb-3">
-        {searchOpen ? (
-          <div className="flex items-center gap-2">
-            <div className="flex-1 flex items-center gap-2 bg-[#ededed] rounded-[10px] px-3 h-10">
-              <SearchIcon color="#A2A2A2" />
-              <input
-                autoFocus
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder="프로젝트 이름 검색"
-                className="flex-1 bg-transparent text-[14px] text-[#212121] placeholder:text-[#b0b0b0] outline-none"
-              />
-              {query && (
-                <button onClick={() => setQuery('')}>
-                  <X size={14} className="text-[#9e9e9e]" />
-                </button>
-              )}
-            </div>
-            <button onClick={closeSearch} className="text-[14px] font-medium text-[#f72e00] shrink-0">취소</button>
-          </div>
-        ) : (
-          <div className="flex items-start justify-between">
+      <div className="px-4 pt-14">
+        {/* 타이틀 영역 — 검색 시 위로 접힘 */}
+        <div
+          style={{
+            maxHeight: searchOpen ? 0 : '130px',
+            opacity: searchOpen ? 0 : 1,
+            overflow: 'hidden',
+            transition: 'max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease',
+          }}
+        >
+          <div className="flex items-start justify-between pb-3">
             <p className="text-[30px] font-bold text-[#212121] tracking-[-0.5px] leading-tight">오늘은 어떤 작품을<br />떠볼까요?</p>
             <div className="flex items-center gap-2 pt-1">
               <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
@@ -127,24 +123,18 @@ export default function ProjectsPage() {
                     <div className="absolute top-10 right-0 bg-white rounded-[14px] shadow-[0_4px_24px_rgba(0,0,0,0.14)] z-50 w-44 overflow-hidden py-2">
                       <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-2 pb-1">날짜 · 제목 정렬</p>
                       {SORT_OPTIONS.map(opt => (
-                        <button
-                          key={opt}
-                          onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
+                        <button key={opt} onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
                           className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
-                          style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}
-                        >
+                          style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}>
                           {opt}
                         </button>
                       ))}
                       <div className="mx-4 h-px bg-[#f0f0f0] my-1" />
                       <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-1 pb-1">진행상황 별 정렬</p>
                       {STATUS_OPTIONS.map(opt => (
-                        <button
-                          key={opt}
-                          onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
+                        <button key={opt} onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
                           className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
-                          style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}
-                        >
+                          style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}>
                           {opt}
                         </button>
                       ))}
@@ -154,14 +144,51 @@ export default function ProjectsPage() {
               </div>
             </div>
           </div>
-        )}
+        </div>
+
+        {/* 검색창 — 검색 시 아래로 펼쳐짐 */}
+        <div
+          style={{
+            maxHeight: searchOpen ? '60px' : 0,
+            opacity: searchOpen ? 1 : 0,
+            overflow: 'hidden',
+            transition: 'max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease 0.08s',
+          }}
+        >
+          <div className="flex items-center gap-2 pb-3">
+            <div className="flex-1 flex items-center gap-2 bg-[#ededed] rounded-[10px] px-3 h-10">
+              <SearchIcon color="#A2A2A2" />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="프로젝트 이름을 입력하세요"
+                className="flex-1 bg-transparent text-[14px] text-[#212121] placeholder:text-[#b0b0b0] outline-none"
+              />
+              {query && (
+                <button onClick={() => setQuery('')}>
+                  <X size={14} className="text-[#9e9e9e]" />
+                </button>
+              )}
+            </div>
+            <button onClick={closeSearch} className="text-[14px] font-medium text-[#f72e00] shrink-0">취소</button>
+          </div>
+        </div>
       </div>
 
-      {/* 총 작품 수 */}
-      <div className="px-4 pb-4 pt-[60px]">
+      {/* 라벨 + 카드 — 검색 시 위로 슬라이드 */}
+      <div
+        style={{
+          paddingTop: searchOpen ? '12px' : '60px',
+          transition: 'padding-top 0.42s cubic-bezier(0.25,0.46,0.45,0.94)',
+        }}
+      >
+      <div className="px-4 pb-4">
         <p className="text-[14px] text-[#565656]">
-          <span className="font-bold text-[#212121]">{mockProjects.length}</span>
-          <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
+          {searchOpen
+            ? <span className="font-bold text-[#212121]">검색 결과</span>
+            : <><span className="font-bold text-[#212121]">{mockProjects.length}</span><span className="font-normal"> 개의 작품을 뜨고 있어요</span></>
+          }
         </p>
       </div>
 
@@ -214,7 +241,7 @@ export default function ProjectsPage() {
           </div>
         )}
       </div>
-
+      </div>
 
       {/* FAB */}
       <Link
