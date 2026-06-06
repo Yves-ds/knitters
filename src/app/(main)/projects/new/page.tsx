@@ -82,6 +82,7 @@ function CalendarPicker({
   const DAYS = ['일', '월', '화', '수', '목', '금', '토']
   const pad = (n: number) => String(n).padStart(2, '0')
   const toISO = (day: number) => `${viewYear}-${pad(viewMonth + 1)}-${pad(day)}`
+  const todayISO = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`
   const firstDay   = new Date(viewYear, viewMonth, 1).getDay()
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
   const cells: (number | null)[] = [
@@ -90,12 +91,15 @@ function CalendarPicker({
   ]
   while (cells.length % 7 !== 0) cells.push(null)
 
-  const isToday   = (day: number) => today.getFullYear() === viewYear && today.getMonth() === viewMonth && today.getDate() === day
-  const isStart   = (day: number) => (rangeMode ? tmpStart : value) === toISO(day)
-  const isEnd     = (day: number) => rangeMode && tmpEnd === toISO(day)
-  const isInRange = (day: number) => rangeMode && tmpStart && tmpEnd && toISO(day) > tmpStart && toISO(day) < tmpEnd
+  const isToday      = (day: number) => today.getFullYear() === viewYear && today.getMonth() === viewMonth && today.getDate() === day
+  const isStart      = (day: number) => (rangeMode ? tmpStart : value) === toISO(day)
+  const isEnd        = (day: number) => rangeMode && tmpEnd === toISO(day)
+  const isInRange    = (day: number) => rangeMode && tmpStart && tmpEnd && toISO(day) > tmpStart && toISO(day) < tmpEnd
+  // 종료일 선택 단계에서 오늘 이후 날짜 비활성화
+  const isDisabled   = (day: number) => rangeMode && step === 'end' && toISO(day) > todayISO
 
   const handleDay = (day: number) => {
+    if (isDisabled(day)) return
     const iso = toISO(day)
     if (!rangeMode) { onChange?.(iso); return }
 
@@ -162,21 +166,31 @@ function CalendarPicker({
         {/* 날짜 그리드 */}
         <div className="grid grid-cols-7 gap-y-1">
           {cells.map((day, idx) => {
-            const col = idx % 7
+            const col      = idx % 7
             const selected = isStart(day ?? -1) || isEnd(day ?? -1)
             const inRange  = day !== null && isInRange(day)
+            const disabled = day !== null && isDisabled(day)
             return (
               <div key={idx} className="flex items-center justify-center"
                 style={{ background: inRange ? '#FFEEEA' : 'transparent' }}>
                 {day !== null ? (
                   <button
                     onClick={() => handleDay(day)}
-                    className="w-9 h-9 flex items-center justify-center rounded-full text-[14px] transition-colors active:opacity-70"
+                    disabled={disabled}
+                    className="w-9 h-9 flex items-center justify-center rounded-full text-[14px] transition-colors"
                     style={{
                       background: selected ? '#F72E00' : 'transparent',
-                      color: selected ? '#fff' : isToday(day) ? '#F72E00' : col === 0 ? '#F72E00' : col === 6 ? '#3B86FB' : '#212121',
-                      border: isToday(day) && !selected ? '1.5px solid #F72E00' : 'none',
+                      color: disabled
+                        ? '#D1D5DB'
+                        : selected ? '#fff'
+                        : isToday(day) ? '#F72E00'
+                        : col === 0 ? '#F72E00'
+                        : col === 6 ? '#3B86FB'
+                        : '#212121',
+                      border: isToday(day) && !selected && !disabled ? '1.5px solid #F72E00' : 'none',
                       fontWeight: selected || isToday(day) ? 700 : 400,
+                      cursor: disabled ? 'default' : 'pointer',
+                      opacity: disabled ? 0.4 : 1,
                     }}
                   >
                     {day}
@@ -273,21 +287,41 @@ export default function NewProjectPage() {
   const savedRangeRef = useRef<Range | null>(null)
   const draggedImgRef = useRef<HTMLElement | null>(null)
   const dropIndicatorRef = useRef<HTMLDivElement>(null)
+  const coverBlockRef    = useRef<HTMLElement | null>(null)
 
-  /* 에디터 내 첫 번째 이미지에 대표 사진 배지 부여 */
+  /* 대표 사진/대표 사진 설정 배지 갱신 */
   const updateCoverBadge = (editor: HTMLDivElement) => {
-    editor.querySelectorAll('.cover-badge').forEach(b => b.remove())
-    const first = editor.querySelector('.img-block') as HTMLElement | null
-    if (first) {
-      const badge = document.createElement('div')
-      badge.className = 'cover-badge'
-      badge.textContent = '대표 사진'
-      badge.style.cssText =
-        'position:absolute;top:8px;left:8px;background:#F72E00;color:#FFFFFF;' +
-        'font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;' +
-        'pointer-events:none;z-index:2;letter-spacing:0.3px;'
-      first.insertBefore(badge, first.firstChild)
+    editor.querySelectorAll('.cover-badge, .set-cover-badge').forEach(b => b.remove())
+    const blocks = Array.from(editor.querySelectorAll('.img-block')) as HTMLElement[]
+    if (blocks.length === 0) { coverBlockRef.current = null; return }
+
+    // 현재 대표 사진이 에디터 안에 없으면 첫 번째로 초기화
+    if (!coverBlockRef.current || !editor.contains(coverBlockRef.current)) {
+      coverBlockRef.current = blocks[0]
     }
+
+    blocks.forEach(block => {
+      if (block === coverBlockRef.current) {
+        const badge = document.createElement('div')
+        badge.className = 'cover-badge'
+        badge.textContent = '대표 사진'
+        badge.style.cssText =
+          'position:absolute;top:8px;left:8px;background:#F72E00;color:#fff;' +
+          'font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;' +
+          'pointer-events:none;z-index:2;letter-spacing:0.3px;'
+        block.insertBefore(badge, block.firstChild)
+      } else {
+        const badge = document.createElement('div')
+        badge.className = 'set-cover-badge'
+        badge.dataset.action = 'set-cover'
+        badge.textContent = '대표 사진 설정'
+        badge.style.cssText =
+          'position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.52);color:#fff;' +
+          'font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;' +
+          'cursor:pointer;z-index:2;letter-spacing:0.3px;'
+        block.insertBefore(badge, block.firstChild)
+      }
+    })
   }
   const statusBtnRef = useRef<HTMLDivElement>(null)
 
@@ -383,6 +417,8 @@ export default function NewProjectPage() {
 
   const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement
+
+    // 삭제 버튼
     const delBtn = target.closest('[data-action="delete-img"]')
     if (delBtn) {
       e.preventDefault()
@@ -397,7 +433,20 @@ export default function NewProjectPage() {
       }
       return
     }
-    // 일반 클릭은 wrapper의 caretRangeFromPoint로 처리
+
+    // 대표 사진 설정 버튼
+    const setCoverBtn = target.closest('[data-action="set-cover"]')
+    if (setCoverBtn) {
+      e.preventDefault()
+      e.stopPropagation()
+      const block = setCoverBtn.closest('.img-block') as HTMLElement | null
+      if (block && editorRef.current?.contains(block)) {
+        coverBlockRef.current = block
+        updateCoverBadge(editorRef.current)
+        setContent(editorRef.current.innerHTML)
+      }
+      return
+    }
   }
 
   /* 드래그 이동: React 합성 이벤트 대신 네이티브 리스너로 처리
@@ -512,7 +561,10 @@ export default function NewProjectPage() {
 
   const handleRegister = () => {
     if (!canSubmit) return
-    const firstImg = editorRef.current?.querySelector('.img-block img') as HTMLImageElement | null
+    const coverImg = (
+      coverBlockRef.current?.querySelector('img') ??
+      editorRef.current?.querySelector('.img-block img')
+    ) as HTMLImageElement | null
     addProject({
       title: title.trim(),
       status: status === '뜨는 중' ? '진행 중' : status === '준비 중' ? '시작 안 함' : status,
@@ -521,7 +573,7 @@ export default function NewProjectPage() {
       content: editorRef.current?.innerHTML || content,
       emoji: '🧶',
       timerSecs,
-      coverPhoto: firstImg?.src || undefined,
+      coverPhoto: coverImg?.src || undefined,
     })
     router.push('/projects')
   }
