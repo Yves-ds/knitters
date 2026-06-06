@@ -4556,7 +4556,7 @@
     .rec-nav-bar {
       position: absolute; bottom: 0; left: 0; right: 0;
       height: 72px; background: #fff;
-      border-top: 1px solid #f0f2f5;
+      border-top: 1px solid #F0F0F0;
       display: flex; align-items: center;
       z-index: 20;
     }
@@ -4565,8 +4565,8 @@
       align-items: center; justify-content: center;
       gap: 5px; height: 100%;
       background: none; border: none; cursor: pointer;
-      font-family: inherit; font-size: 11px; font-weight: 500;
-      color: #374151; padding: 6px 0 10px;
+      font-family: inherit; font-size: 12px; font-weight: 400;
+      color: #646464; padding: 6px 0 10px;
       transition: opacity 0.12s; -webkit-tap-highlight-color: transparent;
     }
     .rec-nav-item:active { opacity: 0.5; }
@@ -8650,32 +8650,32 @@
     <div class="rec-nav-bar">
       <label class="rec-nav-item" onmousedown="recSaveRange()" ontouchstart="recSaveRange()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="#374151" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="12" cy="13" r="4" stroke="#374151" stroke-width="1.8"/>
+          <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="#646464" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="13" r="4" stroke="#646464" stroke-width="1.8"/>
         </svg>
         <span>사진</span>
         <input type="file" accept="image/*" multiple style="display:none" onchange="recAddPhotos(event)">
       </label>
       <button class="rec-nav-item rec-btn-video" onclick="openSheet('video','rec')">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="2" y="6" width="14" height="13" rx="2" stroke="#374151" stroke-width="1.8"/>
-          <path d="M16 10L22 7V17L16 14" stroke="#374151" stroke-width="1.8" stroke-linejoin="round"/>
+          <rect x="2" y="6" width="14" height="13" rx="2" stroke="#646464" stroke-width="1.8"/>
+          <path d="M16 10L22 7V17L16 14" stroke="#646464" stroke-width="1.8" stroke-linejoin="round"/>
         </svg>
         <span>영상</span>
       </button>
       <button class="rec-nav-item rec-btn-pdf" onclick="openSheet('pdf','rec')">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="#374151" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M14 2V8H20" stroke="#374151" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 13H16M8 17H12" stroke="#374151" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="#646464" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 2V8H20" stroke="#646464" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 13H16M8 17H12" stroke="#646464" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
         <span>도안</span>
       </button>
       <button class="rec-nav-item" onclick="openSettings('rec')">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2Z" stroke="#374151" stroke-width="1.8" stroke-linejoin="round"/>
-          <path d="M12 12V21" stroke="#374151" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M9 21H15" stroke="#374151" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2Z" stroke="#646464" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M12 12V21" stroke="#646464" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M9 21H15" stroke="#646464" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
         <span>정보</span>
       </button>
