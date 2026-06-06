@@ -98,15 +98,22 @@ export default function ProjectsPage() {
 
       {/* 헤더 */}
       <div className="px-4 pt-14">
-        {/* 타이틀 영역 — 검색 시 위로 접힘 */}
+        {/* 타이틀 영역 — grid-template-rows 트릭으로 실제 높이에 맞게 부드럽게 접힘 */}
         <div
           style={{
-            maxHeight: searchOpen ? 0 : '130px',
-            opacity: searchOpen ? 0 : 1,
-            overflow: 'hidden',
-            transition: 'max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease',
+            display: 'grid',
+            gridTemplateRows: searchOpen ? '0fr' : '1fr',
+            transition: 'grid-template-rows 0.4s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
+          <div style={{ overflow: 'hidden' }}>
+          <div
+            style={{
+              opacity: searchOpen ? 0 : 1,
+              transform: searchOpen ? 'translateY(-6px)' : 'translateY(0)',
+              transition: 'opacity 0.28s ease, transform 0.28s ease',
+            }}
+          >
           <div className="flex items-start justify-between pb-3">
             <p className="text-[30px] font-bold text-[#212121] tracking-[-0.5px] leading-tight">오늘은 어떤 작품을<br />떠볼까요?</p>
             <div className="flex items-center gap-2 pt-1">
@@ -144,17 +151,26 @@ export default function ProjectsPage() {
               </div>
             </div>
           </div>
+          </div>
+          </div>
         </div>
 
-        {/* 검색창 — 검색 시 아래로 펼쳐짐 */}
+        {/* 검색창 — grid-template-rows 트릭으로 부드럽게 펼쳐짐 */}
         <div
           style={{
-            maxHeight: searchOpen ? '60px' : 0,
-            opacity: searchOpen ? 1 : 0,
-            overflow: 'hidden',
-            transition: 'max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease 0.08s',
+            display: 'grid',
+            gridTemplateRows: searchOpen ? '1fr' : '0fr',
+            transition: 'grid-template-rows 0.4s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
+          <div style={{ overflow: 'hidden' }}>
+          <div
+            style={{
+              opacity: searchOpen ? 1 : 0,
+              transform: searchOpen ? 'translateY(0)' : 'translateY(-4px)',
+              transition: 'opacity 0.3s ease 0.12s, transform 0.3s ease 0.12s',
+            }}
+          >
           <div className="flex items-center gap-2 pb-3">
             <div className="flex-1 flex items-center gap-2 bg-[#ededed] rounded-[10px] px-3 h-10">
               <SearchIcon color="#A2A2A2" />
@@ -172,6 +188,8 @@ export default function ProjectsPage() {
               )}
             </div>
             <button onClick={closeSearch} className="text-[14px] font-medium text-[#f72e00] shrink-0">취소</button>
+          </div>
+          </div>
           </div>
         </div>
       </div>
