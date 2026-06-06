@@ -130,7 +130,7 @@ export default function ProjectsPage() {
                         <button
                           key={opt}
                           onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
-                          className="w-full text-left px-4 py-2.5 text-[15px] font-medium"
+                          className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
                           style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}
                         >
                           {opt}
@@ -142,7 +142,7 @@ export default function ProjectsPage() {
                         <button
                           key={opt}
                           onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
-                          className="w-full text-left px-4 py-2.5 text-[15px] font-medium"
+                          className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
                           style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}
                         >
                           {opt}
