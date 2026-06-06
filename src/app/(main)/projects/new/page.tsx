@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, Camera, Video, FileText } from 'lucide-react'
+import { useProjectStore } from '@/store/projectStore'
 
 const STATUS_OPTIONS = ['준비 중', '뜨는 중', '쉬는 중', '완성']
 
@@ -70,7 +71,22 @@ export default function NewProjectPage() {
   const [inputFocused, setInputFocused] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  const addProject = useProjectStore(s => s.addProject)
   const canSubmit = title.trim().length > 0 && content.trim().length > 0
+
+  const handleRegister = () => {
+    if (!canSubmit) return
+    addProject({
+      title: title.trim(),
+      status: status === '뜨는 중' ? '진행 중' : status === '준비 중' ? '시작 안 함' : status,
+      startDate,
+      endDate: '',
+      content,
+      emoji: '🧶',
+      timerSecs,
+    })
+    router.push('/projects')
+  }
 
   useEffect(() => {
     if (timerRunning) {
@@ -106,7 +122,7 @@ export default function NewProjectPage() {
           <span className="text-[#F72E00] text-[18px] font-bold leading-none">*</span>
         </div>
         <button
-          onClick={() => canSubmit && router.push('/projects')}
+          onClick={handleRegister}
           disabled={!canSubmit}
           className="text-[15px] font-semibold shrink-0 transition-colors"
           style={{ color: canSubmit ? '#F72E00' : '#c8c8c8' }}

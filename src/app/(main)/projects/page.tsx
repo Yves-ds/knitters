@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { X, Plus } from 'lucide-react'
-import { mockProjects } from '@/lib/mockData'
+import { useProjectStore } from '@/store/projectStore'
 
 type SortKey = '생성일' | '제목' | '시작일' | '종료일'
 type StatusDisplay = '전체' | '시작 안 함' | '열뜨 중' | '쉬는 중' | '완성'
@@ -57,6 +57,7 @@ function SortIcon() {
 }
 
 export default function ProjectsPage() {
+  const { projects } = useProjectStore()
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('생성일')
@@ -79,17 +80,17 @@ export default function ProjectsPage() {
 
   const filtered = useMemo(() => {
     const dataStatus = STATUS_DATA[statusDisplay]
-    let list = [...mockProjects]
+    let list = [...projects]
     if (query.trim()) list = list.filter(p => p.title.includes(query.trim()))
     if (dataStatus !== '전체') list = list.filter(p => p.status === dataStatus)
     list.sort((a, b) => {
       if (sortKey === '제목') return a.title.localeCompare(b.title)
       if (sortKey === '시작일') return (a.startDate || '').localeCompare(b.startDate || '')
       if (sortKey === '종료일') return (a.endDate || '').localeCompare(b.endDate || '')
-      return parseInt(a.id) - parseInt(b.id)
+      return (b.createdAt ?? 0) - (a.createdAt ?? 0)
     })
     return list
-  }, [query, statusDisplay, sortKey])
+  }, [projects, query, statusDisplay, sortKey])
 
   const closeSearch = () => { setSearchOpen(false); setQuery('') }
 
@@ -205,7 +206,7 @@ export default function ProjectsPage() {
         <p className="text-[14px] text-[#565656]">
           {searchOpen
             ? <span className="font-bold text-[#212121]">검색 결과</span>
-            : <><span className="font-bold text-[#212121]">{mockProjects.length}</span><span className="font-normal"> 개의 작품을 뜨고 있어요</span></>
+            : <><span className="font-bold text-[#212121]">{projects.length}</span><span className="font-normal"> 개의 작품을 뜨고 있어요</span></>
           }
         </p>
       </div>
@@ -229,7 +230,7 @@ export default function ProjectsPage() {
                   <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] active:scale-[0.98] transition-all">
                     {/* 이미지 */}
                     <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
-                      {(project as any).emoji ?? '🧶'}
+                      {project.emoji ?? '🧶'}
                     </div>
                     {/* 정보 */}
                     <div className="px-3 pt-3 pb-3">
