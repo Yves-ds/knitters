@@ -288,6 +288,7 @@ export default function NewProjectPage() {
   const titleSizerRef = useRef<HTMLSpanElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
   const savedRangeRef = useRef<Range | null>(null)
+  const draggedImgRef = useRef<HTMLElement | null>(null)
   const statusBtnRef = useRef<HTMLDivElement>(null)
 
   /* 상태 드롭다운 외부 클릭 닫기 */
@@ -347,10 +348,12 @@ export default function NewProjectPage() {
     const wrapper = document.createElement('div')
     wrapper.className = 'img-block'
     wrapper.contentEditable = 'false'
+    wrapper.draggable = true
     wrapper.style.cssText = 'position:relative;display:block;margin:8px 0;line-height:0;'
 
     const img = document.createElement('img')
     img.src = src
+    img.draggable = false  // 브라우저 기본 img 드래그 차단
     img.style.cssText = 'max-width:100%;border-radius:10px;display:block;'
 
     const delBtn = document.createElement('span')
@@ -392,7 +395,51 @@ export default function NewProjectPage() {
       }
       return
     }
-    saveRange()
+    // 일반 클릭은 wrapper의 caretRangeFromPoint로 처리
+  }
+
+  const handleEditorDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    const block = (e.target as HTMLElement).closest('.img-block') as HTMLElement | null
+    if (!block) { e.preventDefault(); return }
+    draggedImgRef.current = block
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', '')
+  }
+
+  const handleEditorDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!draggedImgRef.current) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleEditorDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    const dragged = draggedImgRef.current
+    const editor = editorRef.current
+    if (!dragged || !editor) return
+
+    // 원본 제거 후 드롭 위치에 삽입 (복사 방지)
+    dragged.remove()
+
+    const range = document.caretRangeFromPoint(e.clientX, e.clientY)
+    if (range && editor.contains(range.startContainer)) {
+      range.insertNode(dragged)
+      range.setStartAfter(dragged)
+      range.collapse(true)
+      const sel = window.getSelection()
+      sel?.removeAllRanges()
+      sel?.addRange(range)
+    } else {
+      editor.appendChild(dragged)
+    }
+
+    draggedImgRef.current = null
+    setContent(editor.innerHTML)
+    setIsEditorEmpty(!editor.textContent?.trim() && !editor.querySelector('img'))
+  }
+
+  const handleEditorDragEnd = () => {
+    draggedImgRef.current = null
   }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -524,21 +571,34 @@ export default function NewProjectPage() {
           )}
         </div>
 
-        {/* 자유 입력 영역 — 전체 높이 채워 어디서든 커서 배치 가능 */}
+        {/* 자유 입력 영역 — 클릭 위치에 caretRangeFromPoint로 정확한 커서 배치 */}
         <div
           className="flex-1 px-4 pb-[72px] flex flex-col cursor-text"
           onClick={(e) => {
-            // 에디터 외부 빈 공간 클릭 시 에디터 끝으로 포커스
-            if (e.target === e.currentTarget) {
-              const editor = editorRef.current
-              if (!editor) return
-              editor.focus()
-              const sel = window.getSelection()
-              const range = document.createRange()
-              range.selectNodeContents(editor)
-              range.collapse(false)
+            const target = e.target as HTMLElement
+            // 삭제 버튼 클릭은 handleEditorClick에서 처리
+            if (target.closest('[data-action="delete-img"]')) return
+
+            const editor = editorRef.current
+            if (!editor) return
+            editor.focus()
+
+            // 클릭 좌표로 정확한 커서 위치 계산
+            const range = document.caretRangeFromPoint
+              ? document.caretRangeFromPoint(e.clientX, e.clientY)
+              : null
+
+            const sel = window.getSelection()
+            if (range && editor.contains(range.startContainer)) {
               sel?.removeAllRanges()
               sel?.addRange(range)
+            } else {
+              // 에디터 바깥(하단 여백) 클릭 → 맨 끝으로
+              const endRange = document.createRange()
+              endRange.selectNodeContents(editor)
+              endRange.collapse(false)
+              sel?.removeAllRanges()
+              sel?.addRange(endRange)
             }
           }}
         >
@@ -561,6 +621,10 @@ export default function NewProjectPage() {
             onMouseUp={saveRange}
             onKeyUp={saveRange}
             onTouchEnd={saveRange}
+            onDragStart={handleEditorDragStart}
+            onDragOver={handleEditorDragOver}
+            onDrop={handleEditorDrop}
+            onDragEnd={handleEditorDragEnd}
             className="flex-1 w-full text-[15px] text-[#212121] outline-none leading-relaxed"
             style={{ wordBreak: 'break-word', minHeight: 200 }}
           />
