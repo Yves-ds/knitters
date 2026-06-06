@@ -354,49 +354,71 @@ export default function NewProjectPage() {
     // 일반 클릭은 wrapper의 caretRangeFromPoint로 처리
   }
 
-  const handleEditorDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    const block = (e.target as HTMLElement).closest('.img-block') as HTMLElement | null
-    if (!block) { e.preventDefault(); return }
-    draggedImgRef.current = block
-    e.dataTransfer.effectAllowed = 'move'
-    e.dataTransfer.setData('text/plain', '')
-  }
-
-  const handleEditorDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!draggedImgRef.current) return
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-  }
-
-  const handleEditorDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    const dragged = draggedImgRef.current
+  /* 드래그 이동: React 합성 이벤트 대신 네이티브 리스너로 처리
+     (contenteditable 의 네이티브 drop 복사를 stopPropagation으로 차단) */
+  useEffect(() => {
     const editor = editorRef.current
-    if (!dragged || !editor) return
+    if (!editor) return
 
-    // 원본 제거 후 드롭 위치에 삽입 (복사 방지)
-    dragged.remove()
-
-    const range = document.caretRangeFromPoint(e.clientX, e.clientY)
-    if (range && editor.contains(range.startContainer)) {
-      range.insertNode(dragged)
-      range.setStartAfter(dragged)
-      range.collapse(true)
-      const sel = window.getSelection()
-      sel?.removeAllRanges()
-      sel?.addRange(range)
-    } else {
-      editor.appendChild(dragged)
+    const onDragStart = (e: DragEvent) => {
+      const block = (e.target as HTMLElement).closest('.img-block') as HTMLElement | null
+      if (!block) return
+      draggedImgRef.current = block
+      e.dataTransfer!.effectAllowed = 'move'
+      e.dataTransfer!.setData('text/plain', 'img-block')
     }
 
-    draggedImgRef.current = null
-    setContent(editor.innerHTML)
-    setIsEditorEmpty(!editor.textContent?.trim() && !editor.querySelector('img'))
-  }
+    const onDragOver = (e: DragEvent) => {
+      if (!draggedImgRef.current) return
+      e.preventDefault()
+      e.stopPropagation()
+      e.dataTransfer!.dropEffect = 'move'
+    }
 
-  const handleEditorDragEnd = () => {
-    draggedImgRef.current = null
-  }
+    const onDrop = (e: DragEvent) => {
+      if (!draggedImgRef.current) return
+      e.preventDefault()
+      e.stopPropagation()   // contenteditable 기본 복사 완전 차단
+
+      const dragged = draggedImgRef.current
+      // 원본 위치 백업 (드롭 실패 시 복원용)
+      const parent = dragged.parentNode
+      const next   = dragged.nextSibling
+
+      dragged.remove()  // 원본 제거
+
+      const range = document.caretRangeFromPoint(e.clientX, e.clientY)
+      if (range && editor.contains(range.startContainer)) {
+        range.insertNode(dragged)
+        range.setStartAfter(dragged)
+        range.collapse(true)
+        const sel = window.getSelection()
+        sel?.removeAllRanges()
+        sel?.addRange(range)
+      } else {
+        // 에디터 밖 드롭 → 원위치 복원
+        parent ? parent.insertBefore(dragged, next) : editor.appendChild(dragged)
+      }
+
+      draggedImgRef.current = null
+      setContent(editor.innerHTML)
+      setIsEditorEmpty(!editor.textContent?.trim() && !editor.querySelector('img'))
+    }
+
+    const onDragEnd = () => { draggedImgRef.current = null }
+
+    editor.addEventListener('dragstart', onDragStart)
+    editor.addEventListener('dragover',  onDragOver)
+    editor.addEventListener('drop',      onDrop)
+    editor.addEventListener('dragend',   onDragEnd)
+    return () => {
+      editor.removeEventListener('dragstart', onDragStart)
+      editor.removeEventListener('dragover',  onDragOver)
+      editor.removeEventListener('drop',      onDrop)
+      editor.removeEventListener('dragend',   onDragEnd)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -517,35 +539,37 @@ export default function NewProjectPage() {
           )}
         </div>
 
-        {/* 자유 입력 영역 — 클릭 위치에 caretRangeFromPoint로 정확한 커서 배치 */}
+        {/* 자유 입력 영역: 상태 배지 하단 ~ 하단 바 상단 전체 커버 */}
         <div
           className="flex-1 px-4 pb-[72px] flex flex-col cursor-text"
           onClick={(e) => {
             const target = e.target as HTMLElement
-            // 삭제 버튼 클릭은 handleEditorClick에서 처리
             if (target.closest('[data-action="delete-img"]')) return
 
             const editor = editorRef.current
             if (!editor) return
             editor.focus()
 
-            // 클릭 좌표로 정확한 커서 위치 계산
-            const range = document.caretRangeFromPoint
-              ? document.caretRangeFromPoint(e.clientX, e.clientY)
-              : null
-
             const sel = window.getSelection()
+
+            // 클릭 좌표로 커서 위치 결정
+            const range = document.caretRangeFromPoint?.(e.clientX, e.clientY) ?? null
+
             if (range && editor.contains(range.startContainer)) {
               sel?.removeAllRanges()
               sel?.addRange(range)
             } else {
-              // 에디터 바깥(하단 여백) 클릭 → 맨 끝으로
+              // 에디터 하단 여백 클릭 → 맨 끝
               const endRange = document.createRange()
               endRange.selectNodeContents(editor)
               endRange.collapse(false)
               sel?.removeAllRanges()
               sel?.addRange(endRange)
             }
+
+            // 클릭한 행의 맨 앞으로 커서 이동
+            ;(sel as Selection & { modify?: (...a: string[]) => void })
+              ?.modify?.('move', 'backward', 'lineBoundary')
           }}
         >
           {isEditorEmpty && (
@@ -567,10 +591,6 @@ export default function NewProjectPage() {
             onMouseUp={saveRange}
             onKeyUp={saveRange}
             onTouchEnd={saveRange}
-            onDragStart={handleEditorDragStart}
-            onDragOver={handleEditorDragOver}
-            onDrop={handleEditorDrop}
-            onDragEnd={handleEditorDragEnd}
             className="flex-1 w-full text-[15px] text-[#212121] outline-none leading-relaxed"
             style={{ wordBreak: 'break-word', minHeight: 200 }}
           />
