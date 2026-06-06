@@ -10,7 +10,6 @@ type StatusDisplay = '전체' | '시작 안 함' | '열뜨 중' | '쉬는 중' |
 const SORT_OPTIONS: SortKey[] = ['생성일', '제목', '시작일', '종료일']
 const STATUS_OPTIONS: StatusDisplay[] = ['전체', '시작 안 함', '열뜨 중', '쉬는 중', '완성']
 
-// 표시 이름 → 데이터 값 매핑
 const STATUS_DATA: Record<StatusDisplay, string> = {
   '전체': '전체',
   '시작 안 함': '시작 안 함',
@@ -19,11 +18,19 @@ const STATUS_DATA: Record<StatusDisplay, string> = {
   '완성': '완성',
 }
 
-const STATUS_DOT: Record<string, string> = {
+// 데이터값 → 카드 표시 이름
+const STATUS_LABEL: Record<string, string> = {
+  '시작 안 함': '시작 안 함',
+  '진행 중': '열뜨 중',
+  '쉬는 중': '쉬는 중',
+  '완성': '완성',
+}
+
+const STATUS_COLOR: Record<string, string> = {
   '시작 안 함': '#b0b0b0',
-  '진행 중':    '#4A90D9',
-  '쉬는 중':    '#FF8C69',
-  '완성':       '#3CB371',
+  '진행 중': '#F72E00',
+  '쉬는 중': '#FF8C69',
+  '완성': '#3CB371',
 }
 
 function formatDateRange(start: string, end: string, status: string) {
@@ -110,9 +117,41 @@ export default function ProjectsPage() {
               <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
                 <SearchIcon />
               </button>
-              <button onClick={() => setSortPanelOpen(true)} className="w-8 h-8 flex items-center justify-center">
-                <SortIcon />
-              </button>
+              <div className="relative">
+                <button onClick={() => setSortPanelOpen(v => !v)} className="w-8 h-8 flex items-center justify-center">
+                  <SortIcon />
+                </button>
+                {sortPanelOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setSortPanelOpen(false)} />
+                    <div className="absolute top-10 right-0 bg-white rounded-[14px] shadow-[0_4px_24px_rgba(0,0,0,0.14)] z-50 w-44 overflow-hidden py-2">
+                      <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-2 pb-1">날짜 · 제목 정렬</p>
+                      {SORT_OPTIONS.map(opt => (
+                        <button
+                          key={opt}
+                          onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
+                          className="w-full text-left px-4 py-2.5 text-[15px] font-medium"
+                          style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                      <div className="mx-4 h-px bg-[#f0f0f0] my-1" />
+                      <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-1 pb-1">진행상황 별 정렬</p>
+                      {STATUS_OPTIONS.map(opt => (
+                        <button
+                          key={opt}
+                          onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
+                          className="w-full text-left px-4 py-2.5 text-[15px] font-medium"
+                          style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -137,81 +176,45 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
-            {filtered.map(project => (
-              <Link key={project.id} href={`/projects/${project.id}`}>
-                <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all">
-                  <div className="aspect-square w-full bg-[#f5f5f5] flex items-center justify-center text-5xl">
-                    {(project as any).emoji ?? '🧶'}
-                  </div>
-                  <div className="px-3 py-2.5">
-                    <div className="flex items-center gap-1.5 mb-1 min-w-0">
-                      <span
-                        className="text-[10px] font-semibold px-1.5 py-0.5 rounded-[4px] shrink-0"
-                        style={{
-                          color: STATUS_DOT[project.status] ?? '#b0b0b0',
-                          background: `${STATUS_DOT[project.status] ?? '#b0b0b0'}1a`,
-                        }}
-                      >
-                        {project.status}
-                      </span>
-                      <p className="text-[13px] font-semibold text-[#212121] truncate">{project.title}</p>
+            {filtered.map(project => {
+              const statusColor = STATUS_COLOR[project.status] ?? '#b0b0b0'
+              const statusLabel = STATUS_LABEL[project.status] ?? project.status
+              return (
+                <Link key={project.id} href={`/projects/${project.id}`}>
+                  <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] active:scale-[0.98] transition-all">
+                    {/* 이미지 */}
+                    <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
+                      {(project as any).emoji ?? '🧶'}
                     </div>
-                    <p className="text-[12px] text-[#a7a7a7] font-medium tracking-wide">00:00:00</p>
+                    {/* 정보 */}
+                    <div className="px-3 pt-3 pb-3">
+                      <p className="text-[15px] font-bold text-[#212121] mb-2 leading-snug line-clamp-1">
+                        {project.title}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        {/* 상태 */}
+                        <div className="flex items-center gap-1">
+                          <svg width="8" height="9" viewBox="0 0 8 9" fill="none">
+                            <path d="M1 1.5L7 4.5L1 7.5V1.5Z" fill={statusColor} />
+                          </svg>
+                          <span className="text-[11px] font-semibold" style={{ color: statusColor }}>
+                            {statusLabel}
+                          </span>
+                        </div>
+                        {/* 타이머 */}
+                        <span className="text-[13px] text-[#a7a7a7] font-medium tracking-wider">
+                          00:00:00
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         )}
       </div>
 
-      {/* 정렬 패널 */}
-      {sortPanelOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/30 z-40"
-            onClick={() => setSortPanelOpen(false)}
-          />
-          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 pb-10">
-            {/* 핸들 */}
-            <div className="flex justify-center pt-3 pb-2">
-              <div className="w-10 h-1 bg-[#e0e0e0] rounded-full" />
-            </div>
-
-            {/* 날짜·제목 정렬 */}
-            <div className="px-6 pt-3 pb-2">
-              <p className="text-[13px] font-semibold text-[#a7a7a7] mb-3">날짜 · 제목 정렬</p>
-              {SORT_OPTIONS.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
-                  className="w-full text-left py-3 text-[18px] font-medium transition-colors"
-                  style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-
-            <div className="mx-6 h-px bg-[#f0f0f0] my-2" />
-
-            {/* 진행상황 별 정렬 */}
-            <div className="px-6 pt-2 pb-2">
-              <p className="text-[13px] font-semibold text-[#a7a7a7] mb-3">진행상황 별 정렬</p>
-              {STATUS_OPTIONS.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
-                  className="w-full text-left py-3 text-[18px] font-medium transition-colors"
-                  style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
 
       {/* FAB */}
       <Link
