@@ -6,57 +6,15 @@ import { useProjectStore } from '@/store/projectStore'
 
 const STATUS_OPTIONS = ['준비 중', '뜨는 중', '쉬는 중', '완성']
 
-/* ── 준비 중: 도트 바운스 애니메이션 ── */
-function ReadyDots() {
-  return (
-    <div className="flex items-center gap-[3px]">
-      {[0, 0.18, 0.36].map((delay, i) => (
-        <span
-          key={i}
-          className="w-[7px] h-[7px] rounded-full inline-block"
-          style={{
-            background: '#3B3B3B',
-            opacity: i === 1 ? 0.45 : 1,
-            animation: 'readyBounce 1.1s ease-in-out infinite',
-            animationDelay: `${delay}s`,
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-/* ── 뜨는 중: 도트 웨이브 애니메이션 ── */
-function KnittingDots() {
-  return (
-    <div className="flex items-end gap-[3px]" style={{ height: 14 }}>
-      {[0, 0.15, 0.3].map((delay, i) => (
-        <span
-          key={i}
-          className="w-[7px] h-[7px] rounded-full inline-block"
-          style={{
-            background: '#209BFF',
-            opacity: i === 1 ? 0.5 : 1,
-            animation: 'knittingWave 0.9s ease-in-out infinite',
-            animationDelay: `${delay}s`,
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
 /* ── 상태 배지 ── */
-function StatusBadge({ status, animate = false }: { status: string; animate?: boolean }) {
+function StatusBadge({ status }: { status: string }) {
   if (status === '뜨는 중') return (
     <div className="flex items-center gap-1.5 h-8 px-3 rounded-[10px]" style={{ background: '#DDEDFF' }}>
-      {animate ? <KnittingDots /> : (
-        <div className="flex items-end gap-[3px]" style={{ height: 14 }}>
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF' }} />
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF', opacity: 0.5 }} />
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF' }} />
-        </div>
-      )}
+      <div className="flex items-end gap-[3px]" style={{ height: 14 }}>
+        <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF' }} />
+        <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF', opacity: 0.5 }} />
+        <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF' }} />
+      </div>
       <span className="text-[13px] font-semibold" style={{ color: '#209BFF' }}>뜨는 중</span>
     </div>
   )
@@ -80,13 +38,11 @@ function StatusBadge({ status, animate = false }: { status: string; animate?: bo
   // 준비 중 (기본)
   return (
     <div className="flex items-center gap-1.5 h-8 px-3 rounded-[10px]" style={{ background: '#EDEDED' }}>
-      {animate ? <ReadyDots /> : (
-        <div className="flex items-center gap-[3px]">
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B' }} />
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B', opacity: 0.5 }} />
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B' }} />
-        </div>
-      )}
+      <div className="flex items-center gap-[3px]">
+        <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B' }} />
+        <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B', opacity: 0.5 }} />
+        <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B' }} />
+      </div>
       <span className="text-[13px] font-semibold" style={{ color: '#3B3B3B' }}>준비 중</span>
     </div>
   )
@@ -474,17 +430,6 @@ export default function NewProjectPage() {
 
   return (
     <>
-      {/* 애니메이션 키프레임 */}
-      <style>{`
-        @keyframes readyBounce {
-          0%, 60%, 100% { transform: translateY(0); }
-          30% { transform: translateY(-4px); }
-        }
-        @keyframes knittingWave {
-          0%, 60%, 100% { transform: translateY(0); }
-          30% { transform: translateY(-5px); }
-        }
-      `}</style>
 
       <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
 
@@ -528,7 +473,7 @@ export default function NewProjectPage() {
           {/* 상태 배지 + 드롭다운 */}
           <div className="relative" ref={statusBtnRef}>
             <button onClick={() => setStatusDropOpen(v => !v)}>
-              <StatusBadge status={status} animate />
+              <StatusBadge status={status} />
             </button>
             {statusDropOpen && (
               <div
@@ -554,20 +499,21 @@ export default function NewProjectPage() {
             )}
           </div>
 
-          {/* 시작일·종료일 배지 — 완성 상태에서만 표시 */}
+          {/* 시작일 배지 — 뜨는 중·쉬는 중·완성 */}
+          {(status === '뜨는 중' || status === '쉬는 중' || status === '완성') && (
+            <DateBadge
+              date={startDate}
+              label="시작일"
+              onClick={() => { setDateMode('start'); setDatePickerOpen(true) }}
+            />
+          )}
+          {/* 종료일 배지 — 완성만 */}
           {status === '완성' && (
-            <>
-              <DateBadge
-                date={startDate}
-                label="시작일"
-                onClick={() => { setDateMode('start'); setDatePickerOpen(true) }}
-              />
-              <DateBadge
-                date={endDate}
-                label="종료일"
-                onClick={() => { setDateMode('end'); setDatePickerOpen(true) }}
-              />
-            </>
+            <DateBadge
+              date={endDate}
+              label="종료일"
+              onClick={() => { setDateMode('end'); setDatePickerOpen(true) }}
+            />
           )}
         </div>
 
