@@ -306,9 +306,9 @@ export default function NewProjectPage() {
         badge.className = 'cover-badge'
         badge.textContent = '대표 사진'
         badge.style.cssText =
-          'position:absolute;top:8px;left:8px;background:#F72E00;color:#fff;' +
-          'font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;' +
-          'pointer-events:none;z-index:2;letter-spacing:0.3px;'
+          'position:absolute;top:8px;left:8px;background:#F72E00;color:#FFEEEA;' +
+          'font-size:12px;font-weight:500;padding:6px 8px;border-radius:10px;' +
+          'pointer-events:none;z-index:2;letter-spacing:0.6px;white-space:nowrap;'
         block.insertBefore(badge, block.firstChild)
       } else {
         const badge = document.createElement('div')
@@ -316,9 +316,9 @@ export default function NewProjectPage() {
         badge.dataset.action = 'set-cover'
         badge.textContent = '대표 사진 설정'
         badge.style.cssText =
-          'position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.52);color:#fff;' +
-          'font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;' +
-          'cursor:pointer;z-index:2;letter-spacing:0.3px;'
+          'position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.52);color:#FFFFFF;' +
+          'font-size:12px;font-weight:500;padding:6px 8px;border-radius:10px;' +
+          'cursor:pointer;z-index:2;letter-spacing:0.6px;white-space:nowrap;'
         block.insertBefore(badge, block.firstChild)
       }
     })
@@ -463,28 +463,26 @@ export default function NewProjectPage() {
       e.dataTransfer!.setData('text/plain', 'img-block')
     }
 
-    const showIndicator = (x: number, y: number) => {
+    // 드래그 Y 좌표 기준으로 삽입 위치 (블록 윗 행) 계산
+    const getDropBefore = (clientY: number): Element | null => {
+      const children = Array.from(editor.children)
+      for (const child of children) {
+        const rect = child.getBoundingClientRect()
+        if (clientY < rect.top + rect.height / 2) return child
+      }
+      return null  // 맨 끝에 추가
+    }
+
+    const showIndicator = (clientY: number) => {
       const ind = dropIndicatorRef.current
       if (!ind) return
-      const range = document.caretRangeFromPoint(x, y)
-      if (range && editor.contains(range.startContainer)) {
-        const rects = range.getClientRects()
-        const editorRect = editor.getBoundingClientRect()
-        const r = rects.length > 0 ? rects[0] : null
-        if (r) {
-          ind.style.display = 'block'
-          ind.style.left    = `${r.left - editorRect.left}px`
-          ind.style.top     = `${r.top  - editorRect.top}px`
-          ind.style.height  = `${r.height || 18}px`
-          return
-        }
-      }
-      // 에디터 끝(하단 빈 공간) 드래그 → 마지막 위치에 표시
       const editorRect = editor.getBoundingClientRect()
+      const before = getDropBefore(clientY)
+      const top = before
+        ? before.getBoundingClientRect().top - editorRect.top
+        : editor.getBoundingClientRect().bottom - editorRect.top
       ind.style.display = 'block'
-      ind.style.left    = `${x - editorRect.left}px`
-      ind.style.top     = `${y - editorRect.top}px`
-      ind.style.height  = '18px'
+      ind.style.top     = `${top}px`
     }
 
     const hideIndicator = () => {
@@ -496,7 +494,7 @@ export default function NewProjectPage() {
       e.preventDefault()
       e.stopPropagation()
       e.dataTransfer!.dropEffect = 'move'
-      showIndicator(e.clientX, e.clientY)
+      showIndicator(e.clientY)
     }
 
     const onDrop = (e: DragEvent) => {
@@ -510,16 +508,11 @@ export default function NewProjectPage() {
       const next   = dragged.nextSibling
       dragged.remove()
 
-      const range = document.caretRangeFromPoint(e.clientX, e.clientY)
-      if (range && editor.contains(range.startContainer)) {
-        range.insertNode(dragged)
-        range.setStartAfter(dragged)
-        range.collapse(true)
-        const sel = window.getSelection()
-        sel?.removeAllRanges()
-        sel?.addRange(range)
+      const before = getDropBefore(e.clientY)
+      if (before && editor.contains(before)) {
+        editor.insertBefore(dragged, before)
       } else {
-        parent ? parent.insertBefore(dragged, next) : editor.appendChild(dragged)
+        editor.appendChild(dragged)
       }
 
       draggedImgRef.current = null
@@ -730,13 +723,15 @@ export default function NewProjectPage() {
             className="flex-1 w-full text-[15px] text-[#212121] outline-none leading-relaxed"
             style={{ wordBreak: 'break-word', minHeight: 200 }}
           />
-          {/* 드래그 드롭 위치 커서 표시 */}
+          {/* 드래그 드롭 위치 — 블록 사이 가로 선 */}
           <div
             ref={dropIndicatorRef}
             style={{
               display: 'none',
               position: 'absolute',
-              width: 2,
+              left: 0,
+              right: 0,
+              height: 2,
               background: '#F72E00',
               borderRadius: 1,
               pointerEvents: 'none',
