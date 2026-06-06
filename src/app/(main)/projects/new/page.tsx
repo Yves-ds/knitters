@@ -206,6 +206,7 @@ function CalendarPicker({ value, onChange, onClose }: {
   )
 }
 
+/* ── 날짜 미설정 시 기본 달력 아이콘 ── */
 function CalendarIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -216,11 +217,55 @@ function CalendarIcon() {
   )
 }
 
-/* ── 포맷 날짜 표시 ── */
+/* ── 날짜 설정 시 calendar_start 아이콘 ── */
+function CalendarStartIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clipPath="url(#cs_clip)">
+        <path fillRule="evenodd" clipRule="evenodd" d="M8.5 5C8.76522 5 9.01957 5.10536 9.20711 5.29289C9.39464 5.48043 9.5 5.73478 9.5 6V7H14.5V6C14.5 5.73478 14.6054 5.48043 14.7929 5.29289C14.9804 5.10536 15.2348 5 15.5 5C15.7652 5 16.0196 5.10536 16.2071 5.29289C16.3946 5.48043 16.5 5.73478 16.5 6V7H17.5C17.8978 7 18.2794 7.15804 18.5607 7.43934C18.842 7.72064 19 8.10218 19 8.5V9.5H5V8.5C5 8.10218 5.15804 7.72064 5.43934 7.43934C5.72064 7.15804 6.10218 7 6.5 7H7.5V6C7.5 5.73478 7.60536 5.48043 7.79289 5.29289C7.98043 5.10536 8.23478 5 8.5 5Z" fill="#F72E00"/>
+        <path d="M5 9.5H19V17.5C19 17.8978 18.842 18.2794 18.5607 18.5607C18.2794 18.842 17.8978 19 17.5 19H6.5C6.10218 19 5.72064 18.842 5.43934 18.5607C5.15804 18.2794 5 17.8978 5 17.5V9.5Z" fill="#FFBAA9"/>
+        <path fillRule="evenodd" clipRule="evenodd" d="M12.4301 15.943C12.4301 16.0666 12.4668 16.1875 12.5354 16.2903C12.6041 16.3931 12.7017 16.4732 12.8159 16.5205C12.9302 16.5678 13.0558 16.5802 13.1771 16.5561C13.2983 16.532 13.4097 16.4724 13.4971 16.385L15.4061 14.476C15.4642 14.418 15.5102 14.3491 15.5417 14.2732C15.5731 14.1974 15.5892 14.1161 15.5892 14.034C15.5892 13.9519 15.5731 13.8706 15.5417 13.7948C15.5102 13.7189 15.4642 13.65 15.4061 13.592L13.4961 11.683C13.4087 11.5959 13.2974 11.5367 13.1763 11.5127C13.0552 11.4888 12.9298 11.5013 12.8157 11.5485C12.7017 11.5958 12.6043 11.6758 12.5356 11.7784C12.467 11.881 12.4303 12.0016 12.4301 12.125V13.285H9.03613C8.83722 13.285 8.64645 13.364 8.5058 13.5047C8.36515 13.6453 8.28613 13.8361 8.28613 14.035C8.28613 14.2339 8.36515 14.4247 8.5058 14.5653C8.64645 14.706 8.83722 14.785 9.03613 14.785H12.4301V15.943Z" fill="#F72E00"/>
+      </g>
+      <defs>
+        <clipPath id="cs_clip">
+          <rect width="14" height="14" fill="white" transform="translate(5 5)"/>
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
+/* ── YYYY.MM.DD 포맷 ── */
 function formatDate(iso: string) {
-  if (!iso) return '시작일'
-  const [, m, d] = iso.split('-')
-  return `${parseInt(m)}월 ${parseInt(d)}일`
+  if (!iso) return null
+  const [y, m, d] = iso.split('-')
+  return `${y}.${m}.${d}`
+}
+
+/* ── 날짜 배지 컴포넌트 ── */
+function DateBadge({ date, label, onClick }: { date: string; label: string; onClick: () => void }) {
+  const formatted = formatDate(date)
+  if (formatted) {
+    return (
+      <button
+        onClick={onClick}
+        className="flex items-center gap-[4px] h-8 px-[8px] rounded-[10px] active:opacity-70"
+        style={{ background: '#FFEEEA' }}
+      >
+        <CalendarStartIcon />
+        <span className="text-[12px] text-black" style={{ letterSpacing: '0.6px', fontWeight: 500 }}>{formatted}</span>
+      </button>
+    )
+  }
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464] active:opacity-70"
+    >
+      <CalendarIcon />
+      {label}
+    </button>
+  )
 }
 
 /* ══════════════════════════════════════════════ */
@@ -229,9 +274,11 @@ export default function NewProjectPage() {
   const [title, setTitle] = useState('')
   const [status, setStatus] = useState('준비 중')
   const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const [content, setContent] = useState('')
   const [statusDropOpen, setStatusDropOpen] = useState(false)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
+  const [dateMode, setDateMode] = useState<'start' | 'end'>('start')
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [isEditorEmpty, setIsEditorEmpty] = useState(true)
@@ -370,7 +417,7 @@ export default function NewProjectPage() {
       title: title.trim(),
       status: status === '뜨는 중' ? '진행 중' : status === '준비 중' ? '시작 안 함' : status,
       startDate,
-      endDate: '',
+      endDate,
       content: editorRef.current?.innerHTML || content,
       emoji: '🧶',
       timerSecs,
@@ -460,15 +507,20 @@ export default function NewProjectPage() {
             )}
           </div>
 
-          {/* 시작일 배지 */}
-          {status !== '준비 중' && (
-            <button
-              onClick={() => setDatePickerOpen(true)}
-              className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464]"
-            >
-              <CalendarIcon />
-              {formatDate(startDate)}
-            </button>
+          {/* 시작일·종료일 배지 — 완성 상태에서만 표시 */}
+          {status === '완성' && (
+            <>
+              <DateBadge
+                date={startDate}
+                label="시작일"
+                onClick={() => { setDateMode('start'); setDatePickerOpen(true) }}
+              />
+              <DateBadge
+                date={endDate}
+                label="종료일"
+                onClick={() => { setDateMode('end'); setDatePickerOpen(true) }}
+              />
+            </>
           )}
         </div>
 
@@ -557,8 +609,8 @@ export default function NewProjectPage() {
         {/* 달력 날짜 선택 */}
         {datePickerOpen && (
           <CalendarPicker
-            value={startDate}
-            onChange={date => setStartDate(date)}
+            value={dateMode === 'start' ? startDate : endDate}
+            onChange={date => dateMode === 'start' ? setStartDate(date) : setEndDate(date)}
             onClose={() => setDatePickerOpen(false)}
           />
         )}
