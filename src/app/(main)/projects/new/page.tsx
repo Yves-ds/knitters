@@ -117,9 +117,9 @@ export default function NewProjectPage() {
             value={title}
             onChange={e => setTitle(e.target.value)}
             placeholder="프로젝트 제목"
-            className="text-[18px] font-bold text-[#212121] text-center bg-transparent outline-none placeholder:text-[#c8c8c8] min-w-0 max-w-[200px]"
+            className="text-[18px] font-semibold text-[#212121] text-center bg-transparent outline-none placeholder:text-[#c8c8c8] min-w-0 max-w-[200px] p-0"
           />
-          <span className="text-[#F72E00] text-[18px] font-bold leading-none">*</span>
+          <span className="text-[#F72E00] text-[18px] font-semibold leading-none shrink-0">*</span>
         </div>
         <button
           onClick={handleRegister}
@@ -163,21 +163,21 @@ export default function NewProjectPage() {
       </div>
 
       {/* 하단 네비게이션 바 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#F0F0F0] z-20 flex items-center" style={{ height: 72 }}>
-        <label className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full cursor-pointer active:opacity-50">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#F0F0F0] z-20 flex items-center px-5" style={{ height: 72, gap: 12 }}>
+        <label className="flex items-center gap-[6px] cursor-pointer active:opacity-50">
           <Camera size={24} color="#646464" />
           <span className="text-[12px] font-normal text-[#646464]">사진</span>
           <input type="file" accept="image/*" multiple className="hidden" />
         </label>
-        <button className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full active:opacity-50">
+        <button className="flex items-center gap-[6px] active:opacity-50">
           <Video size={24} color="#646464" />
           <span className="text-[12px] font-normal text-[#646464]">영상</span>
         </button>
-        <button className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full active:opacity-50">
+        <button className="flex items-center gap-[6px] active:opacity-50">
           <FileText size={24} color="#646464" />
           <span className="text-[12px] font-normal text-[#646464]">도안</span>
         </button>
-        <button className="flex-1 flex flex-col items-center justify-center gap-[5px] h-full active:opacity-50">
+        <button className="flex items-center gap-[6px] active:opacity-50">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2Z" stroke="#646464" strokeWidth="1.8" strokeLinejoin="round"/>
             <path d="M12 12V21" stroke="#646464" strokeWidth="1.8" strokeLinecap="round"/>
