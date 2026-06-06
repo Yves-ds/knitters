@@ -48,17 +48,27 @@ function StatusBadge({ status }: { status: string }) {
   )
 }
 
-/* ── 달력 피커 ── */
-function CalendarPicker({ value, onChange, onClose }: {
-  value: string
-  onChange: (date: string) => void
+/* ── 달력 피커 (단일 / 범위 선택 겸용) ── */
+function CalendarPicker({
+  value, onChange,
+  rangeMode, rangeStart, rangeEnd, onRangeChange,
+  onClose,
+}: {
+  value?: string; onChange?: (d: string) => void
+  rangeMode?: boolean; rangeStart?: string; rangeEnd?: string
+  onRangeChange?: (start: string, end: string) => void
   onClose: () => void
 }) {
   const today = new Date()
-  const initYear = value ? parseInt(value.split('-')[0]) : today.getFullYear()
-  const initMonth = value ? parseInt(value.split('-')[1]) - 1 : today.getMonth()
-  const [viewYear, setViewYear] = useState(initYear)
+  const base = rangeMode ? (rangeStart || value || '') : (value || '')
+  const initYear  = base ? parseInt(base.split('-')[0]) : today.getFullYear()
+  const initMonth = base ? parseInt(base.split('-')[1]) - 1 : today.getMonth()
+  const [viewYear,  setViewYear]  = useState(initYear)
   const [viewMonth, setViewMonth] = useState(initMonth)
+  // 범위 선택용 임시 상태
+  const [tmpStart, setTmpStart] = useState(rangeStart || '')
+  const [tmpEnd,   setTmpEnd]   = useState(rangeEnd   || '')
+  const [step, setStep] = useState<'start' | 'end'>(rangeStart ? 'end' : 'start')
 
   const prevMonth = () => {
     if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11) }
@@ -70,7 +80,9 @@ function CalendarPicker({ value, onChange, onClose }: {
   }
 
   const DAYS = ['일', '월', '화', '수', '목', '금', '토']
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const toISO = (day: number) => `${viewYear}-${pad(viewMonth + 1)}-${pad(day)}`
+  const firstDay   = new Date(viewYear, viewMonth, 1).getDay()
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
   const cells: (number | null)[] = [
     ...Array(firstDay).fill(null),
@@ -78,26 +90,58 @@ function CalendarPicker({ value, onChange, onClose }: {
   ]
   while (cells.length % 7 !== 0) cells.push(null)
 
-  const pad = (n: number) => String(n).padStart(2, '0')
-  const toISO = (day: number) => `${viewYear}-${pad(viewMonth + 1)}-${pad(day)}`
-  const isSelected = (day: number) => value === toISO(day)
-  const isToday = (day: number) =>
-    today.getFullYear() === viewYear && today.getMonth() === viewMonth && today.getDate() === day
+  const isToday   = (day: number) => today.getFullYear() === viewYear && today.getMonth() === viewMonth && today.getDate() === day
+  const isStart   = (day: number) => (rangeMode ? tmpStart : value) === toISO(day)
+  const isEnd     = (day: number) => rangeMode && tmpEnd === toISO(day)
+  const isInRange = (day: number) => rangeMode && tmpStart && tmpEnd && toISO(day) > tmpStart && toISO(day) < tmpEnd
+
+  const handleDay = (day: number) => {
+    const iso = toISO(day)
+    if (!rangeMode) { onChange?.(iso); return }
+
+    if (step === 'start') {
+      setTmpStart(iso); setTmpEnd(''); setStep('end')
+    } else {
+      if (iso < tmpStart) {
+        setTmpStart(iso); setTmpEnd(''); setStep('end')
+      } else {
+        setTmpEnd(iso)
+        onRangeChange?.(tmpStart, iso)
+        onClose()
+      }
+    }
+  }
 
   return (
     <>
       <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-8">
-        <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-5" />
+        <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-4" />
+
+        {/* 범위 선택 스텝 표시 */}
+        {rangeMode && (
+          <div className="flex gap-2 mb-4">
+            {(['start', 'end'] as const).map(s => (
+              <div
+                key={s}
+                className="flex-1 py-2 rounded-[10px] text-center text-[13px] font-semibold transition-colors"
+                style={{
+                  background: step === s ? '#F72E00' : '#F5F5F5',
+                  color: step === s ? '#fff' : '#9A9A9A',
+                }}
+              >
+                {s === 'start' ? (tmpStart ? tmpStart.split('-').join('.') : '시작일') : (tmpEnd ? tmpEnd.split('-').join('.') : '종료일')}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* 월 네비게이션 */}
-        <div className="flex items-center justify-between mb-4 px-1">
+        <div className="flex items-center justify-between mb-3 px-1">
           <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center rounded-full active:bg-[#F0F0F0]">
             <ChevronLeft size={20} className="text-[#646464]" />
           </button>
-          <span className="text-[16px] font-bold text-[#212121]">
-            {viewYear}년 {viewMonth + 1}월
-          </span>
+          <span className="text-[16px] font-bold text-[#212121]">{viewYear}년 {viewMonth + 1}월</span>
           <button onClick={nextMonth} className="w-9 h-9 flex items-center justify-center rounded-full active:bg-[#F0F0F0]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path d="M9 18l6-6-6-6" stroke="#646464" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -108,11 +152,8 @@ function CalendarPicker({ value, onChange, onClose }: {
         {/* 요일 헤더 */}
         <div className="grid grid-cols-7 mb-1">
           {DAYS.map((d, i) => (
-            <div
-              key={d}
-              className="text-center text-[12px] font-semibold py-1"
-              style={{ color: i === 0 ? '#F72E00' : i === 6 ? '#3B86FB' : '#9A9A9A' }}
-            >
+            <div key={d} className="text-center text-[12px] font-semibold py-1"
+              style={{ color: i === 0 ? '#F72E00' : i === 6 ? '#3B86FB' : '#9A9A9A' }}>
               {d}
             </div>
           ))}
@@ -122,25 +163,20 @@ function CalendarPicker({ value, onChange, onClose }: {
         <div className="grid grid-cols-7 gap-y-1">
           {cells.map((day, idx) => {
             const col = idx % 7
+            const selected = isStart(day ?? -1) || isEnd(day ?? -1)
+            const inRange  = day !== null && isInRange(day)
             return (
-              <div key={idx} className="flex items-center justify-center">
+              <div key={idx} className="flex items-center justify-center"
+                style={{ background: inRange ? '#FFEEEA' : 'transparent' }}>
                 {day !== null ? (
                   <button
-                    onClick={() => onChange(toISO(day))}
+                    onClick={() => handleDay(day)}
                     className="w-9 h-9 flex items-center justify-center rounded-full text-[14px] transition-colors active:opacity-70"
                     style={{
-                      background: isSelected(day) ? '#F72E00' : 'transparent',
-                      color: isSelected(day)
-                        ? '#fff'
-                        : isToday(day)
-                        ? '#F72E00'
-                        : col === 0
-                        ? '#F72E00'
-                        : col === 6
-                        ? '#3B86FB'
-                        : '#212121',
-                      border: isToday(day) && !isSelected(day) ? '1.5px solid #F72E00' : 'none',
-                      fontWeight: isSelected(day) || isToday(day) ? 700 : 400,
+                      background: selected ? '#F72E00' : 'transparent',
+                      color: selected ? '#fff' : isToday(day) ? '#F72E00' : col === 0 ? '#F72E00' : col === 6 ? '#3B86FB' : '#212121',
+                      border: isToday(day) && !selected ? '1.5px solid #F72E00' : 'none',
+                      fontWeight: selected || isToday(day) ? 700 : 400,
                     }}
                   >
                     {day}
@@ -151,12 +187,12 @@ function CalendarPicker({ value, onChange, onClose }: {
           })}
         </div>
 
-        <button
-          onClick={onClose}
-          className="mt-5 w-full py-3.5 bg-[#F72E00] text-white text-[15px] font-semibold rounded-[12px] active:opacity-80"
-        >
-          확인
-        </button>
+        {!rangeMode && (
+          <button onClick={onClose}
+            className="mt-5 w-full py-3.5 bg-[#F72E00] text-white text-[15px] font-semibold rounded-[12px] active:opacity-80">
+            확인
+          </button>
+        )}
       </div>
     </>
   )
@@ -198,28 +234,20 @@ function formatDate(iso: string) {
   return `${y}.${m}.${d}`
 }
 
-/* ── 날짜 배지 컴포넌트 ── */
+/* ── 단일 날짜 배지 ── */
 function DateBadge({ date, label, onClick }: { date: string; label: string; onClick: () => void }) {
   const formatted = formatDate(date)
   if (formatted) {
     return (
-      <button
-        onClick={onClick}
-        className="flex items-center gap-[4px] h-8 px-[8px] rounded-[10px] active:opacity-70"
-        style={{ background: '#FFEEEA' }}
-      >
+      <button onClick={onClick} className="flex items-center gap-[4px] h-8 px-[8px] rounded-[10px] active:opacity-70" style={{ background: '#FFEEEA' }}>
         <CalendarStartIcon />
         <span className="text-[12px] text-black" style={{ letterSpacing: '0.6px', fontWeight: 500 }}>{formatted}</span>
       </button>
     )
   }
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464] active:opacity-70"
-    >
-      <CalendarIcon />
-      {label}
+    <button onClick={onClick} className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464] active:opacity-70">
+      <CalendarIcon />{label}
     </button>
   )
 }
@@ -234,7 +262,6 @@ export default function NewProjectPage() {
   const [content, setContent] = useState('')
   const [statusDropOpen, setStatusDropOpen] = useState(false)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
-  const [dateMode, setDateMode] = useState<'start' | 'end'>('start')
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [isEditorEmpty, setIsEditorEmpty] = useState(true)
@@ -521,22 +548,30 @@ export default function NewProjectPage() {
             )}
           </div>
 
-          {/* 시작일 배지 — 뜨는 중·쉬는 중·완성 */}
-          {(status === '뜨는 중' || status === '쉬는 중' || status === '완성') && (
-            <DateBadge
-              date={startDate}
-              label="시작일"
-              onClick={() => { setDateMode('start'); setDatePickerOpen(true) }}
-            />
+          {/* 시작일 배지 — 뜨는 중·쉬는 중: 단일 날짜 */}
+          {(status === '뜨는 중' || status === '쉬는 중') && (
+            <DateBadge date={startDate} label="시작일" onClick={() => setDatePickerOpen(true)} />
           )}
-          {/* 종료일 배지 — 완성만 */}
-          {status === '완성' && (
-            <DateBadge
-              date={endDate}
-              label="종료일"
-              onClick={() => { setDateMode('end'); setDatePickerOpen(true) }}
-            />
-          )}
+          {/* 범위 배지 — 완성: yyyy.mm.dd ~ yyyy.mm.dd */}
+          {status === '완성' && (() => {
+            const s = formatDate(startDate)
+            const e = formatDate(endDate)
+            const label = s ? `${s} ~ ${e ?? ''}` : '날짜 선택'
+            const hasDate = !!s
+            return (
+              <button
+                onClick={() => setDatePickerOpen(true)}
+                className="flex items-center gap-[4px] h-8 px-[8px] rounded-[10px] active:opacity-70"
+                style={{ background: hasDate ? '#FFEEEA' : 'transparent', border: hasDate ? 'none' : '1px solid #e0e0e0' }}
+              >
+                {hasDate ? <CalendarStartIcon /> : <CalendarIcon />}
+                <span className={hasDate ? 'text-[12px] text-black' : 'text-[13px] font-semibold text-[#646464]'}
+                  style={hasDate ? { letterSpacing: '0.6px', fontWeight: 500 } : {}}>
+                  {label}
+                </span>
+              </button>
+            )
+          })()}
         </div>
 
         {/* 자유 입력 영역: 상태 배지 하단 ~ 하단 바 상단 전체 커버 */}
@@ -637,13 +672,21 @@ export default function NewProjectPage() {
         </div>
 
         {/* 달력 날짜 선택 */}
-        {datePickerOpen && (
+        {datePickerOpen && status === '완성' ? (
           <CalendarPicker
-            value={dateMode === 'start' ? startDate : endDate}
-            onChange={date => dateMode === 'start' ? setStartDate(date) : setEndDate(date)}
+            rangeMode
+            rangeStart={startDate}
+            rangeEnd={endDate}
+            onRangeChange={(s, e) => { setStartDate(s); setEndDate(e) }}
             onClose={() => setDatePickerOpen(false)}
           />
-        )}
+        ) : datePickerOpen ? (
+          <CalendarPicker
+            value={startDate}
+            onChange={date => { setStartDate(date); setDatePickerOpen(false) }}
+            onClose={() => setDatePickerOpen(false)}
+          />
+        ) : null}
       </div>
     </>
   )
