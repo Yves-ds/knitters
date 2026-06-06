@@ -295,12 +295,32 @@ export default function NewProjectPage() {
       sel?.removeAllRanges()
       sel?.addRange(range)
     }
+
+    // 이미지 + 삭제 버튼 래퍼
+    const wrapper = document.createElement('div')
+    wrapper.className = 'img-block'
+    wrapper.contentEditable = 'false'
+    wrapper.style.cssText = 'position:relative;display:block;margin:8px 0;line-height:0;'
+
     const img = document.createElement('img')
     img.src = src
-    img.style.cssText = 'max-width:100%;border-radius:10px;display:block;margin:6px 0;'
+    img.style.cssText = 'max-width:100%;border-radius:10px;display:block;'
+
+    const delBtn = document.createElement('span')
+    delBtn.dataset.action = 'delete-img'
+    delBtn.style.cssText =
+      'position:absolute;top:6px;right:6px;cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;'
+    delBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.3" d="M22 12C22 17.523 17.523 22 12 22C6.477 22 2 17.523 2 12C2 6.477 6.477 2 12 2C17.523 2 22 6.477 22 12Z" fill="#F72E00"/>
+<path d="M8.97032 8.97C9.11094 8.82955 9.30157 8.75066 9.50032 8.75066C9.69907 8.75066 9.88969 8.82955 10.0303 8.97L12.0003 10.94L13.9703 8.97C14.039 8.89631 14.1218 8.83721 14.2138 8.79622C14.3058 8.75523 14.4051 8.73319 14.5058 8.73141C14.6065 8.72963 14.7065 8.74816 14.7999 8.78588C14.8933 8.8236 14.9781 8.87974 15.0494 8.95096C15.1206 9.02218 15.1767 9.10702 15.2144 9.2004C15.2522 9.29379 15.2707 9.39382 15.2689 9.49452C15.2671 9.59523 15.2451 9.69454 15.2041 9.78654C15.1631 9.87854 15.104 9.96134 15.0303 10.03L13.0603 12L15.0303 13.97C15.1628 14.1122 15.2349 14.3002 15.2315 14.4945C15.2281 14.6888 15.1494 14.8742 15.0119 15.0116C14.8745 15.149 14.6891 15.2277 14.4948 15.2312C14.3005 15.2346 14.1125 15.1625 13.9703 15.03L12.0003 13.06L10.0303 15.03C9.88814 15.1625 9.7001 15.2346 9.50579 15.2312C9.31149 15.2277 9.12611 15.149 8.9887 15.0116C8.85128 14.8742 8.77257 14.6888 8.76914 14.4945C8.76571 14.3002 8.83784 14.1122 8.97032 13.97L10.9403 12L8.97032 10.03C8.82987 9.88938 8.75098 9.69875 8.75098 9.5C8.75098 9.30125 8.82987 9.11063 8.97032 8.97Z" fill="#F72E00"/>
+</svg>`
+
+    wrapper.appendChild(img)
+    wrapper.appendChild(delBtn)
+
     range.deleteContents()
-    range.insertNode(img)
-    range.setStartAfter(img)
+    range.insertNode(wrapper)
+    range.setStartAfter(wrapper)
     range.collapse(true)
     sel?.removeAllRanges()
     sel?.addRange(range)
@@ -308,6 +328,24 @@ export default function NewProjectPage() {
     savedRangeRef.current = null
     setContent(editor.innerHTML)
     setIsEditorEmpty(false)
+  }
+
+  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement
+    const delBtn = target.closest('[data-action="delete-img"]')
+    if (delBtn) {
+      e.preventDefault()
+      e.stopPropagation()
+      const block = delBtn.closest('.img-block')
+      if (block && editorRef.current?.contains(block)) {
+        block.remove()
+        const el = editorRef.current
+        setContent(el?.innerHTML || '')
+        setIsEditorEmpty(!el?.textContent?.trim() && !el?.querySelector('img'))
+      }
+      return
+    }
+    saveRange()
   }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -434,10 +472,26 @@ export default function NewProjectPage() {
           )}
         </div>
 
-        {/* 자유 입력 영역 */}
-        <div className="relative flex-1 px-4 pb-[72px]">
+        {/* 자유 입력 영역 — 전체 높이 채워 어디서든 커서 배치 가능 */}
+        <div
+          className="flex-1 px-4 pb-[72px] flex flex-col cursor-text"
+          onClick={(e) => {
+            // 에디터 외부 빈 공간 클릭 시 에디터 끝으로 포커스
+            if (e.target === e.currentTarget) {
+              const editor = editorRef.current
+              if (!editor) return
+              editor.focus()
+              const sel = window.getSelection()
+              const range = document.createRange()
+              range.selectNodeContents(editor)
+              range.collapse(false)
+              sel?.removeAllRanges()
+              sel?.addRange(range)
+            }
+          }}
+        >
           {isEditorEmpty && (
-            <p className="absolute top-0 left-4 text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
+            <p className="text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
               기록하고 싶은 내용을 자유롭게 입력해주세요
             </p>
           )}
@@ -451,11 +505,12 @@ export default function NewProjectPage() {
               setContent(el.innerHTML)
               setIsEditorEmpty(!el.textContent?.trim() && !el.querySelector('img'))
             }}
+            onClick={handleEditorClick}
             onMouseUp={saveRange}
             onKeyUp={saveRange}
             onTouchEnd={saveRange}
-            className="w-full min-h-[400px] text-[15px] text-[#212121] outline-none leading-relaxed"
-            style={{ wordBreak: 'break-word' }}
+            className="flex-1 w-full text-[15px] text-[#212121] outline-none leading-relaxed"
+            style={{ wordBreak: 'break-word', minHeight: 200 }}
           />
         </div>
 
