@@ -638,6 +638,19 @@ export default function NewProjectPage() {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [timerRunning])
 
+  /* 에디터 마운트 시 자동 포커스 — placeholder 위치에 커서 표시 */
+  useEffect(() => {
+    const editor = editorRef.current
+    if (!editor) return
+    editor.focus()
+    const range = document.createRange()
+    range.setStart(editor, 0)
+    range.collapse(true)
+    const sel = window.getSelection()
+    sel?.removeAllRanges()
+    sel?.addRange(range)
+  }, [])
+
   /* 에디터 커서 저장 */
   const saveRange = () => {
     const sel = window.getSelection()
@@ -966,7 +979,7 @@ export default function NewProjectPage() {
 
         {/* 자유 입력 영역: 상태 배지 하단 ~ 하단 바 상단 전체 커버 */}
         <div
-          className="relative flex-1 px-4 pb-[72px] flex flex-col cursor-text"
+          className="relative flex-1 px-4 pb-[72px] cursor-text"
           onClick={(e) => {
             const target = e.target as HTMLElement
             // 이미지 블록 내 버튼 클릭이면 커서 이동 생략
@@ -994,7 +1007,7 @@ export default function NewProjectPage() {
           }}
         >
           {isEditorEmpty && (
-            <p className="text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
+            <p className="absolute top-0 left-0 text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
               기록하고 싶은 내용을 자유롭게 입력해주세요
             </p>
           )}
@@ -1012,7 +1025,7 @@ export default function NewProjectPage() {
             onMouseUp={saveRange}
             onKeyUp={saveRange}
             onTouchEnd={saveRange}
-            className="flex-1 w-full text-[15px] text-[#212121] outline-none leading-relaxed"
+            className="w-full text-[15px] text-[#212121] outline-none leading-relaxed"
             style={{ wordBreak: 'break-word', minHeight: 200 }}
           />
           {/* 드래그 드롭 위치 — 블록 사이 가로 선 */}
