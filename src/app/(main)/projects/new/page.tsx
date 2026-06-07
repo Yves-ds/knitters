@@ -989,7 +989,7 @@ export default function NewProjectPage() {
 
             const sel = window.getSelection()
 
-            // 기존 콘텐츠의 최하단 Y 좌표 파악
+            // 기존 콘텐츠의 최하단 Y 좌표 파악 (비어있으면 에디터 상단 기준)
             let contentBottom: number | null = null
             if (editor.hasChildNodes()) {
               try {
@@ -999,11 +999,12 @@ export default function NewProjectPage() {
                 if (rects.length > 0) contentBottom = rects[rects.length - 1].bottom
               } catch { /* empty */ }
             }
+            const baseY = contentBottom ?? editor.getBoundingClientRect().top
+            const lh = parseFloat(getComputedStyle(editor).lineHeight) || 24
 
-            if (contentBottom !== null && e.clientY > contentBottom + 4) {
-              // 콘텐츠 아래 빈 영역 클릭 → <br>을 삽입해서 클릭 위치까지 줄 이동
-              const lh = parseFloat(getComputedStyle(editor).lineHeight) || 24
-              const lines = Math.max(1, Math.round((e.clientY - contentBottom) / lh))
+            if (e.clientY > baseY + 4) {
+              // 콘텐츠 아래(또는 빈 에디터의 첫 줄 아래) 클릭 → <br> 삽입으로 줄 이동
+              const lines = Math.max(1, Math.round((e.clientY - baseY) / lh))
               for (let i = 0; i < lines; i++) {
                 editor.appendChild(document.createElement('br'))
               }
