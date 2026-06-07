@@ -306,19 +306,15 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
       <div
         className="absolute inset-x-0 bottom-0 bg-white flex flex-col"
         style={{
-          top: 50,
+          top: 0,
           maxWidth: 480,
           left: '50%',
           transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
           transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
-          borderRadius: '20px 20px 0 0',
         }}
       >
         {/* 헤더 */}
-        <div
-          className="flex items-center px-5 py-4 border-b border-[#F0F0F0] relative flex-shrink-0"
-          style={{ borderRadius: '20px 20px 0 0' }}
-        >
+        <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
           {pdfUrl && (
             <div className="relative">
               <button
@@ -451,19 +447,15 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
       <div
         className="absolute inset-x-0 bottom-0 bg-white flex flex-col"
         style={{
-          top: 50,
+          top: 0,
           maxWidth: 480,
           left: '50%',
           transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
           transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
-          borderRadius: '20px 20px 0 0',
         }}
       >
         {/* 헤더 */}
-        <div
-          className="flex items-center px-5 py-4 border-b border-[#F0F0F0] relative flex-shrink-0"
-          style={{ borderRadius: '20px 20px 0 0' }}
-        >
+        <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
