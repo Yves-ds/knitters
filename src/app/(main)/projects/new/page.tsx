@@ -300,19 +300,13 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
 
   return (
     <div
-      className="fixed inset-0 z-[60]"
-      style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+      className="fixed inset-0 z-[60] bg-white flex flex-col"
+      style={{
+        transform: `translateY(${isOpen ? '0%' : '100%'})`,
+        transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
+        pointerEvents: isOpen ? 'auto' : 'none',
+      }}
     >
-      <div
-        className="absolute inset-x-0 bottom-0 bg-white flex flex-col"
-        style={{
-          top: 0,
-          maxWidth: 480,
-          left: '50%',
-          transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-          transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
-      >
         {/* 헤더 */}
         <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
           {pdfUrl && (
@@ -398,7 +392,6 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
           className="hidden"
           onChange={handleFileChange}
         />
-      </div>
     </div>
   )
 }
@@ -441,19 +434,13 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
 
   return (
     <div
-      className="fixed inset-0 z-[60]"
-      style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+      className="fixed inset-0 z-[60] bg-white flex flex-col"
+      style={{
+        transform: `translateY(${isOpen ? '0%' : '100%'})`,
+        transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
+        pointerEvents: isOpen ? 'auto' : 'none',
+      }}
     >
-      <div
-        className="absolute inset-x-0 bottom-0 bg-white flex flex-col"
-        style={{
-          top: 0,
-          maxWidth: 480,
-          left: '50%',
-          transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-          transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
-      >
         {/* 헤더 */}
         <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
@@ -557,7 +544,6 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
             })
           )}
         </div>
-      </div>
     </div>
   )
 }
@@ -704,7 +690,14 @@ export default function NewProjectPage() {
 
     range.deleteContents()
     range.insertNode(wrapper)
-    range.setStartAfter(wrapper)
+
+    // 이미지 블록 바로 뒤에 텍스트 노드 확보 → 커서가 표시되게 함
+    let afterNode = wrapper.nextSibling
+    if (!afterNode || afterNode.nodeType !== Node.TEXT_NODE) {
+      afterNode = document.createTextNode('')
+      wrapper.parentNode?.insertBefore(afterNode, wrapper.nextSibling)
+    }
+    range.setStart(afterNode, 0)
     range.collapse(true)
     sel?.removeAllRanges()
     sel?.addRange(range)
@@ -976,32 +969,28 @@ export default function NewProjectPage() {
           className="relative flex-1 px-4 pb-[72px] flex flex-col cursor-text"
           onClick={(e) => {
             const target = e.target as HTMLElement
-            if (target.closest('[data-action="delete-img"]')) return
+            // 이미지 블록 내 버튼 클릭이면 커서 이동 생략
+            if (target.closest('[data-action]') || target.closest('.img-block')) return
 
             const editor = editorRef.current
             if (!editor) return
-            editor.focus()
 
-            const sel = window.getSelection()
-
-            // 클릭 좌표로 커서 위치 결정
+            // 클릭한 정확한 위치에 커서 배치
             const range = document.caretRangeFromPoint?.(e.clientX, e.clientY) ?? null
+            const sel = window.getSelection()
 
             if (range && editor.contains(range.startContainer)) {
               sel?.removeAllRanges()
               sel?.addRange(range)
             } else {
-              // 에디터 하단 여백 클릭 → 맨 끝
+              // 에디터 범위 밖(하단 여백 등) → 맨 끝
               const endRange = document.createRange()
               endRange.selectNodeContents(editor)
               endRange.collapse(false)
               sel?.removeAllRanges()
               sel?.addRange(endRange)
             }
-
-            // 클릭한 행의 맨 앞으로 커서 이동
-            ;(sel as Selection & { modify?: (...a: string[]) => void })
-              ?.modify?.('move', 'backward', 'lineBoundary')
+            editor.focus()
           }}
         >
           {isEditorEmpty && (
