@@ -266,6 +266,310 @@ function DateBadge({ date, label, onClick }: { date: string; label: string; onCl
   )
 }
 
+/* ── YouTube URL 파싱 헬퍼 ── */
+function getYouTubeId(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?.*v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  return m ? m[1] : null
+}
+function getEmbedUrl(url: string): string | null {
+  const id = getYouTubeId(url)
+  return id ? `https://www.youtube.com/embed/${id}` : null
+}
+function getThumbUrl(url: string): string | null {
+  const id = getYouTubeId(url)
+  return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : null
+}
+
+/* ── 도안 시트 ── */
+function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
+  isOpen: boolean
+  onClose: () => void
+  pdfUrl: string | null
+  onPdfChange: (url: string | null) => void
+}) {
+  const [showMenu, setShowMenu] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (pdfUrl?.startsWith('blob:')) URL.revokeObjectURL(pdfUrl)
+    onPdfChange(URL.createObjectURL(file))
+    e.target.value = ''
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[60]"
+      style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+    >
+      <div
+        className="absolute inset-x-0 bottom-0 bg-white flex flex-col"
+        style={{
+          top: 50,
+          maxWidth: 480,
+          left: '50%',
+          transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
+          transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
+          borderRadius: '20px 20px 0 0',
+        }}
+      >
+        {/* 헤더 */}
+        <div
+          className="flex items-center px-5 py-4 border-b border-[#F0F0F0] relative flex-shrink-0"
+          style={{ borderRadius: '20px 20px 0 0' }}
+        >
+          {pdfUrl && (
+            <div className="relative">
+              <button
+                onClick={() => setShowMenu(v => !v)}
+                className="w-8 h-8 flex items-center justify-center rounded-lg active:bg-[#F0F0F0]"
+              >
+                <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+                  <circle cx="11" cy="5" r="1.5" fill="#374151"/>
+                  <circle cx="11" cy="11" r="1.5" fill="#374151"/>
+                  <circle cx="11" cy="17" r="1.5" fill="#374151"/>
+                </svg>
+              </button>
+              {showMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
+                  <div
+                    className="absolute top-9 left-0 bg-white rounded-[12px] overflow-hidden z-50"
+                    style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.15)', minWidth: 140 }}
+                  >
+                    <button
+                      onClick={() => { setShowMenu(false); fileInputRef.current?.click() }}
+                      className="block w-full px-4 py-3.5 text-left text-[14px] text-[#111] active:bg-[#F4F6FB]"
+                    >
+                      PDF 변경
+                    </button>
+                    <button
+                      onClick={() => { setShowMenu(false); onPdfChange(null) }}
+                      className="block w-full px-4 py-3.5 text-left text-[14px] text-[#EF4444] active:bg-[#F4F6FB]"
+                    >
+                      PDF 삭제
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">도안</span>
+          <button
+            onClick={() => { onClose(); setShowMenu(false) }}
+            className="ml-auto w-8 h-8 flex items-center justify-center active:opacity-60"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* 바디 */}
+        {pdfUrl ? (
+          <div className="flex-1 relative overflow-hidden min-h-0">
+            <iframe
+              src={pdfUrl}
+              className="w-full h-full border-none"
+              title="도안"
+              style={{ background: '#fff' }}
+            />
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center gap-4">
+            <label className="flex items-center gap-2.5 bg-[#F4F6FB] rounded-[14px] px-6 py-4 cursor-pointer text-[15px] font-semibold text-[#3B86FB]">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="4" y="2" width="12" height="16" rx="2" stroke="#3b86fb" strokeWidth="1.5" fill="none"/>
+                <path d="M7 7H13M7 10H13M7 13H10" stroke="#3b86fb" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              PDF 파일 선택
+              <input
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </label>
+            <p className="text-[13px] text-[#9CA3AF]">PDF 도안 파일을 불러올 수 있어요</p>
+          </div>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,application/pdf"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+      </div>
+    </div>
+  )
+}
+
+/* ── 영상 시트 ── */
+function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
+  isOpen: boolean
+  onClose: () => void
+  videos: string[]
+  onVideosChange: (v: string[]) => void
+}) {
+  const [showAddRow, setShowAddRow] = useState(false)
+  const [urlInput, setUrlInput] = useState('')
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) {
+      setShowAddRow(false)
+      setUrlInput('')
+    }
+  }, [isOpen])
+
+  const handleAdd = () => {
+    const trimmed = urlInput.trim()
+    if (!trimmed) return
+    if (!videos.includes(trimmed)) {
+      onVideosChange([...videos, trimmed])
+    }
+    setSelectedUrl(trimmed)
+    setUrlInput('')
+    setShowAddRow(false)
+  }
+
+  const handleDelete = (url: string) => {
+    onVideosChange(videos.filter(v => v !== url))
+    if (selectedUrl === url) setSelectedUrl(null)
+  }
+
+  const embedUrl = selectedUrl ? (getEmbedUrl(selectedUrl) ?? selectedUrl) : null
+
+  return (
+    <div
+      className="fixed inset-0 z-[60]"
+      style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+    >
+      <div
+        className="absolute inset-x-0 bottom-0 bg-white flex flex-col"
+        style={{
+          top: 50,
+          maxWidth: 480,
+          left: '50%',
+          transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
+          transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
+          borderRadius: '20px 20px 0 0',
+        }}
+      >
+        {/* 헤더 */}
+        <div
+          className="flex items-center px-5 py-4 border-b border-[#F0F0F0] relative flex-shrink-0"
+          style={{ borderRadius: '20px 20px 0 0' }}
+        >
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+          <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">동영상</span>
+        </div>
+
+        {/* 플레이어 (16:9) */}
+        <div className="w-full bg-black flex-shrink-0 relative" style={{ aspectRatio: '16/9' }}>
+          {embedUrl ? (
+            <iframe
+              key={embedUrl}
+              src={embedUrl}
+              className="w-full h-full border-none"
+              allowFullScreen
+              title="동영상"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-[#6B7280] text-[13px] gap-1.5">
+              <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+                <rect x="2" y="5" width="13" height="12" rx="2" stroke="#9ca3af" strokeWidth="1.6" fill="none"/>
+                <path d="M15 9L20 6V16L15 13" stroke="#9ca3af" strokeWidth="1.6" strokeLinejoin="round"/>
+              </svg>
+              영상을 선택해주세요
+            </div>
+          )}
+        </div>
+
+        {/* 목록 */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-[15px] font-bold text-[#111]">저장된 동영상</span>
+            <button
+              onClick={() => setShowAddRow(v => !v)}
+              className="w-[30px] h-[30px] rounded-full bg-[#3B86FB] flex items-center justify-center active:opacity-70 flex-shrink-0"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
+          </div>
+
+          {showAddRow && (
+            <div className="flex gap-2 px-5 pb-3">
+              <input
+                type="url"
+                value={urlInput}
+                onChange={e => setUrlInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAdd()}
+                placeholder="https://youtube.com/watch?v=..."
+                className="flex-1 border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[#111] outline-none focus:border-[#3B86FB]"
+                autoFocus
+              />
+              <button
+                onClick={handleAdd}
+                className="px-4 py-2.5 bg-[#3B86FB] text-white text-[13px] font-semibold rounded-[10px] flex-shrink-0 active:opacity-70"
+              >
+                추가
+              </button>
+            </div>
+          )}
+
+          {videos.length === 0 ? (
+            <p className="px-5 py-8 text-center text-[13px] text-[#9CA3AF]">저장된 동영상이 없어요</p>
+          ) : (
+            videos.map((url, i) => {
+              const thumb = getThumbUrl(url)
+              const isSelected = selectedUrl === url
+              return (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 px-5 py-2.5 cursor-pointer active:bg-[#F9FAFB]"
+                  style={{ background: isSelected ? '#FFF5F4' : undefined }}
+                  onClick={() => setSelectedUrl(url)}
+                >
+                  {thumb ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={thumb} alt="" className="w-20 h-[52px] rounded-lg object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-20 h-[52px] rounded-lg bg-[#E5E7EB] flex-shrink-0 flex items-center justify-center">
+                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+                        <rect x="2" y="5" width="13" height="12" rx="2" stroke="#9ca3af" strokeWidth="1.6" fill="none"/>
+                        <path d="M15 9L20 6V16L15 13" stroke="#9ca3af" strokeWidth="1.6" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  )}
+                  <span className="flex-1 text-[12px] text-[#6B7280] truncate">{url}</span>
+                  <button
+                    onClick={e => { e.stopPropagation(); handleDelete(url) }}
+                    className="w-8 h-8 flex items-center justify-center text-[#9CA3AF] active:opacity-60 flex-shrink-0"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M2 2L14 14M14 2L2 14" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+              )
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ══════════════════════════════════════════════ */
 export default function NewProjectPage() {
   const router = useRouter()
@@ -279,6 +583,10 @@ export default function NewProjectPage() {
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [isEditorEmpty, setIsEditorEmpty] = useState(true)
+  const [patternOpen, setPatternOpen] = useState(false)
+  const [videoOpen, setVideoOpen] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [videos, setVideos] = useState<string[]>([])
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
@@ -751,17 +1059,17 @@ export default function NewProjectPage() {
             <span className="text-[12px] font-normal text-[#646464]">사진</span>
             <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoChange} />
           </label>
-          <button className="flex items-center gap-[6px] active:opacity-50">
+          <button onClick={() => setVideoOpen(true)} className="flex items-center gap-[6px] active:opacity-50">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path fillRule="evenodd" clipRule="evenodd" d="M15 9.649L20.646 7.512C20.7974 7.45469 20.9605 7.43499 21.1212 7.45462C21.2819 7.47424 21.4355 7.53259 21.5686 7.62466C21.7018 7.71673 21.8107 7.83975 21.8858 7.98317C21.9609 8.12658 22.0001 8.28609 22 8.448V15.557C21.9999 15.7185 21.9607 15.8777 21.8858 16.0207C21.8108 16.1638 21.7023 16.2866 21.5695 16.3786C21.4367 16.4706 21.2836 16.5291 21.1233 16.549C20.963 16.5689 20.8003 16.5497 20.649 16.493L15 14.375V16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V8C2 7.46957 2.21071 6.96086 2.58579 6.58579C2.96086 6.21071 3.46957 6 4 6H13C13.5304 6 14.0391 6.21071 14.4142 6.58579C14.7893 6.96086 15 7.46957 15 8V9.649Z" fill="#838383"/>
+              <path fillRule="evenodd" clipRule="evenodd" d="M15 9.649L20.646 7.512C20.7974 7.45469 20.9605 7.43499 21.1212 7.45462C21.2819 7.47424 21.4355 7.53259 21.5686 7.62466C21.7018 7.71673 21.8107 7.83975 21.8858 7.98317C21.9609 8.12658 22.0001 8.28609 22 8.448V15.557C21.9999 15.7185 21.9607 15.8777 21.8858 16.0207C21.8108 16.1638 21.7023 16.2866 21.5695 16.3786C21.4367 16.4706 21.2836 16.5291 21.1233 16.549C20.963 16.5689 20.8003 16.5497 20.649 16.493L15 14.375V16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V8C2 7.46957 2.21071 6.96086 2.58579 6.58579C2.96086 6.21071 3.46957 6 4 6H13C13.5304 6 14.0391 6.21071 14.4142 6.58579C14.7893 6.96086 15 7.46957 15 8V9.649Z" fill={videos.length > 0 ? '#F72E00' : '#838383'}/>
             </svg>
-            <span className="text-[12px] font-normal text-[#646464]">영상</span>
+            <span className="text-[12px] font-normal" style={{ color: videos.length > 0 ? '#F72E00' : '#646464' }}>영상</span>
           </button>
-          <button className="flex items-center gap-[6px] active:opacity-50">
+          <button onClick={() => setPatternOpen(true)} className="flex items-center gap-[6px] active:opacity-50">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <g clipPath="url(#clip0_pattern)">
-                <path d="M7.5 5C7.10218 5 6.72064 5.15804 6.43934 5.43934C6.15804 5.72065 6 6.10218 6 6.5V17.5C6 17.8978 6.15804 18.2794 6.43934 18.5607C6.72064 18.842 7.10218 19 7.5 19H16.5C16.8978 19 17.2794 18.842 17.5607 18.5607C17.842 18.2794 18 17.8978 18 17.5V10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5H7.5Z" fill="#838383"/>
-                <path d="M18 10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5V9.5C13 9.63261 13.0527 9.75979 13.1464 9.85355C13.2402 9.94732 13.3674 10 13.5 10H18Z" fill="#D2D2D2"/>
+                <path d="M7.5 5C7.10218 5 6.72064 5.15804 6.43934 5.43934C6.15804 5.72065 6 6.10218 6 6.5V17.5C6 17.8978 6.15804 18.2794 6.43934 18.5607C6.72064 18.842 7.10218 19 7.5 19H16.5C16.8978 19 17.2794 18.842 17.5607 18.5607C17.842 18.2794 18 17.8978 18 17.5V10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5H7.5Z" fill={pdfUrl ? '#F72E00' : '#838383'}/>
+                <path d="M18 10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5V9.5C13 9.63261 13.0527 9.75979 13.1464 9.85355C13.2402 9.94732 13.3674 10 13.5 10H18Z" fill={pdfUrl ? '#FFCCC1' : '#D2D2D2'}/>
               </g>
               <defs>
                 <clipPath id="clip0_pattern">
@@ -769,7 +1077,7 @@ export default function NewProjectPage() {
                 </clipPath>
               </defs>
             </svg>
-            <span className="text-[12px] font-normal text-[#646464]">도안</span>
+            <span className="text-[12px] font-normal" style={{ color: pdfUrl ? '#F72E00' : '#646464' }}>도안</span>
           </button>
           <button className="flex items-center gap-[6px] active:opacity-50">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -797,6 +1105,22 @@ export default function NewProjectPage() {
           />
         ) : null}
       </div>
+
+      {/* 도안 시트 */}
+      <PatternSheet
+        isOpen={patternOpen}
+        onClose={() => setPatternOpen(false)}
+        pdfUrl={pdfUrl}
+        onPdfChange={setPdfUrl}
+      />
+
+      {/* 영상 시트 */}
+      <VideoSheet
+        isOpen={videoOpen}
+        onClose={() => setVideoOpen(false)}
+        videos={videos}
+        onVideosChange={setVideos}
+      />
     </>
   )
 }
