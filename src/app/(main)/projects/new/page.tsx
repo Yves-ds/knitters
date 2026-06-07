@@ -982,32 +982,56 @@ export default function NewProjectPage() {
           className="relative flex-1 px-4 pb-[72px] cursor-text"
           onClick={(e) => {
             const target = e.target as HTMLElement
-            // 이미지 블록 내 버튼 클릭이면 커서 이동 생략
             if (target.closest('[data-action]') || target.closest('.img-block')) return
 
             const editor = editorRef.current
             if (!editor) return
 
-            // 클릭한 정확한 위치에 커서 배치
-            const range = document.caretRangeFromPoint?.(e.clientX, e.clientY) ?? null
             const sel = window.getSelection()
 
-            if (range && editor.contains(range.startContainer)) {
-              sel?.removeAllRanges()
-              sel?.addRange(range)
-            } else {
-              // 에디터 범위 밖(하단 여백 등) → 맨 끝
+            // 기존 콘텐츠의 최하단 Y 좌표 파악
+            let contentBottom: number | null = null
+            if (editor.hasChildNodes()) {
+              try {
+                const r = document.createRange()
+                r.selectNodeContents(editor)
+                const rects = r.getClientRects()
+                if (rects.length > 0) contentBottom = rects[rects.length - 1].bottom
+              } catch { /* empty */ }
+            }
+
+            if (contentBottom !== null && e.clientY > contentBottom + 4) {
+              // 콘텐츠 아래 빈 영역 클릭 → <br>을 삽입해서 클릭 위치까지 줄 이동
+              const lh = parseFloat(getComputedStyle(editor).lineHeight) || 24
+              const lines = Math.max(1, Math.round((e.clientY - contentBottom) / lh))
+              for (let i = 0; i < lines; i++) {
+                editor.appendChild(document.createElement('br'))
+              }
               const endRange = document.createRange()
               endRange.selectNodeContents(editor)
               endRange.collapse(false)
               sel?.removeAllRanges()
               sel?.addRange(endRange)
+              setContent(editor.innerHTML)
+            } else {
+              // 콘텐츠 영역 내 클릭 → 정확한 위치에 커서 배치
+              const caret = document.caretRangeFromPoint?.(e.clientX, e.clientY) ?? null
+              if (caret && editor.contains(caret.startContainer)) {
+                sel?.removeAllRanges()
+                sel?.addRange(caret)
+              } else {
+                const endRange = document.createRange()
+                endRange.selectNodeContents(editor)
+                endRange.collapse(false)
+                sel?.removeAllRanges()
+                sel?.addRange(endRange)
+              }
             }
             editor.focus()
           }}
         >
           {isEditorEmpty && (
-            <p className="absolute top-0 left-0 text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
+            <p className="absolute top-0 left-4 text-[15px] text-[#c8c8c8] pointer-events-none select-none leading-relaxed">
               기록하고 싶은 내용을 자유롭게 입력해주세요
             </p>
           )}
