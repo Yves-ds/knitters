@@ -300,9 +300,10 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
       style={{
-        transform: `translateY(${isOpen ? '0%' : '100%'})`,
+        left: '50%',
+        transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
         transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
         pointerEvents: isOpen ? 'auto' : 'none',
       }}
@@ -434,9 +435,10 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
       style={{
-        transform: `translateY(${isOpen ? '0%' : '100%'})`,
+        left: '50%',
+        transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
         transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
         pointerEvents: isOpen ? 'auto' : 'none',
       }}
