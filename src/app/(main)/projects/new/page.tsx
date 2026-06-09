@@ -404,16 +404,12 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
   videos: string[]
   onVideosChange: (v: string[]) => void
 }) {
-  const [showAddRow, setShowAddRow] = useState(false)
-  const [urlInput, setUrlInput] = useState('')
+  const [showClipboardAlert, setShowClipboardAlert] = useState(false)
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null)
   const [titles, setTitles] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    if (!isOpen) {
-      setShowAddRow(false)
-      setUrlInput('')
-    }
+    if (!isOpen) setShowClipboardAlert(false)
   }, [isOpen])
 
   // 추가된 영상의 제목 oEmbed로 가져오기
@@ -431,15 +427,13 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videos])
 
-  const handleAdd = (url?: string) => {
-    const trimmed = (url ?? urlInput).trim()
+  const handleAdd = (url: string) => {
+    const trimmed = url.trim()
     if (!trimmed) return
     if (!videos.includes(trimmed)) {
       onVideosChange([...videos, trimmed])
     }
     setSelectedUrl(trimmed)
-    setUrlInput('')
-    setShowAddRow(false)
   }
 
   const handleAddClick = async () => {
@@ -450,7 +444,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
         return
       }
     } catch { /* 권한 없음 or 지원 안 함 */ }
-    setShowAddRow(v => !v)
+    setShowClipboardAlert(true)
   }
 
   const handleDelete = (url: string) => {
@@ -515,23 +509,20 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
             </button>
           </div>
 
-          {showAddRow && (
-            <div className="flex gap-2 px-5 pb-3">
-              <input
-                type="url"
-                value={urlInput}
-                onChange={e => setUrlInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleAdd()}
-                placeholder="https://youtube.com/watch?v=..."
-                className="flex-1 border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[#111] outline-none focus:border-[#3B86FB]"
-                autoFocus
-              />
-              <button
-                onClick={() => handleAdd()}
-                className="px-4 py-2.5 bg-[#3B86FB] text-white text-[13px] font-semibold rounded-[10px] flex-shrink-0 active:opacity-70"
-              >
-                추가
-              </button>
+          {/* 클립보드 안내 팝업 */}
+          {showClipboardAlert && (
+            <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-[70] flex items-center justify-center bg-black/40 px-8">
+              <div className="w-full bg-white rounded-[16px] px-6 py-6 flex flex-col gap-5">
+                <p className="text-[15px] text-[#212121] leading-relaxed text-center">
+                  유튜브 영상 링크를 복사한 후<br />다시 눌러주세요.
+                </p>
+                <button
+                  onClick={() => setShowClipboardAlert(false)}
+                  className="w-full py-3 bg-[#F72E00] text-white text-[15px] font-semibold rounded-[10px] active:opacity-80"
+                >
+                  확인
+                </button>
+              </div>
             </div>
           )}
 
