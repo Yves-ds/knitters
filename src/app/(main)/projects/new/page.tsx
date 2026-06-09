@@ -304,7 +304,7 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-        transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)',
         pointerEvents: isOpen ? 'auto' : 'none',
       }}
     >
@@ -415,8 +415,8 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
     }
   }, [isOpen])
 
-  const handleAdd = () => {
-    const trimmed = urlInput.trim()
+  const handleAdd = (url?: string) => {
+    const trimmed = (url ?? urlInput).trim()
     if (!trimmed) return
     if (!videos.includes(trimmed)) {
       onVideosChange([...videos, trimmed])
@@ -424,6 +424,17 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
     setSelectedUrl(trimmed)
     setUrlInput('')
     setShowAddRow(false)
+  }
+
+  const handleAddClick = async () => {
+    try {
+      const text = (await navigator.clipboard.readText()).trim()
+      if (text && getYouTubeId(text)) {
+        handleAdd(text)
+        return
+      }
+    } catch { /* 권한 없음 or 지원 안 함 */ }
+    setShowAddRow(v => !v)
   }
 
   const handleDelete = (url: string) => {
@@ -439,7 +450,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-        transition: 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)',
         pointerEvents: isOpen ? 'auto' : 'none',
       }}
     >
@@ -479,7 +490,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
           <div className="flex items-center justify-between px-5 py-4">
             <span className="text-[15px] font-bold text-[#111]">저장된 동영상</span>
             <button
-              onClick={() => setShowAddRow(v => !v)}
+              onClick={handleAddClick}
               className="w-[30px] h-[30px] rounded-full bg-[#3B86FB] flex items-center justify-center active:opacity-70 flex-shrink-0"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -500,7 +511,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
                 autoFocus
               />
               <button
-                onClick={handleAdd}
+                onClick={() => handleAdd()}
                 className="px-4 py-2.5 bg-[#3B86FB] text-white text-[13px] font-semibold rounded-[10px] flex-shrink-0 active:opacity-70"
               >
                 추가
