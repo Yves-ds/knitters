@@ -3,10 +3,7 @@ import { useState, Suspense, useEffect } from 'react'
 import { Plus, ChevronDown } from 'lucide-react'
 import { mockPosts, mockNotices } from '@/lib/mockData'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-
-const MAIN_TABS = ['커뮤니티', '함뜨해요'] as const
-type MainTab = typeof MAIN_TABS[number]
+import { useRouter } from 'next/navigation'
 
 const CATEGORIES = ['전체', '뜨개 질문', '뜨개 잡담', '실속 장터', '구매 후기', '완성 인증'] as const
 
@@ -71,9 +68,6 @@ type SortKey = '최신순' | '인기순'
 
 function CommunityPageInner() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const initialTab = (searchParams.get('tab') === '함뜨해요' ? '함뜨해요' : '커뮤니티') as MainTab
-  const [mainTab, setMainTab] = useState<MainTab>(initialTab)
   const [category, setCategory] = useState('전체')
   const [sortKey, setSortKey] = useState<SortKey>('최신순')
   const [sortOpen, setSortOpen] = useState(false)
@@ -99,23 +93,9 @@ function CommunityPageInner() {
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-0">
         <div className="flex items-center justify-between">
-          {/* 메인 탭 */}
-          <div className="flex items-end gap-4">
-            {MAIN_TABS.map(t => (
-              <button
-                key={t}
-                onClick={() => setMainTab(t)}
-                className="text-[24px] font-bold pb-3 transition-colors"
-                style={{ color: mainTab === t ? '#F72E00' : '#E0DCD3' }}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* 우측 아이콘 */}
+          <span className="text-[24px] font-bold pb-3 text-[#F72E00]">커뮤니티</span>
           <div className="flex items-center gap-3 pb-3">
-            <Link href={`/community/search?tab=${mainTab === '함뜨해요' ? '함뜨해요' : '커뮤니티'}`}>
+            <Link href="/community/search?tab=커뮤니티">
               <SearchIcon />
             </Link>
             <button onClick={() => router.push('/notifications')}>
@@ -125,8 +105,8 @@ function CommunityPageInner() {
         </div>
       </div>
 
-      {/* ── 커뮤니티 탭 콘텐츠 ── */}
-      {mainTab === '커뮤니티' && (
+      {/* 공지사항 */}
+      <>
         <>
           {/* 공지사항 */}
           <div className="bg-white px-4 pt-5 pb-2">
@@ -265,16 +245,7 @@ function CommunityPageInner() {
             ))}
           </div>
         </>
-      )}
-
-      {/* ── 함뜨해요 탭 콘텐츠 ── */}
-      {mainTab === '함뜨해요' && (
-        <div className="flex flex-col items-center justify-center py-24 gap-3">
-          <span className="text-5xl">🧶</span>
-          <p className="text-[15px] font-semibold text-[#212121]">함께 뜨개할 모임을 찾아보세요</p>
-          <p className="text-[13px] text-[#a7a7a7]">검색 아이콘으로 원하는 모임을 찾을 수 있어요</p>
-        </div>
-      )}
+      </>
 
       {/* FAB */}
       <Link
