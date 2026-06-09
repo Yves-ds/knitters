@@ -77,7 +77,7 @@ export default function LoginPage() {
         <div className="w-full flex flex-col gap-3">
           {/* 카카오 */}
           <button
-            onClick={() => router.push('/onboarding')}
+            onClick={() => router.push('/feed')}
             className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] transition-opacity active:opacity-80"
             style={{ backgroundColor: '#fee500' }}
           >
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
           {/* Apple */}
           <button
-            onClick={() => router.push('/onboarding')}
+            onClick={() => router.push('/feed')}
             className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] transition-opacity active:opacity-80"
             style={{ backgroundColor: '#111827' }}
           >
@@ -115,7 +115,7 @@ export default function LoginPage() {
 
           {/* 이메일 */}
           <button
-            onClick={() => router.push('/onboarding')}
+            onClick={() => router.push('/feed')}
             className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] bg-white border transition-opacity active:opacity-80"
             style={{ borderColor: '#e5e7eb' }}
           >
