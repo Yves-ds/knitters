@@ -392,7 +392,30 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
   )
 }
 
-/* ── PDF 뷰어 (PDF.js — iOS PDFKit 동작과 동일) ── */
+/* ── PDF.js CDN 로더 (싱글톤) ── */
+const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+const PDFJS_WORKER_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+let _pdfJsPromise: Promise<any> | null = null
+
+function loadPdfJs(): Promise<any> {
+  if (typeof window === 'undefined') return Promise.reject('no window')
+  const w = window as any
+  if (w.pdfjsLib) return Promise.resolve(w.pdfjsLib)
+  if (_pdfJsPromise) return _pdfJsPromise
+  _pdfJsPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = PDFJS_CDN
+    script.onload = () => {
+      w.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_CDN
+      resolve(w.pdfjsLib)
+    }
+    script.onerror = (e) => { _pdfJsPromise = null; reject(e) }
+    document.head.appendChild(script)
+  })
+  return _pdfJsPromise
+}
+
+/* ── PDF 뷰어 (PDF.js CDN — iOS/Android 공통) ── */
 function PdfViewer({ url }: { url: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -402,10 +425,8 @@ function PdfViewer({ url }: { url: string }) {
 
     ;(async () => {
       try {
-        const pdfjsLib = await import('pdfjs-dist')
-        pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
-
-        const pdf = await pdfjsLib.getDocument({ url }).promise
+        const pdfjsLib = await loadPdfJs()
+        const pdf = await pdfjsLib.getDocument(url).promise
         if (cancelled || !containerRef.current) return
 
         const container = containerRef.current
@@ -433,7 +454,7 @@ function PdfViewer({ url }: { url: string }) {
           container.appendChild(canvas)
 
           const ctx = canvas.getContext('2d')!
-          await page.render({ canvas, canvasContext: ctx, viewport }).promise
+          await page.render({ canvasContext: ctx, viewport }).promise
         }
       } catch (err) {
         console.error('PDF render error', err)

@@ -1,5 +1,3 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  transpilePackages: ['pdfjs-dist'],
-};
+const nextConfig = {};
 module.exports = nextConfig;
