@@ -359,13 +359,8 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
 
         {/* 바디 */}
         {pdfUrl ? (
-          <div className="flex-1 relative overflow-hidden min-h-0">
-            <iframe
-              src={pdfUrl}
-              className="w-full h-full border-none"
-              title="도안"
-              style={{ background: '#fff' }}
-            />
+          <div className="flex-1 overflow-hidden min-h-0">
+            <PdfViewer url={pdfUrl} />
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center gap-4">
@@ -394,6 +389,66 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
           onChange={handleFileChange}
         />
     </div>
+  )
+}
+
+/* ── PDF 뷰어 (PDF.js — iOS PDFKit 동작과 동일) ── */
+function PdfViewer({ url }: { url: string }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!url) return
+    let cancelled = false
+
+    ;(async () => {
+      try {
+        const pdfjsLib = await import('pdfjs-dist')
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
+
+        const pdf = await pdfjsLib.getDocument({ url }).promise
+        if (cancelled || !containerRef.current) return
+
+        const container = containerRef.current
+        container.innerHTML = ''
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          if (cancelled) return
+          const page = await pdf.getPage(pageNum)
+
+          const containerWidth = container.clientWidth || 390
+          const defaultVp = page.getViewport({ scale: 1 })
+          const dpr = window.devicePixelRatio || 1
+          const scale = (containerWidth / defaultVp.width) * dpr
+          const viewport = page.getViewport({ scale })
+
+          const canvas = document.createElement('canvas')
+          canvas.width = viewport.width
+          canvas.height = viewport.height
+          canvas.style.width = '100%'
+          canvas.style.height = `${(defaultVp.height * containerWidth) / defaultVp.width}px`
+          canvas.style.display = 'block'
+          if (pageNum < pdf.numPages) {
+            canvas.style.borderBottom = '8px solid #F0F0F0'
+          }
+          container.appendChild(canvas)
+
+          const ctx = canvas.getContext('2d')!
+          await page.render({ canvas, canvasContext: ctx, viewport }).promise
+        }
+      } catch (err) {
+        console.error('PDF render error', err)
+      }
+    })()
+
+    return () => { cancelled = true }
+  }, [url])
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full overflow-y-auto"
+      style={{ touchAction: 'pan-y pinch-zoom' } as React.CSSProperties}
+    />
   )
 }
 
