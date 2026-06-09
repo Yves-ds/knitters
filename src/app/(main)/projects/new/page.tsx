@@ -966,17 +966,19 @@ export default function NewProjectPage() {
       coverBlockRef.current?.querySelector('img') ??
       editorRef.current?.querySelector('.img-block img')
     ) as HTMLImageElement | null
-    addProject({
+    const newId = addProject({
       title: title.trim(),
-      status: status === '뜨는 중' ? '진행 중' : status === '준비 중' ? '시작 안 함' : status,
+      status,
       startDate,
       endDate,
       content: editorRef.current?.innerHTML || content,
       emoji: '🧶',
       timerSecs,
       coverPhoto: coverImg?.src || undefined,
+      videos,
+      pdfUrl,
     })
-    router.push('/projects')
+    router.push(`/projects/${newId}`)
   }
 
   return (

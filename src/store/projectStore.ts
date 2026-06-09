@@ -13,6 +13,8 @@ export interface Project {
   timerSecs: number
   createdAt: number    // Date.now()
   coverPhoto?: string  // 대표 사진 data URL
+  videos: string[]     // YouTube URL 목록
+  pdfUrl: string | null // 도안 PDF URL
 }
 
 // mockProjects를 스토어 초기값으로 변환
@@ -26,11 +28,13 @@ const initialProjects: Project[] = mockProjects.map(p => ({
   emoji: (p as any).emoji ?? '🧶',
   timerSecs: 0,
   createdAt: Date.now() - parseInt(p.id) * 1000,
+  videos: [],
+  pdfUrl: null,
 }))
 
 interface ProjectStore {
   projects: Project[]
-  addProject: (p: Omit<Project, 'id' | 'createdAt'>) => void
+  addProject: (p: Omit<Project, 'id' | 'createdAt'>) => string
   updateProject: (id: string, updates: Partial<Project>) => void
   deleteProject: (id: string) => void
 }
@@ -39,17 +43,16 @@ export const useProjectStore = create<ProjectStore>()(
   persist(
     (set) => ({
       projects: initialProjects,
-      addProject: (p) =>
+      addProject: (p) => {
+        const id = String(Date.now())
         set((state) => ({
           projects: [
-            {
-              ...p,
-              id: String(Date.now()),
-              createdAt: Date.now(),
-            },
+            { ...p, id, createdAt: Date.now() },
             ...state.projects,
           ],
-        })),
+        }))
+        return id
+      },
       updateProject: (id, updates) =>
         set((state) => ({
           projects: state.projects.map(p => p.id === id ? { ...p, ...updates } : p),
