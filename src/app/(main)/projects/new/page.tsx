@@ -407,6 +407,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
   const [showAddRow, setShowAddRow] = useState(false)
   const [urlInput, setUrlInput] = useState('')
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null)
+  const [titles, setTitles] = useState<Record<string, string>>({})
 
   useEffect(() => {
     if (!isOpen) {
@@ -414,6 +415,21 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
       setUrlInput('')
     }
   }, [isOpen])
+
+  // 추가된 영상의 제목 oEmbed로 가져오기
+  useEffect(() => {
+    videos.forEach(url => {
+      if (titles[url]) return
+      const id = getYouTubeId(url)
+      if (!id) return
+      fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`)
+        .then(r => r.json())
+        .then(d => setTitles(prev => ({ ...prev, [url]: d.title })))
+        .catch(() => {})
+    })
+  // titles는 의도적으로 제외 (추가될 때만 fetch)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videos])
 
   const handleAdd = (url?: string) => {
     const trimmed = (url ?? urlInput).trim()
@@ -455,13 +471,13 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
       }}
     >
         {/* 헤더 */}
-        <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
+        <div className="flex items-center justify-end px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
+          <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">동영상</span>
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </button>
-          <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">동영상</span>
         </div>
 
         {/* 플레이어 (16:9) */}
@@ -534,16 +550,18 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
                 >
                   {thumb ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={thumb} alt="" className="w-20 h-[52px] rounded-lg object-cover flex-shrink-0" />
+                    <img src={thumb} alt="" className="w-[112px] h-16 rounded-lg object-cover flex-shrink-0" />
                   ) : (
-                    <div className="w-20 h-[52px] rounded-lg bg-[#E5E7EB] flex-shrink-0 flex items-center justify-center">
+                    <div className="w-[112px] h-16 rounded-lg bg-[#E5E7EB] flex-shrink-0 flex items-center justify-center">
                       <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
                         <rect x="2" y="5" width="13" height="12" rx="2" stroke="#9ca3af" strokeWidth="1.6" fill="none"/>
                         <path d="M15 9L20 6V16L15 13" stroke="#9ca3af" strokeWidth="1.6" strokeLinejoin="round"/>
                       </svg>
                     </div>
                   )}
-                  <span className="flex-1 text-[12px] text-[#6B7280] truncate">{url}</span>
+                  <span className="flex-1 text-[13px] text-[#111] font-medium leading-snug line-clamp-2">
+                    {titles[url] || url}
+                  </span>
                   <button
                     onClick={e => { e.stopPropagation(); handleDelete(url) }}
                     className="w-8 h-8 flex items-center justify-center text-[#9CA3AF] active:opacity-60 flex-shrink-0"
