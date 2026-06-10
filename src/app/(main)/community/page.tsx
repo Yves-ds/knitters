@@ -189,6 +189,13 @@ function CommunityPageInner() {
 
           {/* 게시글 목록 */}
           <div className="bg-white -mt-3">
+            {filtered.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 gap-2">
+                <span className="text-[32px]">🧶</span>
+                <p className="text-[15px] font-semibold text-[#212121]">아직 게시된 글이 없어요</p>
+                <p className="text-[13px] text-[#a7a7a7]">첫 번째 글을 작성해보세요!</p>
+              </div>
+            )}
             {filtered.map((post, idx) => (
               <div key={post.id}>
                 {idx > 0 && <div className="mx-4 h-px bg-[#F0F0F0]" />}
