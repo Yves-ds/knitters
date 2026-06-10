@@ -34,24 +34,9 @@ function ChevronRightIcon() {
 }
 
 const QUICK_MENU = [
-  {
-    emoji: '❤️',
-    label: '좋아요',
-    desc: '도안·실·바늘·브랜드',
-    href: '/mypage/settings',
-  },
-  {
-    emoji: '📝',
-    label: '내 활동',
-    desc: '게시글·댓글',
-    href: '/mypage/settings',
-  },
-  {
-    emoji: '🧺',
-    label: '니팅박스',
-    desc: '실·바늘 모음',
-    href: '/mypage/settings',
-  },
+  { emoji: '❤️', label: '좋아요', href: '/mypage/settings' },
+  { emoji: '📝', label: '내 활동', href: '/mypage/settings' },
+  { emoji: '🧺', label: '니팅박스', href: '/mypage/settings' },
 ]
 
 export default function MyPage() {
@@ -119,7 +104,6 @@ export default function MyPage() {
           >
             <span className="text-[28px] leading-none">{item.emoji}</span>
             <p className="text-[13px] font-bold text-[#2A0B04]">{item.label}</p>
-            <p className="text-[11px] text-[#9A9A9A] text-center leading-tight">{item.desc}</p>
           </Link>
         ))}
       </div>
