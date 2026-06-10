@@ -5,30 +5,30 @@ import { X, Plus } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
 
 type SortKey = '생성일' | '제목' | '시작일' | '종료일'
-type StatusDisplay = '전체' | '시작 안 함' | '열뜨 중' | '쉬는 중' | '완성'
+type StatusDisplay = '전체' | '준비 중' | '뜨는 중' | '쉬는 중' | '완성'
 
 const SORT_OPTIONS: SortKey[] = ['생성일', '제목', '시작일', '종료일']
-const STATUS_OPTIONS: StatusDisplay[] = ['전체', '시작 안 함', '열뜨 중', '쉬는 중', '완성']
+const STATUS_OPTIONS: StatusDisplay[] = ['전체', '준비 중', '뜨는 중', '쉬는 중', '완성']
 
 const STATUS_DATA: Record<StatusDisplay, string> = {
   '전체': '전체',
-  '시작 안 함': '시작 안 함',
-  '열뜨 중': '진행 중',
+  '준비 중': '준비 중',
+  '뜨는 중': '뜨는 중',
   '쉬는 중': '쉬는 중',
   '완성': '완성',
 }
 
 // 데이터값 → 카드 표시 이름
 const STATUS_LABEL: Record<string, string> = {
-  '시작 안 함': '시작 안 함',
-  '진행 중': '열뜨 중',
+  '준비 중': '준비 중',
+  '뜨는 중': '뜨는 중',
   '쉬는 중': '쉬는 중',
   '완성': '완성',
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  '시작 안 함': '#b0b0b0',
-  '진행 중': '#F72E00',
+  '준비 중': '#b0b0b0',
+  '뜨는 중': '#F72E00',
   '쉬는 중': '#FF8C69',
   '완성': '#3CB371',
 }
