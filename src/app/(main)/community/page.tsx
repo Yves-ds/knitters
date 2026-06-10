@@ -5,7 +5,7 @@ import { mockPosts, mockNotices } from '@/lib/mockData'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-const CATEGORIES = ['전체', '뜨개 잡담', '뜨개 질문', '구인/구직'] as const
+const CATEGORIES = ['전체', '뜨개 잡담', '뜨개 질문', '테스터 모집'] as const
 
 function SearchIcon() {
   return (
