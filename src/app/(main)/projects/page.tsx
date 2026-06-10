@@ -98,7 +98,43 @@ export default function ProjectsPage() {
     <div className="min-h-screen bg-[#fafafa] pb-28">
 
       {/* 헤더 */}
-      <div className="px-4 pt-14">
+      <div className="px-4 pt-14 relative">
+        {/* 버튼 — overflow/transform 컨테이너 바깥에 absolute로 배치 */}
+        <div className="absolute top-14 right-4 flex items-center gap-2 pt-1 z-50">
+          <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
+            <SearchIcon />
+          </button>
+          <div className="relative">
+            <button onClick={() => setSortPanelOpen(v => !v)} className="w-8 h-8 flex items-center justify-center">
+              <SortIcon />
+            </button>
+            {sortPanelOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setSortPanelOpen(false)} />
+                <div className="absolute top-10 right-0 bg-white rounded-[14px] shadow-[0_4px_24px_rgba(0,0,0,0.14)] z-50 w-44 overflow-hidden py-2">
+                  <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-2 pb-1">날짜 · 제목 정렬</p>
+                  {SORT_OPTIONS.map(opt => (
+                    <button key={opt} onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
+                      className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
+                      style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}>
+                      {opt}
+                    </button>
+                  ))}
+                  <div className="mx-4 h-px bg-[#f0f0f0] my-1" />
+                  <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-1 pb-1">진행상황 별 정렬</p>
+                  {STATUS_OPTIONS.map(opt => (
+                    <button key={opt} onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
+                      className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
+                      style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}>
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
         {/* 타이틀 영역 — grid-template-rows 트릭으로 실제 높이에 맞게 부드럽게 접힘 */}
         <div
           style={{
@@ -115,42 +151,8 @@ export default function ProjectsPage() {
               transition: 'opacity 0.28s ease, transform 0.28s ease',
             }}
           >
-          <div className="flex items-start justify-between pb-3">
+          <div className="pb-3 pr-20">
             <p className="text-[30px] font-bold text-[#212121] tracking-[-0.5px] leading-tight">오늘은 어떤 작품을<br />떠볼까요?</p>
-            <div className="flex items-center gap-2 pt-1">
-              <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
-                <SearchIcon />
-              </button>
-              <div className="relative">
-                <button onClick={() => setSortPanelOpen(v => !v)} className="w-8 h-8 flex items-center justify-center">
-                  <SortIcon />
-                </button>
-                {sortPanelOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setSortPanelOpen(false)} />
-                    <div className="absolute top-10 right-0 bg-white rounded-[14px] shadow-[0_4px_24px_rgba(0,0,0,0.14)] z-50 w-44 overflow-hidden py-2">
-                      <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-2 pb-1">날짜 · 제목 정렬</p>
-                      {SORT_OPTIONS.map(opt => (
-                        <button key={opt} onClick={() => { setSortKey(opt); setSortPanelOpen(false) }}
-                          className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
-                          style={{ color: sortKey === opt ? '#f72e00' : '#212121' }}>
-                          {opt}
-                        </button>
-                      ))}
-                      <div className="mx-4 h-px bg-[#f0f0f0] my-1" />
-                      <p className="text-[11px] font-semibold text-[#a7a7a7] px-4 pt-1 pb-1">진행상황 별 정렬</p>
-                      {STATUS_OPTIONS.map(opt => (
-                        <button key={opt} onClick={() => { setStatusDisplay(opt); setSortPanelOpen(false) }}
-                          className="w-full text-left px-4 py-[8px] text-[15px] font-medium"
-                          style={{ color: statusDisplay === opt ? '#f72e00' : '#212121' }}>
-                          {opt}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
           </div>
           </div>
           </div>
