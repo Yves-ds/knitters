@@ -79,6 +79,46 @@ export const mockChallenges = [
   },
 ]
 
+export const mockExploreItems: Record<'도안' | '실' | '바늘', { id: string; name: string; brand: string; likes: number; link: string; bg: string }[]> = {
+  도안: [
+    { id: 'd1', name: '베이직 리브 비니', brand: '니팅러버', likes: 1230, link: 'https://www.ravelry.com', bg: '#F5EDE8' },
+    { id: 'd2', name: '클래식 케이블 스웨터', brand: '뜨개마을', likes: 876, link: 'https://www.ravelry.com', bg: '#EAF0F5' },
+    { id: 'd3', name: '미니 토트백', brand: '실뭉치언니', likes: 2100, link: 'https://www.ravelry.com', bg: '#F0EDF5' },
+    { id: 'd4', name: '그래니스퀘어 담요', brand: '코바늘김씨', likes: 654, link: 'https://www.ravelry.com', bg: '#EDF5EE' },
+    { id: 'd5', name: '마켓백', brand: '니팅러버', likes: 1870, link: 'https://www.ravelry.com', bg: '#F5F0E8' },
+    { id: 'd6', name: '버킷햇', brand: '뜨개마을', likes: 430, link: 'https://www.ravelry.com', bg: '#F5E8EC' },
+    { id: 'd7', name: '레이스 숄', brand: '실뭉치언니', likes: 970, link: 'https://www.ravelry.com', bg: '#E8F0F5' },
+    { id: 'd8', name: '케이블 카디건', brand: '뜨개마을', likes: 1120, link: 'https://www.ravelry.com', bg: '#F5EBE8' },
+    { id: 'd9', name: '코튼 탑', brand: '코바늘김씨', likes: 760, link: 'https://www.ravelry.com', bg: '#EEF5E8' },
+  ],
+  실: [
+    { id: 'y1', name: '메리노울 DK', brand: 'Drops Design', likes: 2340, link: 'https://www.garnstudio.com', bg: '#F5EDE8' },
+    { id: 'y2', name: 'Alpaca Silk', brand: 'Drops Design', likes: 1870, link: 'https://www.garnstudio.com', bg: '#EAF0F5' },
+    { id: 'y3', name: 'Soft Tweed', brand: 'Scheepjes', likes: 1450, link: 'https://www.scheepjes.com', bg: '#EDF5EE' },
+    { id: 'y4', name: 'Catona 100g', brand: 'Scheepjes', likes: 980, link: 'https://www.scheepjes.com', bg: '#F5F0E8' },
+    { id: 'y5', name: 'Merino Extrafine', brand: 'Lana Grossa', likes: 760, link: 'https://www.lanagrossa.com', bg: '#F0EDF5' },
+    { id: 'y6', name: 'Cool Wool Big', brand: 'Lana Grossa', likes: 630, link: 'https://www.lanagrossa.com', bg: '#F5E8EC' },
+  ],
+  바늘: [
+    { id: 'n1', name: '인터체인지블 세트', brand: 'Clover', likes: 890, link: 'https://www.clover.co.jp', bg: '#EAF0F5' },
+    { id: 'n2', name: '대나무 코바늘 세트', brand: 'Clover', likes: 1230, link: 'https://www.clover.co.jp', bg: '#F5EDE8' },
+    { id: 'n3', name: 'Symfonie Wood 세트', brand: 'KnitPro', likes: 1560, link: 'https://www.knitpro.eu', bg: '#F5F0E8' },
+    { id: 'n4', name: 'Nova Metal 줄바늘', brand: 'KnitPro', likes: 740, link: 'https://www.knitpro.eu', bg: '#EDF5EE' },
+    { id: 'n5', name: '스틸 코바늘 세트', brand: 'Tulip', likes: 520, link: 'https://www.tulip-japan.co.jp', bg: '#F0EDF5' },
+    { id: 'n6', name: '에티모 로즈 세트', brand: 'Tulip', likes: 2100, link: 'https://www.tulip-japan.co.jp', bg: '#F5E8EC' },
+  ],
+}
+
+export const mockBrands = [
+  { id: 'b1', nameKo: '드롭스 디자인', nameEn: 'Drops Design', bg: '#F5EDE8', bookmarked: true },
+  { id: 'b2', nameKo: '스헤이프헤스', nameEn: 'Scheepjes', bg: '#EAF0F5', bookmarked: false },
+  { id: 'b3', nameKo: '라나그로사', nameEn: 'Lana Grossa', bg: '#EDF5EE', bookmarked: true },
+  { id: 'b4', nameKo: '클로버', nameEn: 'Clover', bg: '#F5F0E8', bookmarked: false },
+  { id: 'b5', nameKo: '니트프로', nameEn: 'KnitPro', bg: '#F0EDF5', bookmarked: false },
+  { id: 'b6', nameKo: '튤립', nameEn: 'Tulip', bg: '#F5E8EC', bookmarked: true },
+  { id: 'b7', nameKo: '퍼피', nameEn: 'Puppy', bg: '#EEF5E8', bookmarked: false },
+]
+
 export const mockQnA = [
   { id: '1', user: { name:'초보니터', username:'beginner_knit' }, title: '코바늘 시작코 잡는 방법이 헷갈려요 ㅠㅠ', content: '매직링이랑 사슬뜨기 시작 중 어떤 게 나을까요?', answers: 5, views: 142, createdAt: '1시간 전', tags: ['코바늘','입문'] },
   { id: '2', user: { name:'뜨개마을', username:'knit_village' }, title: '울 실 세탁 어떻게 하시나요?', content: '손세탁 vs 울코스 세탁기 의견 궁금합니다!', answers: 12, views: 380, createdAt: '3시간 전', tags: ['실관리','세탁'] },
