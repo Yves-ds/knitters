@@ -93,7 +93,7 @@ function CommunityPageInner() {
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-0">
         <div className="flex items-center justify-between">
-          <span className="text-[24px] font-bold pb-3 text-[#F72E00]">커뮤니티</span>
+          <span className="text-[24px] font-bold pb-3 text-[#2A0B04]">커뮤니티</span>
           <div className="flex items-center gap-3 pb-3">
             <Link href="/community/search?tab=커뮤니티">
               <SearchIcon />

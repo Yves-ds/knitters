@@ -204,7 +204,7 @@ export default function ExplorePage() {
 
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-3 flex items-center justify-between">
-        <span className="text-[24px] font-bold text-[#F72E00]">탐색</span>
+        <span className="text-[24px] font-bold text-[#2A0B04]">탐색</span>
         <button onClick={() => setHeartActive(v => !v)} className="active:opacity-60">
           <HeartIcon active={heartActive} />
         </button>
