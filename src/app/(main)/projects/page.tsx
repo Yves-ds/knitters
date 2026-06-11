@@ -223,7 +223,8 @@ export default function ProjectsPage() {
       {/* 프로젝트 카드 2열 그리드 */}
       <div className="px-4">
         {projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <div className="fixed inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none">
+            <div className="flex flex-col items-center gap-3 pointer-events-auto">
             <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="24" cy="24" r="22" fill="#FFF0EE"/>
               <path d="M16 20C16 18.3431 17.3431 17 19 17H29C30.6569 17 32 18.3431 32 20V32C32 33.6569 30.6569 35 29 35H19C17.3431 35 16 33.6569 16 32V20Z" fill="#FFCFC7"/>
@@ -238,6 +239,7 @@ export default function ProjectsPage() {
               <Plus size={16} strokeWidth={2.5} />
               기록하기
             </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
