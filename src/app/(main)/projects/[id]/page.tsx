@@ -287,6 +287,7 @@ export default function ProjectDetailPage() {
   const [videoOpen, setVideoOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [showBubble, setShowBubble] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -309,6 +310,16 @@ export default function ProjectDetailPage() {
   useEffect(() => {
     if (id) updateProject(id, { timerSecs })
   }, [timerSecs]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleShareToggle = () => {
+    if (!project) return
+    const next = !project.isShared
+    updateProject(project.id, { isShared: next })
+    if (next) {
+      setShowBubble(true)
+      setTimeout(() => setShowBubble(false), 2000)
+    }
+  }
 
   const formatTime = (s: number) => {
     const h = Math.floor(s / 3600)
@@ -431,6 +442,37 @@ export default function ProjectDetailPage() {
               </svg>
               <span className="text-[15px] font-normal" style={{ color: hasPdf ? '#F72E00' : '#646464' }}>도안</span>
             </button>
+
+            {/* 공유 버튼 + 말풍선 */}
+            <div className="relative">
+              {showBubble && (
+                <div
+                  className="absolute left-1/2 -translate-x-1/2 px-3 py-2 rounded-[10px] whitespace-nowrap z-50"
+                  style={{ bottom: 'calc(100% + 10px)', background: '#F72E00' }}
+                >
+                  <span className="text-[12px] font-medium text-white">피드에 이 기록이 공유됐어요.</span>
+                  <div
+                    className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                    style={{ borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #F72E00' }}
+                  />
+                </div>
+              )}
+              <button
+                onClick={handleShareToggle}
+                className="flex items-center gap-[8px] active:opacity-50"
+              >
+                <div
+                  className="relative rounded-full"
+                  style={{ width: 36, height: 20, background: project.isShared ? '#F72E00' : '#D1D5DB', transition: 'background 0.2s', flexShrink: 0 }}
+                >
+                  <div
+                    className="absolute top-[2px] rounded-full bg-white"
+                    style={{ width: 16, height: 16, left: project.isShared ? 18 : 2, transition: 'left 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
+                  />
+                </div>
+                <span className="text-[15px] font-normal" style={{ color: project.isShared ? '#F72E00' : '#646464' }}>공유</span>
+              </button>
+            </div>
 
             {/* 타이머 (우측) */}
             <button

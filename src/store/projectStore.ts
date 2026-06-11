@@ -15,6 +15,7 @@ export interface Project {
   coverPhoto?: string  // 대표 사진 data URL
   videos: string[]     // YouTube URL 목록
   pdfUrl: string | null // 도안 PDF URL
+  isShared?: boolean
 }
 
 // mockProjects를 스토어 초기값으로 변환

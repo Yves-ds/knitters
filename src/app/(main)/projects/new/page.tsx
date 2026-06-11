@@ -978,7 +978,7 @@ export default function NewProjectPage() {
       videos,
       pdfUrl,
     })
-    router.push(`/projects/${newId}`)
+    router.replace(`/projects/${newId}`)
   }
 
   return (

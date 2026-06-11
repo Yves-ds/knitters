@@ -664,7 +664,7 @@ export default function EditProjectPage() {
       videos,
       pdfUrl,
     })
-    router.push(`/projects/${id}`)
+    router.replace(`/projects/${id}`)
   }
 
   if (!project) {

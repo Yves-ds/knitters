@@ -34,6 +34,7 @@ export default function FeedPage() {
   const [hasNewNotification, setHasNewNotification] = useState(true)
   const projects = useProjectStore(s => s.projects)
   const currentProject = projects.find(p => p.status === '뜨는 중') ?? projects[0] ?? null
+  const sharedProjects = projects.filter(p => p.isShared)
 
   const toggleSave = (id: number) =>
     setSavedGuides(prev => ({ ...prev, [id]: !prev[id] }))
@@ -102,6 +103,40 @@ export default function FeedPage() {
           </div>
         </div>
       </Link>
+
+      {/* 공유된 기록 */}
+      {sharedProjects.length > 0 && (
+        <div className="px-4 mb-3">
+          <p className="text-[#212121] text-[16px] font-bold tracking-[-0.48px] mb-3">공유된 기록</p>
+          <div className="flex flex-col gap-2">
+            {sharedProjects.map(proj => (
+              <Link key={proj.id} href={`/projects/${proj.id}`}>
+                <div className="bg-white rounded-[10px] shadow-[4px_4px_8px_4px_rgba(0,0,0,0.04)] px-4 py-3 flex items-center gap-3">
+                  <div
+                    className="w-[48px] h-[48px] rounded-[10px] overflow-hidden shrink-0 flex items-center justify-center"
+                    style={{ background: '#FFF5F4' }}
+                  >
+                    {proj.coverPhoto
+                      ? <img src={proj.coverPhoto} alt="" className="w-full h-full object-cover" /> // eslint-disable-line @next/next/no-img-element
+                      : <span className="text-xl">{proj.emoji ?? '🧶'}</span>
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold text-[#212121] truncate">{proj.title}</p>
+                    <p className="text-[12px] text-[#9A9A9A] mt-0.5">{proj.status}</p>
+                  </div>
+                  <span
+                    className="text-[11px] font-semibold px-2 py-1 rounded-full shrink-0"
+                    style={{ background: '#FFEEEA', color: '#F72E00' }}
+                  >
+                    공유됨
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 연속 뜨개 카드 */}
       <Link href="/streak">
