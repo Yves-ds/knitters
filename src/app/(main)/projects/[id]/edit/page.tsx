@@ -447,6 +447,121 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
   )
 }
 
+/* ── 재료 시트 ── */
+const MOCK_MATERIALS: { id: number; type: '실' | '바늘'; brand: string; name: string }[] = [
+  { id: 1,  type: '실',   brand: '바늘이야기', name: '셀린튜브 (Celin Tube)' },
+  { id: 2,  type: '실',   brand: '바늘이야기', name: '마카롱 (Macaron)' },
+  { id: 3,  type: '실',   brand: '꼬까',       name: '모헤어 블렌드' },
+  { id: 4,  type: '실',   brand: 'Drops',      name: 'Alpaca' },
+  { id: 5,  type: '실',   brand: 'Drops',      name: 'Kid-Silk' },
+  { id: 6,  type: '실',   brand: '꼬까',       name: '알파카 소프트' },
+  { id: 7,  type: '바늘', brand: '바늘이야기', name: '대나무 장갑바늘 4호' },
+  { id: 8,  type: '바늘', brand: '바늘이야기', name: '스틸 코바늘 3.0mm' },
+  { id: 9,  type: '바늘', brand: 'Clover',     name: '아미아미 대바늘 5호' },
+]
+
+function MaterialSheet({ isOpen, onClose, initialTab }: {
+  isOpen: boolean
+  onClose: () => void
+  initialTab: '전체' | '실' | '바늘'
+}) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeTab, setActiveTab] = useState<'전체' | '실' | '바늘'>(initialTab)
+
+  useEffect(() => {
+    if (isOpen) { setActiveTab(initialTab); setSearchQuery('') }
+  }, [isOpen, initialTab])
+
+  const filtered = MOCK_MATERIALS.filter(m =>
+    (activeTab === '전체' || m.type === activeTab) &&
+    (!searchQuery || m.brand.includes(searchQuery) || m.name.includes(searchQuery))
+  )
+
+  return (
+    <div
+      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      style={{
+        left: '50%',
+        transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
+        transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)',
+        pointerEvents: isOpen ? 'auto' : 'none',
+      }}
+    >
+      <div className="relative flex items-center justify-between px-5 pt-12 pb-3 flex-shrink-0">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-1 bg-[#E0E0E0] rounded-full" />
+        <div className="w-8" />
+        <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div className="px-4 pb-3 flex-shrink-0">
+        <div className="flex items-center gap-2.5 bg-[#EEEEEE] rounded-[10px] h-[40px] px-3.5">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <circle cx="6.2" cy="6.2" r="4.7" stroke="#A2A2A2" strokeWidth="1.5"/>
+            <path d="M10 10L13 13" stroke="#A2A2A2" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="상품명, 브랜드를 입력해주세요"
+            className="flex-1 bg-transparent text-[12px] text-[#141414] placeholder:text-[#A2A2A2] outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="px-4 pb-3 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-2">
+          {(['전체', '실', '바늘'] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="h-[30px] px-2.5 rounded-[10px] text-[12px] font-medium transition-colors"
+              style={{
+                background: activeTab === tab ? '#F72E00' : '#F6F6F6',
+                color: activeTab === tab ? '#fff' : '#141414',
+              }}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+        <button className="h-[30px] px-2.5 rounded-[10px] bg-[#F6F6F6] text-[12px] font-medium text-[#141414] active:opacity-70">
+          직접 입력
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 pb-8">
+        {filtered.length === 0 ? (
+          <div className="py-16 flex flex-col items-center">
+            <p className="text-[14px] text-[#9CA3AF]">검색 결과가 없어요</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-x-3 gap-y-5">
+            {filtered.map(item => (
+              <button key={item.id} className="flex flex-col gap-2 text-left active:opacity-70">
+                <div
+                  className="w-full rounded-[10px] flex items-center justify-center overflow-hidden"
+                  style={{ aspectRatio: '1/1', background: 'linear-gradient(135deg, #F5EDD8 0%, #E6D09A 100%)' }}
+                >
+                  <span style={{ fontSize: 40 }}>{item.type === '실' ? '🧶' : '🪡'}</span>
+                </div>
+                <div className="flex flex-col gap-[3px]">
+                  <p className="text-[12px] font-semibold text-[#141414] leading-tight">{item.brand}</p>
+                  <p className="text-[12px] text-[#141414] leading-tight line-clamp-2">{item.name}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 /* ══════════════════════════════════════════════ */
 export default function EditProjectPage() {
   const params  = useParams()
@@ -472,6 +587,8 @@ export default function EditProjectPage() {
   const [videos,        setVideos]        = useState<string[]>(project?.videos ?? [])
   const [hasPhotos,     setHasPhotos]     = useState(false)
   const [infoOpen,      setInfoOpen]      = useState(false)
+  const [materialSheetOpen, setMaterialSheetOpen] = useState(false)
+  const [materialSheetTab, setMaterialSheetTab] = useState<'전체' | '실' | '바늘'>('전체')
 
   const titleInputRef    = useRef<HTMLInputElement>(null)
   const titleSizerRef    = useRef<HTMLSpanElement>(null)
@@ -875,7 +992,16 @@ export default function EditProjectPage() {
           <div style={{ maxHeight: infoOpen ? 240 : 0, overflow: 'hidden', transition: 'max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)' }}>
             <div className="border-t border-[#F0F0F0] px-8 pt-6 pb-8 grid grid-cols-4 gap-y-6">
               {[{ emoji: '🧶', label: '실' }, { emoji: '🪡', label: '바늘' }, { emoji: '📏', label: '게이지' }, { emoji: '🔗', label: '링크' }, { emoji: '📍', label: '장소' }, { emoji: '📎', label: '파일' }].map(item => (
-                <button key={item.label} className="flex flex-col items-center gap-2 active:opacity-50">
+                <button
+                  key={item.label}
+                  className="flex flex-col items-center gap-2 active:opacity-50"
+                  onClick={() => {
+                    if (item.label === '실' || item.label === '바늘') {
+                      setMaterialSheetTab(item.label)
+                      setMaterialSheetOpen(true)
+                    }
+                  }}
+                >
                   <span className="text-[36px] leading-none">{item.emoji}</span>
                   <span className="text-[14px] text-[#343434]">{item.label}</span>
                 </button>
@@ -906,6 +1032,7 @@ export default function EditProjectPage() {
 
       <PatternSheet isOpen={patternOpen} onClose={() => setPatternOpen(false)} pdfUrl={pdfUrl} onPdfChange={setPdfUrl} />
       <VideoSheet isOpen={videoOpen} onClose={() => setVideoOpen(false)} videos={videos} onVideosChange={setVideos} />
+      <MaterialSheet isOpen={materialSheetOpen} onClose={() => setMaterialSheetOpen(false)} initialTab={materialSheetTab} />
     </>
   )
 }
