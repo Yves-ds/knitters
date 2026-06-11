@@ -267,16 +267,18 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
       {pdfUrl ? (
         <div className="flex-1 overflow-hidden min-h-0"><PdfViewer url={pdfUrl} /></div>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <label className="flex items-center gap-2.5 bg-[#FFEEEA] rounded-[14px] px-6 py-4 cursor-pointer text-[15px] font-semibold text-[#F72E00]">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <rect x="4" y="2" width="12" height="16" rx="2" stroke="#F72E00" strokeWidth="1.5" fill="none"/>
-              <path d="M7 7H13M7 10H13M7 13H10" stroke="#F72E00" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            PDF 파일 선택
-            <input type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFileChange} />
-          </label>
-          <p className="text-[13px] text-[#9CA3AF]">PDF 도안 파일을 불러올 수 있어요</p>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <label className="flex items-center gap-2.5 bg-[#FFEEEA] rounded-[14px] px-6 py-4 cursor-pointer text-[15px] font-semibold text-[#F72E00]">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="4" y="2" width="12" height="16" rx="2" stroke="#F72E00" strokeWidth="1.5" fill="none"/>
+                <path d="M7 7H13M7 10H13M7 13H10" stroke="#F72E00" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              PDF 파일 선택
+              <input type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFileChange} />
+            </label>
+            <p className="text-[13px] text-[#9CA3AF]">PDF 도안 파일을 불러올 수 있어요</p>
+          </div>
         </div>
       )}
       <input ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFileChange} />
@@ -381,7 +383,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
     <div className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
       style={{ left: '50%', transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`, transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)', pointerEvents: isOpen ? 'auto' : 'none' }}>
       <div className="flex items-center justify-end px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
-        <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">동영상</span>
+        <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">영상</span>
         <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/></svg>
         </button>
@@ -401,9 +403,11 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
       </div>
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="flex items-center justify-between px-5 py-4">
-          <span className="text-[15px] font-bold text-[#111]">저장된 동영상</span>
-          <button onClick={handleAddClick} className="w-[30px] h-[30px] rounded-full bg-[#F72E00] flex items-center justify-center active:opacity-70 flex-shrink-0">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
+          <span className="text-[18px] font-bold text-[#111]">저장된 동영상</span>
+          <button onClick={handleAddClick} className="w-[30px] h-[30px] flex items-center justify-center active:opacity-70 flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1V13M1 7H13" stroke="#F72E00" strokeWidth="2.5" strokeLinecap="round"/>
+            </svg>
           </button>
         </div>
         {showClipboardAlert && (
@@ -415,7 +419,10 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
           </div>
         )}
         {videos.length === 0 ? (
-          <p className="px-5 py-8 text-center text-[13px] text-[#9CA3AF]">저장된 동영상이 없어요</p>
+          <div className="px-5 py-8 flex flex-col items-center gap-1.5">
+            <p className="text-center text-[13px] text-[#9CA3AF]">저장된 동영상이 없어요</p>
+            <p className="text-center text-[12px] text-[#C4C4C4]">+ 버튼을 눌러 영상을 추가해보세요</p>
+          </div>
         ) : videos.map((url, i) => {
           const thumb = getThumbUrl(url)
           const isSelected = selectedUrl === url
