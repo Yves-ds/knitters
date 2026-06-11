@@ -222,15 +222,30 @@ export default function ProjectsPage() {
 
       {/* 프로젝트 카드 2열 그리드 */}
       <div className="px-4">
-        {filtered.length === 0 ? (
+        {projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <span className="text-5xl">🧶</span>
-            <p className="text-[14px] text-[#a7a7a7]">
-              {query ? `"${query}"에 해당하는 작품이 없어요` : '해당하는 작품이 없어요'}
-            </p>
+            <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="22" fill="#FFF0EE"/>
+              <path d="M16 20C16 18.3431 17.3431 17 19 17H29C30.6569 17 32 18.3431 32 20V32C32 33.6569 30.6569 35 29 35H19C17.3431 35 16 33.6569 16 32V20Z" fill="#FFCFC7"/>
+              <path d="M21 13C21 11.8954 21.8954 11 23 11H25C26.1046 11 27 11.8954 27 13V17H21V13Z" fill="#F72E00"/>
+              <path d="M20 23H28M20 27H25" stroke="#F72E00" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+            <p className="text-[14px] text-[#a7a7a7]">해당하는 작품이 없어요</p>
+            <Link
+              href="/projects/new"
+              className="flex items-center gap-1.5 mt-1 h-[44px] px-5 rounded-[12px] bg-[#F72E00] text-white text-[14px] font-semibold active:opacity-80"
+            >
+              <Plus size={16} strokeWidth={2.5} />
+              기록하기
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
+            {filtered.length === 0 && (
+              <div className="col-span-2 py-12 text-center text-[14px] text-[#a7a7a7]">
+                {query ? `"${query}"에 해당하는 작품이 없어요` : '해당하는 작품이 없어요'}
+              </div>
+            )}
             {filtered.map(project => {
               const statusColor = STATUS_COLOR[project.status] ?? '#b0b0b0'
               const statusLabel = STATUS_LABEL[project.status] ?? project.status
