@@ -152,7 +152,7 @@ export default function ProjectsPage() {
             }}
           >
           <div className="pb-3 pr-20">
-            <p className="text-[30px] font-bold text-[#212121] tracking-[-0.5px] leading-tight">오늘은 어떤 작품을<br />떠볼까요?</p>
+            <p className="text-[26px] font-bold text-[#212121] tracking-[-0.5px] leading-tight">내 뜨개 프로젝트</p>
           </div>
           </div>
           </div>
