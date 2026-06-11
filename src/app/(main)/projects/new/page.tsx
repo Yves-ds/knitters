@@ -577,7 +577,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
             <span className="text-[15px] font-bold text-[#111]">저장된 동영상</span>
             <button
               onClick={handleAddClick}
-              className="w-[30px] h-[30px] rounded-full bg-[#3B86FB] flex items-center justify-center active:opacity-70 flex-shrink-0"
+              className="w-[30px] h-[30px] rounded-full bg-[#F72E00] flex items-center justify-center active:opacity-70 flex-shrink-0"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M7 1V13M1 7H13" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
