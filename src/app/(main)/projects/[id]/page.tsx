@@ -287,19 +287,11 @@ export default function ProjectDetailPage() {
   const [timerSecs, setTimerSecs] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const timerSecsRef = useRef(0)
 
   // 프로젝트 로드 시 타이머 초기화
   useEffect(() => {
-    if (project) {
-      setTimerSecs(project.timerSecs)
-      timerSecsRef.current = project.timerSecs
-    }
+    if (project) setTimerSecs(project.timerSecs)
   }, [project?.id]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    timerSecsRef.current = timerSecs
-  }, [timerSecs])
 
   useEffect(() => {
     if (timerRunning) {
@@ -310,12 +302,10 @@ export default function ProjectDetailPage() {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [timerRunning])
 
-  // 페이지 나갈 때 타이머 저장
+  // timerSecs가 바뀔 때마다 스토어에 즉시 저장 → 페이지 이탈해도 유실 없음
   useEffect(() => {
-    return () => {
-      if (project) updateProject(project.id, { timerSecs: timerSecsRef.current })
-    }
-  }, [project?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (id) updateProject(id, { timerSecs })
+  }, [timerSecs]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatTime = (s: number) => {
     const h = Math.floor(s / 3600)
