@@ -211,90 +211,128 @@ export default function ProjectsPage() {
           transition: 'padding-top 0.42s cubic-bezier(0.25,0.46,0.45,0.94)',
         }}
       >
-      <div className="px-4 pb-4">
-        <p className="text-[14px] text-[#565656]">
-          {searchOpen
-            ? <span className="font-bold text-[#212121]">검색 결과</span>
-            : <><span className="font-bold text-[#212121]">{projects.length}</span><span className="font-normal"> 개의 작품을 뜨고 있어요</span></>
-          }
-        </p>
-      </div>
 
-      {/* 프로젝트 카드 2열 그리드 */}
-      <div className="px-4">
-        {projects.length === 0 ? (
-          <div className="fixed inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none">
-            <div className="flex flex-col items-center gap-3 pointer-events-auto">
-            <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="22" fill="#FFF0EE"/>
-              <path d="M16 20C16 18.3431 17.3431 17 19 17H29C30.6569 17 32 18.3431 32 20V32C32 33.6569 30.6569 35 29 35H19C17.3431 35 16 33.6569 16 32V20Z" fill="#FFCFC7"/>
-              <path d="M21 13C21 11.8954 21.8954 11 23 11H25C26.1046 11 27 11.8954 27 13V17H21V13Z" fill="#F72E00"/>
-              <path d="M20 23H28M20 27H25" stroke="#F72E00" strokeWidth="1.8" strokeLinecap="round"/>
-            </svg>
-            <p className="text-[14px] font-semibold text-[#a7a7a7]">아직 기록된 작품이 없어요</p>
-            <p className="text-[13px] text-[#C4C4C4]">첫 번째 뜨개 기록을 남겨볼까요?</p>
-            <Link
-              href="/projects/new"
-              className="flex items-center gap-1.5 mt-1 h-[44px] px-5 rounded-[12px] bg-[#F72E00] text-white text-[14px] font-semibold active:opacity-80"
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              기록하기
-            </Link>
-            </div>
+      {/* 검색 모드: '검색 결과' + 카드만 표시 */}
+      {searchOpen ? (
+        <>
+          <div className="px-4 pb-4">
+            <p className="text-[14px] font-bold text-[#212121]">검색 결과</p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {filtered.length === 0 && (
-              <div className="col-span-2 py-12 text-center text-[14px] text-[#a7a7a7]">
-                {query ? `"${query}"에 해당하는 작품이 없어요` : '아직 기록된 작품이 없어요'}
+          <div className="px-4">
+            {filtered.length === 0 ? (
+              <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+                <p className="text-[14px] text-[#a7a7a7]">검색 결과가 없어요</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {filtered.map(project => {
+                  const statusColor = STATUS_COLOR[project.status] ?? '#b0b0b0'
+                  const statusLabel = STATUS_LABEL[project.status] ?? project.status
+                  return (
+                    <Link key={project.id} href={`/projects/${project.id}`}>
+                      <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] active:scale-[0.98] transition-all">
+                        {project.coverPhoto ? (
+                          <img src={project.coverPhoto} alt={project.title} className="aspect-square w-full object-cover" />
+                        ) : (
+                          <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
+                            {project.emoji ?? '🧶'}
+                          </div>
+                        )}
+                        <div className="px-3 pt-3 pb-3">
+                          <p className="text-[15px] font-bold text-[#212121] mb-2 leading-snug line-clamp-1">{project.title}</p>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <svg width="8" height="9" viewBox="0 0 8 9" fill="none">
+                                <path d="M1 1.5L7 4.5L1 7.5V1.5Z" fill={statusColor} />
+                              </svg>
+                              <span className="text-[11px] font-semibold" style={{ color: statusColor }}>{statusLabel}</span>
+                            </div>
+                            <span className="text-[13px] text-[#a7a7a7] font-medium tracking-wider">{formatTime(project.timerSecs ?? 0)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
               </div>
             )}
-            {filtered.map(project => {
-              const statusColor = STATUS_COLOR[project.status] ?? '#b0b0b0'
-              const statusLabel = STATUS_LABEL[project.status] ?? project.status
-              return (
-                <Link key={project.id} href={`/projects/${project.id}`}>
-                  <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] active:scale-[0.98] transition-all">
-                    {/* 이미지 */}
-                    {project.coverPhoto ? (
-                      <img src={project.coverPhoto} alt={project.title} className="aspect-square w-full object-cover" />
-                    ) : (
-                      <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
-                        {project.emoji ?? '🧶'}
-                      </div>
-                    )}
-                    {/* 정보 */}
-                    <div className="px-3 pt-3 pb-3">
-                      <p className="text-[15px] font-bold text-[#212121] mb-2 leading-snug line-clamp-1">
-                        {project.title}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        {/* 상태 */}
-                        <div className="flex items-center gap-1">
-                          <svg width="8" height="9" viewBox="0 0 8 9" fill="none">
-                            <path d="M1 1.5L7 4.5L1 7.5V1.5Z" fill={statusColor} />
-                          </svg>
-                          <span className="text-[11px] font-semibold" style={{ color: statusColor }}>
-                            {statusLabel}
-                          </span>
-                        </div>
-                        {/* 타이머 */}
-                        <span className="text-[13px] text-[#a7a7a7] font-medium tracking-wider">
-                          {formatTime(project.timerSecs ?? 0)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        /* 일반 모드 */
+        <>
+          <div className="px-4 pb-4">
+            <p className="text-[14px] text-[#565656]">
+              <span className="font-bold text-[#212121]">{projects.length}</span>
+              <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
+            </p>
+          </div>
+          <div className="px-4">
+            {projects.length === 0 ? (
+              <div className="fixed inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none">
+                <div className="flex flex-col items-center gap-3 pointer-events-auto">
+                  <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="22" fill="#FFF0EE"/>
+                    <path d="M16 20C16 18.3431 17.3431 17 19 17H29C30.6569 17 32 18.3431 32 20V32C32 33.6569 30.6569 35 29 35H19C17.3431 35 16 33.6569 16 32V20Z" fill="#FFCFC7"/>
+                    <path d="M21 13C21 11.8954 21.8954 11 23 11H25C26.1046 11 27 11.8954 27 13V17H21V13Z" fill="#F72E00"/>
+                    <path d="M20 23H28M20 27H25" stroke="#F72E00" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                  <p className="text-[14px] font-semibold text-[#a7a7a7]">아직 기록된 작품이 없어요</p>
+                  <p className="text-[14px] text-[#C4C4C4]">첫 번째 뜨개 기록을 남겨볼까요?</p>
+                  <Link
+                    href="/projects/new"
+                    className="flex items-center gap-1.5 mt-1 h-[44px] px-5 rounded-[12px] bg-[#F72E00] text-white text-[14px] font-semibold active:opacity-80"
+                  >
+                    <Plus size={16} strokeWidth={2.5} />
+                    기록하기
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {filtered.length === 0 && (
+                  <div className="col-span-2 py-12 text-center text-[14px] text-[#a7a7a7]">
+                    아직 기록된 작품이 없어요
+                  </div>
+                )}
+                {filtered.map(project => {
+                  const statusColor = STATUS_COLOR[project.status] ?? '#b0b0b0'
+                  const statusLabel = STATUS_LABEL[project.status] ?? project.status
+                  return (
+                    <Link key={project.id} href={`/projects/${project.id}`}>
+                      <div className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] active:scale-[0.98] transition-all">
+                        {project.coverPhoto ? (
+                          <img src={project.coverPhoto} alt={project.title} className="aspect-square w-full object-cover" />
+                        ) : (
+                          <div className="aspect-square w-full bg-[#f0ede8] flex items-center justify-center text-6xl">
+                            {project.emoji ?? '🧶'}
+                          </div>
+                        )}
+                        <div className="px-3 pt-3 pb-3">
+                          <p className="text-[15px] font-bold text-[#212121] mb-2 leading-snug line-clamp-1">{project.title}</p>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <svg width="8" height="9" viewBox="0 0 8 9" fill="none">
+                                <path d="M1 1.5L7 4.5L1 7.5V1.5Z" fill={statusColor} />
+                              </svg>
+                              <span className="text-[11px] font-semibold" style={{ color: statusColor }}>{statusLabel}</span>
+                            </div>
+                            <span className="text-[13px] text-[#a7a7a7] font-medium tracking-wider">{formatTime(project.timerSecs ?? 0)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </>
+      )}
       </div>
 
-      {/* FAB — 기록이 하나라도 있을 때만 표시 */}
-      {projects.length > 0 && <Link
+      {/* FAB — 기록이 하나라도 있고 검색 모드가 아닐 때만 표시 */}
+      {projects.length > 0 && !searchOpen && <Link
         href="/projects/new"
         className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-30"
         style={{
