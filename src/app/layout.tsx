@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import SplashScreen from '@/components/SplashScreen'
 
 export const metadata: Metadata = {
   title: 'knitters (니터즈)',
@@ -14,7 +13,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </head>
       <body>
-        <SplashScreen />
         {children}
       </body>
     </html>
