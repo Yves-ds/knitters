@@ -281,9 +281,12 @@ export default function ProjectDetailPage() {
 
   const project = useProjectStore(s => s.projects.find(p => p.id === id))
   const updateProject = useProjectStore(s => s.updateProject)
+  const deleteProject = useProjectStore(s => s.deleteProject)
 
   const [patternOpen, setPatternOpen] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -344,13 +347,42 @@ export default function ProjectDetailPage() {
           <h1 className="flex-1 text-center text-[18px] font-semibold text-[#212121] truncate px-2">
             {project.title}
           </h1>
-          <button className="w-8 shrink-0 flex items-center justify-end">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <circle cx="4" cy="10" r="1.5" fill="#646464"/>
-              <circle cx="10" cy="10" r="1.5" fill="#646464"/>
-              <circle cx="16" cy="10" r="1.5" fill="#646464"/>
-            </svg>
-          </button>
+          {/* 미트볼 메뉴 */}
+          <div className="relative w-8 shrink-0">
+            <button
+              onClick={() => setMenuOpen(v => !v)}
+              className="w-8 flex items-center justify-end active:opacity-60"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="4" cy="10" r="1.5" fill="#646464"/>
+                <circle cx="10" cy="10" r="1.5" fill="#646464"/>
+                <circle cx="16" cy="10" r="1.5" fill="#646464"/>
+              </svg>
+            </button>
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div
+                  className="absolute top-8 right-0 bg-white rounded-[14px] z-50 overflow-hidden"
+                  style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.13)', minWidth: 140 }}
+                >
+                  <button
+                    onClick={() => { setMenuOpen(false); router.push(`/projects/${id}/edit`) }}
+                    className="w-full px-4 py-3.5 text-left text-[14px] text-[#212121] active:bg-[#F5F5F5]"
+                  >
+                    기록 수정
+                  </button>
+                  <div className="h-px bg-[#F5F5F5]" />
+                  <button
+                    onClick={() => { setMenuOpen(false); setDeleteOpen(true) }}
+                    className="w-full px-4 py-3.5 text-left text-[14px] text-[#F72E00] active:bg-[#FFF5F4]"
+                  >
+                    기록 삭제
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {/* 상태·날짜 배지 */}
@@ -442,6 +474,32 @@ export default function ProjectDetailPage() {
         .detail-content .img-block { position: relative; user-select: none; }
         .detail-content .img-block img { width: 100%; border-radius: 12px; display: block; }
       `}</style>
+
+      {/* 기록 삭제 확인 모달 */}
+      {deleteOpen && (
+        <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-[80] flex items-center justify-center bg-black/40 px-8">
+          <div className="w-full bg-white rounded-[20px] px-6 py-7 flex flex-col gap-6">
+            <div className="text-center flex flex-col gap-1.5">
+              <p className="text-[17px] font-bold text-[#212121]">기록을 삭제할까요?</p>
+              <p className="text-[14px] text-[#9A9A9A]">삭제된 기록은 복구할 수 없어요.</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteOpen(false)}
+                className="flex-1 h-[52px] bg-[#F0F0F0] rounded-[12px] text-[15px] font-semibold text-[#646464] active:opacity-70"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => { deleteProject(project.id); router.replace('/projects') }}
+                className="flex-1 h-[52px] bg-[#F72E00] rounded-[12px] text-[15px] font-semibold text-white active:opacity-70"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

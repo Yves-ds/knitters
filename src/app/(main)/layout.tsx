@@ -4,7 +4,7 @@ import BottomNav from '@/components/layout/BottomNav'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const hideNav = pathname === '/projects/new' || /^\/projects\/[^/]+$/.test(pathname)
+  const hideNav = pathname === '/projects/new' || pathname.startsWith('/projects/')
   return (
     <div className="relative">
       {children}
