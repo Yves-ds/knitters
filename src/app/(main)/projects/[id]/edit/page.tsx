@@ -140,7 +140,7 @@ function CalendarPicker({
                     style={{
                       background: selected ? '#F72E00' : 'transparent',
                       color: disabled ? '#D1D5DB' : selected ? '#fff' : isToday(day) ? '#F72E00' : col === 0 ? '#F72E00' : col === 6 ? '#3B86FB' : '#212121',
-                      border: isToday(day) && !selected && !disabled ? '1.5px solid #F72E00' : 'none',
+                      border: 'none',
                       fontWeight: selected || isToday(day) ? 700 : 400,
                       cursor: disabled ? 'default' : 'pointer',
                       opacity: disabled ? 0.4 : 1,
@@ -739,11 +739,11 @@ export default function EditProjectPage() {
             {showDateTooltip && (
               <div
                 className="absolute top-full left-0 mt-2 rounded-[8px] px-3 py-2 z-20 text-[11px] font-medium text-white"
-                style={{ background: '#212121', whiteSpace: 'nowrap' }}
+                style={{ background: '#F72E00', whiteSpace: 'nowrap' }}
               >
                 프로젝트 상태가 준비 중일 경우에는 시작일을 입력할 수 없어요.
                 <div className="absolute bottom-full left-4 w-0 h-0"
-                  style={{ borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '5px solid #212121' }} />
+                  style={{ borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '5px solid #F72E00' }} />
               </div>
             )}
             {status === '준비 중' ? (
@@ -756,14 +756,22 @@ export default function EditProjectPage() {
               >
                 <CalendarIcon />시작일
               </button>
+            ) : status === '완성' ? (
+              <button
+                onClick={() => setDatePickerTarget('start')}
+                className="flex items-center gap-[4px] h-8 px-[8px] rounded-[10px] active:opacity-70"
+                style={{ background: startDate ? '#FFEEEA' : 'transparent', border: startDate ? 'none' : '1px solid #e0e0e0' }}
+              >
+                {startDate ? <CalendarStartIcon /> : <CalendarIcon />}
+                <span className={startDate ? 'text-[12px] text-black' : 'text-[13px] font-semibold text-[#646464]'}
+                  style={startDate ? { letterSpacing: '0.6px', fontWeight: 500 } : {}}>
+                  {startDate ? `${formatDate(startDate)}${endDate ? ` ~ ${formatDate(endDate)}` : ''}` : '날짜 선택'}
+                </span>
+              </button>
             ) : (
               <DateBadge date={startDate} label="시작일" onClick={() => setDatePickerTarget('start')} />
             )}
           </div>
-          {/* 종료일 — 완성일 때만 */}
-          {status === '완성' && (
-            <DateBadge date={endDate} label="종료일" onClick={() => setDatePickerTarget('end')} />
-          )}
         </div>
 
         {/* 자유 입력 영역 */}
@@ -871,15 +879,21 @@ export default function EditProjectPage() {
 
         {/* 달력 */}
         {datePickerTarget && (
-          <CalendarPicker
-            value={datePickerTarget === 'start' ? startDate : endDate}
-            onChange={date => {
-              if (datePickerTarget === 'start') setStartDate(date)
-              else setEndDate(date)
-              setDatePickerTarget(null)
-            }}
-            onClose={() => setDatePickerTarget(null)}
-          />
+          status === '완성' ? (
+            <CalendarPicker
+              rangeMode
+              rangeStart={startDate}
+              rangeEnd={endDate}
+              onRangeChange={(s, e) => { setStartDate(s); setEndDate(e) }}
+              onClose={() => setDatePickerTarget(null)}
+            />
+          ) : (
+            <CalendarPicker
+              value={startDate}
+              onChange={date => { setStartDate(date); setDatePickerTarget(null) }}
+              onClose={() => setDatePickerTarget(null)}
+            />
+          )
         )}
       </div>
 
