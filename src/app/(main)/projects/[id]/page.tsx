@@ -378,7 +378,7 @@ export default function ProjectDetailPage() {
                   style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.13)', minWidth: 140 }}
                 >
                   <button
-                    onClick={() => { setMenuOpen(false); router.push(`/projects/${id}/edit`) }}
+                    onClick={() => { setMenuOpen(false); router.replace(`/projects/${id}/edit`) }}
                     className="w-full px-4 py-3.5 text-left text-[14px] text-[#212121] active:bg-[#F5F5F5]"
                   >
                     기록 수정
