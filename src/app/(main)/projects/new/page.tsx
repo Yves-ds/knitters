@@ -655,7 +655,8 @@ export default function NewProjectPage() {
   const [endDate, setEndDate] = useState('')
   const [content, setContent] = useState('')
   const [statusDropOpen, setStatusDropOpen] = useState(false)
-  const [datePickerOpen, setDatePickerOpen] = useState(false)
+  const [datePickerTarget, setDatePickerTarget] = useState<'start' | 'end' | null>(null)
+  const [showDateTooltip, setShowDateTooltip] = useState(false)
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [isEditorEmpty, setIsEditorEmpty] = useState(true)
@@ -1052,30 +1053,36 @@ export default function NewProjectPage() {
             )}
           </div>
 
-          {/* 시작일 배지 — 뜨는 중·쉬는 중: 단일 날짜 */}
-          {(status === '뜨는 중' || status === '쉬는 중') && (
-            <DateBadge date={startDate} label="시작일" onClick={() => setDatePickerOpen(true)} />
-          )}
-          {/* 범위 배지 — 완성: yyyy.mm.dd ~ yyyy.mm.dd */}
-          {status === '완성' && (() => {
-            const s = formatDate(startDate)
-            const e = formatDate(endDate)
-            const label = s ? `${s} ~ ${e ?? ''}` : '날짜 선택'
-            const hasDate = !!s
-            return (
-              <button
-                onClick={() => setDatePickerOpen(true)}
-                className="flex items-center gap-[4px] h-8 px-[8px] rounded-[10px] active:opacity-70"
-                style={{ background: hasDate ? '#FFEEEA' : 'transparent', border: hasDate ? 'none' : '1px solid #e0e0e0' }}
+          {/* 시작일 — 항상 표시 */}
+          <div className="relative">
+            {showDateTooltip && (
+              <div
+                className="absolute top-full left-0 mt-2 rounded-[8px] px-3 py-2 z-20 text-[11px] font-medium text-white"
+                style={{ background: '#212121', whiteSpace: 'nowrap' }}
               >
-                {hasDate ? <CalendarStartIcon /> : <CalendarIcon />}
-                <span className={hasDate ? 'text-[12px] text-black' : 'text-[13px] font-semibold text-[#646464]'}
-                  style={hasDate ? { letterSpacing: '0.6px', fontWeight: 500 } : {}}>
-                  {label}
-                </span>
+                프로젝트 상태가 준비 중일 경우에는 시작일을 입력할 수 없어요.
+                <div className="absolute bottom-full left-4 w-0 h-0"
+                  style={{ borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '5px solid #212121' }} />
+              </div>
+            )}
+            {status === '준비 중' ? (
+              <button
+                onClick={() => {
+                  setShowDateTooltip(true)
+                  setTimeout(() => setShowDateTooltip(false), 2000)
+                }}
+                className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[13px] font-semibold border border-[#e0e0e0] bg-white text-[#646464] opacity-50"
+              >
+                <CalendarIcon />시작일
               </button>
-            )
-          })()}
+            ) : (
+              <DateBadge date={startDate} label="시작일" onClick={() => setDatePickerTarget('start')} />
+            )}
+          </div>
+          {/* 종료일 — 완성일 때만 */}
+          {status === '완성' && (
+            <DateBadge date={endDate} label="종료일" onClick={() => setDatePickerTarget('end')} />
+          )}
         </div>
 
         {/* 자유 입력 영역: 상태 배지 하단 ~ 하단 바 상단 전체 커버 */}
@@ -1247,21 +1254,17 @@ export default function NewProjectPage() {
         </div>
 
         {/* 달력 날짜 선택 */}
-        {datePickerOpen && status === '완성' ? (
+        {datePickerTarget && (
           <CalendarPicker
-            rangeMode
-            rangeStart={startDate}
-            rangeEnd={endDate}
-            onRangeChange={(s, e) => { setStartDate(s); setEndDate(e) }}
-            onClose={() => setDatePickerOpen(false)}
+            value={datePickerTarget === 'start' ? startDate : endDate}
+            onChange={date => {
+              if (datePickerTarget === 'start') setStartDate(date)
+              else setEndDate(date)
+              setDatePickerTarget(null)
+            }}
+            onClose={() => setDatePickerTarget(null)}
           />
-        ) : datePickerOpen ? (
-          <CalendarPicker
-            value={startDate}
-            onChange={date => { setStartDate(date); setDatePickerOpen(false) }}
-            onClose={() => setDatePickerOpen(false)}
-          />
-        ) : null}
+        )}
       </div>
 
       {/* 도안 시트 */}
