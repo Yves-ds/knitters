@@ -288,28 +288,30 @@ export default function ProjectDetailPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [showBubble, setShowBubble] = useState(false)
-  const [timerSecs, setTimerSecs] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // persist 미들웨어 hydration 이후 정확한 값을 갖도록 store에서 직접 읽는 ref
+  const timerSecsRef = useRef(project?.timerSecs ?? 0)
 
-  // 프로젝트 로드 시 타이머 초기화
+  // store가 persist에서 복원될 때 또는 타이머 정지 중에 ref 동기화
   useEffect(() => {
-    if (project) setTimerSecs(project.timerSecs)
-  }, [project?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (project && !timerRunning) {
+      timerSecsRef.current = project.timerSecs
+    }
+  }, [project?.timerSecs, timerRunning]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 타이머 interval: ref에서 읽어 store에 직접 저장 (local state 없음)
   useEffect(() => {
     if (timerRunning) {
-      intervalRef.current = setInterval(() => setTimerSecs(s => s + 1), 1000)
+      intervalRef.current = setInterval(() => {
+        timerSecsRef.current += 1
+        if (id) updateProject(id, { timerSecs: timerSecsRef.current })
+      }, 1000)
     } else {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [timerRunning])
-
-  // timerSecs가 바뀔 때마다 스토어에 즉시 저장 → 페이지 이탈해도 유실 없음
-  useEffect(() => {
-    if (id) updateProject(id, { timerSecs })
-  }, [timerSecs]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [timerRunning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleShareToggle = () => {
     if (!project) return
@@ -487,14 +489,14 @@ export default function ProjectDetailPage() {
                 </svg>
               ) : (
                 <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
-                  <path d="M4 2.5L13 8L4 13.5V2.5Z" fill={timerSecs > 0 ? '#F72E00' : '#646464'}/>
+                  <path d="M4 2.5L13 8L4 13.5V2.5Z" fill={(project.timerSecs ?? 0) > 0 ? '#F72E00' : '#646464'}/>
                 </svg>
               )}
               <span
                 className="text-[16px] font-semibold tabular-nums"
-                style={{ color: timerRunning ? '#F72E00' : timerSecs > 0 ? '#2A0B04' : '#212121' }}
+                style={{ color: timerRunning ? '#F72E00' : (project.timerSecs ?? 0) > 0 ? '#2A0B04' : '#212121' }}
               >
-                {formatTime(timerSecs)}
+                {formatTime(project.timerSecs ?? 0)}
               </span>
             </button>
           </div>
