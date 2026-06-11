@@ -284,7 +284,6 @@ export default function ProjectDetailPage() {
 
   const [patternOpen, setPatternOpen] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
-  const [infoOpen, setInfoOpen] = useState(false)
   const [timerSecs, setTimerSecs] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -386,60 +385,44 @@ export default function ProjectDetailPage() {
 
         {/* 하단 컨테이너 */}
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-20">
-          <div className="border-t border-[#F0F0F0] flex items-center px-5" style={{ height: 72, gap: 12 }}>
+          <div className="border-t border-[#F0F0F0] flex items-center px-5" style={{ height: 80, gap: 16 }}>
 
             {/* 영상 버튼 */}
             <button
               onClick={() => setVideoOpen(true)}
-              className="flex flex-col items-center gap-1 active:opacity-60"
-              style={{ minWidth: 44 }}
+              className="flex items-center gap-[8px] active:opacity-50"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                 <path fillRule="evenodd" clipRule="evenodd" d="M15 9.649L20.646 7.512C20.7974 7.45469 20.9605 7.43499 21.1212 7.45462C21.2819 7.47424 21.4355 7.53259 21.5686 7.62466C21.7018 7.71673 21.8107 7.83975 21.8858 7.98317C21.9609 8.12658 22.0001 8.28609 22 8.448V15.557C21.9999 15.7185 21.9607 15.8777 21.8858 16.0207C21.8108 16.1638 21.7023 16.2866 21.5695 16.3786C21.4367 16.4706 21.2836 16.5291 21.1233 16.549C20.963 16.5689 20.8003 16.5497 20.649 16.493L15 14.375V16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V8C2 7.46957 2.21071 6.96086 2.58579 6.58579C2.96086 6.21071 3.46957 6 4 6H13C13.5304 6 14.0391 6.21071 14.4142 6.58579C14.7893 6.96086 15 7.46957 15 8V9.649Z" fill={hasVideos ? '#F72E00' : '#838383'}/>
               </svg>
-              <span className="text-[12px] font-normal" style={{ color: hasVideos ? '#F72E00' : '#646464' }}>영상</span>
+              <span className="text-[14px] font-normal" style={{ color: hasVideos ? '#F72E00' : '#646464' }}>영상</span>
             </button>
 
             {/* 도안 버튼 */}
             <button
               onClick={() => setPatternOpen(true)}
-              className="flex flex-col items-center gap-1 active:opacity-60"
-              style={{ minWidth: 44 }}
+              className="flex items-center gap-[8px] active:opacity-50"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                 <path d="M7.5 5C7.10218 5 6.72064 5.15804 6.43934 5.43934C6.15804 5.72065 6 6.10218 6 6.5V17.5C6 17.8978 6.15804 18.2794 6.43934 18.5607C6.72064 18.842 7.10218 19 7.5 19H16.5C16.8978 19 17.2794 18.842 17.5607 18.5607C17.842 18.2794 18 17.8978 18 17.5V10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5H7.5Z" fill={hasPdf ? '#F72E00' : '#838383'}/>
                 <path d="M18 10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5V9.5C13 9.63261 13.0527 9.75979 13.1464 9.85355C13.2402 9.94732 13.3674 10 13.5 10H18Z" fill={hasPdf ? '#FFC2B4' : '#D2D2D2'}/>
               </svg>
-              <span className="text-[12px] font-normal" style={{ color: hasPdf ? '#F72E00' : '#646464' }}>도안</span>
+              <span className="text-[14px] font-normal" style={{ color: hasPdf ? '#F72E00' : '#646464' }}>도안</span>
             </button>
 
-            {/* 정보 버튼 */}
-            <button
-              onClick={() => setInfoOpen(v => !v)}
-              className="flex flex-col items-center gap-1 active:opacity-60"
-              style={{ minWidth: 44 }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="9" stroke={infoOpen ? '#F72E00' : '#838383'} strokeWidth="1.8" fill={infoOpen ? '#FFEEEA' : 'none'}/>
-                <path d="M12 11v5" stroke={infoOpen ? '#F72E00' : '#838383'} strokeWidth="1.8" strokeLinecap="round"/>
-                <circle cx="12" cy="8.5" r="0.9" fill={infoOpen ? '#F72E00' : '#838383'}/>
-              </svg>
-              <span className="text-[12px] font-normal" style={{ color: infoOpen ? '#F72E00' : '#646464' }}>정보</span>
-            </button>
-
-            {/* 타이머 */}
+            {/* 타이머 (우측) */}
             <button
               onClick={() => setTimerRunning(r => !r)}
               className="ml-auto flex items-center gap-2 active:opacity-60 px-3 py-2 rounded-[10px]"
               style={{ background: timerRunning ? '#FFF5F4' : 'transparent' }}
             >
               {timerRunning ? (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
                   <rect x="3" y="2.5" width="3.5" height="11" rx="1" fill="#F72E00"/>
                   <rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="#F72E00"/>
                 </svg>
               ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
                   <path d="M4 2.5L13 8L4 13.5V2.5Z" fill="#646464"/>
                 </svg>
               )}
@@ -450,31 +433,6 @@ export default function ProjectDetailPage() {
                 {formatTime(timerSecs)}
               </span>
             </button>
-          </div>
-
-          {/* 정보 그리드 패널 */}
-          <div
-            style={{
-              maxHeight: infoOpen ? 240 : 0,
-              overflow: 'hidden',
-              transition: 'max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          >
-            <div className="border-t border-[#F0F0F0] px-8 pt-6 pb-8 grid grid-cols-4 gap-y-6">
-              {[
-                { emoji: '🧶', label: '실' },
-                { emoji: '🪡', label: '바늘' },
-                { emoji: '📏', label: '게이지' },
-                { emoji: '🔗', label: '링크' },
-                { emoji: '📍', label: '장소' },
-                { emoji: '📎', label: '파일' },
-              ].map(item => (
-                <div key={item.label} className="flex flex-col items-center gap-2">
-                  <span className="text-[36px] leading-none">{item.emoji}</span>
-                  <span className="text-[13px] text-[#343434]">{item.label}</span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
