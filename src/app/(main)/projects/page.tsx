@@ -290,8 +290,8 @@ export default function ProjectsPage() {
       </div>
       </div>
 
-      {/* FAB */}
-      <Link
+      {/* FAB — 기록이 하나라도 있을 때만 표시 */}
+      {projects.length > 0 && <Link
         href="/projects/new"
         className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-30"
         style={{
@@ -306,7 +306,7 @@ export default function ProjectsPage() {
       >
         <Plus size={18} strokeWidth={2.5} />
         {!scrolled && '기록하기'}
-      </Link>
+      </Link>}
     </div>
   )
 }
