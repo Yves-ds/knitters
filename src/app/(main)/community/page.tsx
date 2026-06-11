@@ -94,10 +94,11 @@ function CommunityPageInner() {
       <div className="bg-white px-4 pt-14 pb-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 pb-3">
-            <span className="text-[24px] font-bold text-[#2A0B04]">커뮤니티</span>
+            <span className="text-[24px] font-bold" style={{ color: '#F72E00' }}>커뮤니티</span>
             <button
-              onClick={() => router.push('/feed')}
-              className="text-[15px] font-semibold text-[#9A9A9A] active:opacity-60"
+              onClick={() => router.push('/community/feed')}
+              className="text-[24px] font-bold active:opacity-60"
+              style={{ color: '#9A9A9A' }}
             >
               피드
             </button>
