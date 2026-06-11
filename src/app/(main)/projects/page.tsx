@@ -107,7 +107,7 @@ export default function ProjectsPage() {
       {/* 헤더 */}
       <div className="px-4 pt-14 relative">
         {/* 버튼 — overflow/transform 컨테이너 바깥에 absolute로 배치 */}
-        <div className="absolute top-14 right-4 flex items-center gap-2 pt-1 z-50">
+        <div className="absolute top-14 right-4 flex items-center gap-2 pt-1 z-50" style={{ display: searchOpen ? 'none' : 'flex' }}>
           <button onClick={() => setSearchOpen(true)} className="w-8 h-8 flex items-center justify-center">
             <SearchIcon />
           </button>
