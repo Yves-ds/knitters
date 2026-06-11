@@ -392,10 +392,10 @@ export default function ProjectDetailPage() {
               onClick={() => setVideoOpen(true)}
               className="flex items-center gap-[8px] active:opacity-50"
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                 <path fillRule="evenodd" clipRule="evenodd" d="M15 9.649L20.646 7.512C20.7974 7.45469 20.9605 7.43499 21.1212 7.45462C21.2819 7.47424 21.4355 7.53259 21.5686 7.62466C21.7018 7.71673 21.8107 7.83975 21.8858 7.98317C21.9609 8.12658 22.0001 8.28609 22 8.448V15.557C21.9999 15.7185 21.9607 15.8777 21.8858 16.0207C21.8108 16.1638 21.7023 16.2866 21.5695 16.3786C21.4367 16.4706 21.2836 16.5291 21.1233 16.549C20.963 16.5689 20.8003 16.5497 20.649 16.493L15 14.375V16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V8C2 7.46957 2.21071 6.96086 2.58579 6.58579C2.96086 6.21071 3.46957 6 4 6H13C13.5304 6 14.0391 6.21071 14.4142 6.58579C14.7893 6.96086 15 7.46957 15 8V9.649Z" fill={hasVideos ? '#F72E00' : '#838383'}/>
               </svg>
-              <span className="text-[14px] font-normal" style={{ color: hasVideos ? '#F72E00' : '#646464' }}>영상</span>
+              <span className="text-[15px] font-normal" style={{ color: hasVideos ? '#F72E00' : '#646464' }}>영상</span>
             </button>
 
             {/* 도안 버튼 */}
@@ -403,11 +403,11 @@ export default function ProjectDetailPage() {
               onClick={() => setPatternOpen(true)}
               className="flex items-center gap-[8px] active:opacity-50"
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                 <path d="M7.5 5C7.10218 5 6.72064 5.15804 6.43934 5.43934C6.15804 5.72065 6 6.10218 6 6.5V17.5C6 17.8978 6.15804 18.2794 6.43934 18.5607C6.72064 18.842 7.10218 19 7.5 19H16.5C16.8978 19 17.2794 18.842 17.5607 18.5607C17.842 18.2794 18 17.8978 18 17.5V10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5H7.5Z" fill={hasPdf ? '#F72E00' : '#838383'}/>
                 <path d="M18 10C18.0001 9.9343 17.9873 9.86921 17.9622 9.80847C17.9372 9.74773 17.9004 9.69252 17.854 9.646L13.354 5.146C13.3075 5.0996 13.2523 5.06282 13.1915 5.03777C13.1308 5.01272 13.0657 4.99988 13 5V9.5C13 9.63261 13.0527 9.75979 13.1464 9.85355C13.2402 9.94732 13.3674 10 13.5 10H18Z" fill={hasPdf ? '#FFC2B4' : '#D2D2D2'}/>
               </svg>
-              <span className="text-[14px] font-normal" style={{ color: hasPdf ? '#F72E00' : '#646464' }}>도안</span>
+              <span className="text-[15px] font-normal" style={{ color: hasPdf ? '#F72E00' : '#646464' }}>도안</span>
             </button>
 
             {/* 타이머 (우측) */}
@@ -417,18 +417,18 @@ export default function ProjectDetailPage() {
               style={{ background: timerRunning ? '#FFF5F4' : 'transparent' }}
             >
               {timerRunning ? (
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
                   <rect x="3" y="2.5" width="3.5" height="11" rx="1" fill="#F72E00"/>
                   <rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="#F72E00"/>
                 </svg>
               ) : (
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-                  <path d="M4 2.5L13 8L4 13.5V2.5Z" fill="#646464"/>
+                <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 2.5L13 8L4 13.5V2.5Z" fill={timerSecs > 0 ? '#F72E00' : '#646464'}/>
                 </svg>
               )}
               <span
-                className="text-[15px] font-semibold tabular-nums"
-                style={{ color: timerRunning ? '#F72E00' : '#212121' }}
+                className="text-[16px] font-semibold tabular-nums"
+                style={{ color: timerRunning || timerSecs > 0 ? '#F72E00' : '#212121' }}
               >
                 {formatTime(timerSecs)}
               </span>
