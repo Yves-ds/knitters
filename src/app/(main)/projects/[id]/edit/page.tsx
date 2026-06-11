@@ -745,7 +745,7 @@ export default function EditProjectPage() {
           <div className="relative">
             {showDateTooltip && (
               <div
-                className="absolute top-full left-0 mt-2 rounded-[8px] px-3 py-2 z-20 text-[11px] font-medium text-white"
+                className="absolute top-full left-0 mt-2 rounded-[8px] px-3 py-2 z-20 text-[12px] font-medium text-white"
                 style={{ background: '#F72E00', whiteSpace: 'nowrap' }}
               >
                 프로젝트 상태가 준비 중일 경우에는 시작일을 입력할 수 없어요.

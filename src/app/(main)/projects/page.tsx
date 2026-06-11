@@ -231,7 +231,8 @@ export default function ProjectsPage() {
               <path d="M21 13C21 11.8954 21.8954 11 23 11H25C26.1046 11 27 11.8954 27 13V17H21V13Z" fill="#F72E00"/>
               <path d="M20 23H28M20 27H25" stroke="#F72E00" strokeWidth="1.8" strokeLinecap="round"/>
             </svg>
-            <p className="text-[14px] text-[#a7a7a7]">해당하는 작품이 없어요</p>
+            <p className="text-[14px] font-semibold text-[#a7a7a7]">아직 기록된 작품이 없어요</p>
+            <p className="text-[13px] text-[#C4C4C4]">첫 번째 뜨개 기록을 남겨볼까요?</p>
             <Link
               href="/projects/new"
               className="flex items-center gap-1.5 mt-1 h-[44px] px-5 rounded-[12px] bg-[#F72E00] text-white text-[14px] font-semibold active:opacity-80"
