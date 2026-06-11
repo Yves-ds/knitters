@@ -219,11 +219,11 @@ export default function ProjectsPage() {
             <p className="text-[14px] font-bold text-[#212121]">검색 결과</p>
           </div>
           <div className="px-4">
-            {filtered.length === 0 ? (
+            {filtered.length === 0 && query.trim() ? (
               <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
                 <p className="text-[14px] text-[#a7a7a7]">검색 결과가 없어요</p>
               </div>
-            ) : (
+            ) : filtered.length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
                 {filtered.map(project => {
                   const statusColor = STATUS_COLOR[project.status] ?? '#b0b0b0'
@@ -255,7 +255,7 @@ export default function ProjectsPage() {
                   )
                 })}
               </div>
-            )}
+            ) : null}
           </div>
         </>
       ) : (
