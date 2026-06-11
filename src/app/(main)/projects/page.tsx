@@ -246,7 +246,7 @@ export default function ProjectsPage() {
           <div className="grid grid-cols-2 gap-3">
             {filtered.length === 0 && (
               <div className="col-span-2 py-12 text-center text-[14px] text-[#a7a7a7]">
-                {query ? `"${query}"에 해당하는 작품이 없어요` : '해당하는 작품이 없어요'}
+                {query ? `"${query}"에 해당하는 작품이 없어요` : '아직 기록된 작품이 없어요'}
               </div>
             )}
             {filtered.map(project => {

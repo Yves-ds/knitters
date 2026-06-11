@@ -13,7 +13,7 @@ function StatusBadge({ status }: { status: string }) {
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF', opacity: 0.5 }} />
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF' }} />
       </div>
-      <span className="text-[13px] font-semibold" style={{ color: '#209BFF' }}>뜨는 중</span>
+      <span className="text-[14px] font-semibold" style={{ color: '#209BFF' }}>뜨는 중</span>
     </div>
   )
   if (status === '쉬는 중') return (
@@ -22,7 +22,7 @@ function StatusBadge({ status }: { status: string }) {
         <span className="w-[8px] h-[8px] rounded-full" style={{ background: '#F72E00' }} />
         <span className="w-[8px] h-[8px] rounded-full" style={{ background: '#F72E00' }} />
       </div>
-      <span className="text-[13px] font-semibold" style={{ color: '#F72E00' }}>쉬는 중</span>
+      <span className="text-[14px] font-semibold" style={{ color: '#F72E00' }}>쉬는 중</span>
     </div>
   )
   if (status === '완성') return (
@@ -30,7 +30,7 @@ function StatusBadge({ status }: { status: string }) {
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <path d="M5 12l5 5L19 7" stroke="#13C100" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
-      <span className="text-[13px] font-semibold" style={{ color: '#13C100' }}>완성</span>
+      <span className="text-[14px] font-semibold" style={{ color: '#13C100' }}>완성</span>
     </div>
   )
   return (
@@ -40,7 +40,7 @@ function StatusBadge({ status }: { status: string }) {
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B', opacity: 0.5 }} />
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B' }} />
       </div>
-      <span className="text-[13px] font-semibold" style={{ color: '#3B3B3B' }}>준비 중</span>
+      <span className="text-[14px] font-semibold" style={{ color: '#3B3B3B' }}>준비 중</span>
     </div>
   )
 }
@@ -225,7 +225,7 @@ function VideoSheet({ isOpen, onClose, videos }: {
         {embedUrl ? (
           <iframe key={embedUrl} src={embedUrl} className="w-full h-full border-none" allowFullScreen title="동영상" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#6B7280] text-[13px] gap-1.5">
+          <div className="w-full h-full flex items-center justify-center text-[#6B7280] text-[14px] gap-1.5">
             <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
               <rect x="2" y="5" width="13" height="12" rx="2" stroke="#9ca3af" strokeWidth="1.6" fill="none"/>
               <path d="M15 9L20 6V16L15 13" stroke="#9ca3af" strokeWidth="1.6" strokeLinejoin="round"/>
@@ -239,7 +239,7 @@ function VideoSheet({ isOpen, onClose, videos }: {
           <span className="text-[15px] font-bold text-[#111]">저장된 동영상</span>
         </div>
         {videos.length === 0 ? (
-          <p className="px-5 py-8 text-center text-[13px] text-[#9CA3AF]">저장된 동영상이 없어요</p>
+          <p className="px-5 py-8 text-center text-[14px] text-[#9CA3AF]">저장된 동영상이 없어요</p>
         ) : videos.map((url, i) => {
           const thumb = getThumbUrl(url)
           const isSelected = selectedUrl === url
@@ -261,7 +261,7 @@ function VideoSheet({ isOpen, onClose, videos }: {
                   </svg>
                 </div>
               )}
-              <span className="flex-1 text-[13px] text-[#111] font-medium leading-snug line-clamp-2">
+              <span className="flex-1 text-[14px] text-[#111] font-medium leading-snug line-clamp-2">
                 {titles[url] || url}
               </span>
             </div>
