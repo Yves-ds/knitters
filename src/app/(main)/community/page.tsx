@@ -93,7 +93,15 @@ function CommunityPageInner() {
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-0">
         <div className="flex items-center justify-between">
-          <span className="text-[24px] font-bold pb-3 text-[#2A0B04]">커뮤니티</span>
+          <div className="flex items-center gap-3 pb-3">
+            <span className="text-[24px] font-bold text-[#2A0B04]">커뮤니티</span>
+            <button
+              onClick={() => router.push('/feed')}
+              className="text-[15px] font-semibold text-[#9A9A9A] active:opacity-60"
+            >
+              피드
+            </button>
+          </div>
           <div className="flex items-center gap-3 pb-3">
             <Link href="/community/search?tab=커뮤니티">
               <SearchIcon />

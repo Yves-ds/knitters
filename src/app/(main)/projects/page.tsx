@@ -33,6 +33,13 @@ const STATUS_COLOR: Record<string, string> = {
   '완성': '#3CB371',
 }
 
+function formatTime(s: number) {
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const sec = s % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+}
+
 function formatDateRange(start: string, end: string, status: string) {
   if (!start && !end) return '날짜 미정'
   if (start && !end) return status === '완성' ? start : `${start} ~ 진행 중`
@@ -255,7 +262,7 @@ export default function ProjectsPage() {
                         </div>
                         {/* 타이머 */}
                         <span className="text-[13px] text-[#a7a7a7] font-medium tracking-wider">
-                          00:00:00
+                          {formatTime(project.timerSecs ?? 0)}
                         </span>
                       </div>
                     </div>

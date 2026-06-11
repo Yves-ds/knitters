@@ -450,7 +450,7 @@ export default function ProjectDetailPage() {
               )}
               <span
                 className="text-[16px] font-semibold tabular-nums"
-                style={{ color: timerRunning || timerSecs > 0 ? '#F72E00' : '#212121' }}
+                style={{ color: timerRunning ? '#F72E00' : timerSecs > 0 ? '#2A0B04' : '#212121' }}
               >
                 {formatTime(timerSecs)}
               </span>

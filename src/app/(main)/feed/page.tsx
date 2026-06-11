@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { mockProjects } from '@/lib/mockData'
+import { useProjectStore } from '@/store/projectStore'
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일']
 const STREAK = 2
@@ -20,12 +20,20 @@ const GUIDES = [
   { id: 3, title: '뜨개 실 고르는 꿀팁!', desc: '다양한 뜨개 실 고르는 기준 딱 알려드려요', saved: false, emoji: '🪡' },
 ]
 
+function formatTime(s: number) {
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const sec = s % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+}
+
 export default function FeedPage() {
   const router = useRouter()
   const [guideTab, setGuideTab] = useState('전체')
   const [savedGuides, setSavedGuides] = useState<Record<number, boolean>>({ 2: true })
   const [hasNewNotification, setHasNewNotification] = useState(true)
-  const currentProject = mockProjects[0]
+  const projects = useProjectStore(s => s.projects)
+  const currentProject = projects.find(p => p.status === '뜨는 중') ?? projects[0] ?? null
 
   const toggleSave = (id: number) =>
     setSavedGuides(prev => ({ ...prev, [id]: !prev[id] }))
@@ -86,7 +94,7 @@ export default function FeedPage() {
               <span className="bg-[#e8f2ff] text-[#148fff] text-[10px] font-semibold px-2.5 py-[3px] rounded-[10px] tracking-[-0.3px] whitespace-nowrap">
                 진행 중
               </span>
-              <span className="text-[#949494] text-[12px] font-semibold tracking-[0.36px]">00:00:00</span>
+              <span className="text-[#949494] text-[12px] font-semibold tracking-[0.36px]">{formatTime(currentProject?.timerSecs ?? 0)}</span>
             </div>
           </div>
           <div className="w-[53px] h-[53px] rounded-[10px] bg-gradient-to-br from-pink-200 to-rose-300 flex items-center justify-center shrink-0">
