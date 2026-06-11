@@ -268,10 +268,10 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
         <div className="flex-1 overflow-hidden min-h-0"><PdfViewer url={pdfUrl} /></div>
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <label className="flex items-center gap-2.5 bg-[#F4F6FB] rounded-[14px] px-6 py-4 cursor-pointer text-[15px] font-semibold text-[#3B86FB]">
+          <label className="flex items-center gap-2.5 bg-[#FFEEEA] rounded-[14px] px-6 py-4 cursor-pointer text-[15px] font-semibold text-[#F72E00]">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <rect x="4" y="2" width="12" height="16" rx="2" stroke="#3b86fb" strokeWidth="1.5" fill="none"/>
-              <path d="M7 7H13M7 10H13M7 13H10" stroke="#3b86fb" strokeWidth="1.5" strokeLinecap="round"/>
+              <rect x="4" y="2" width="12" height="16" rx="2" stroke="#F72E00" strokeWidth="1.5" fill="none"/>
+              <path d="M7 7H13M7 10H13M7 13H10" stroke="#F72E00" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
             PDF 파일 선택
             <input type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFileChange} />
