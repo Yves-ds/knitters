@@ -80,14 +80,14 @@ export default function FeedPage() {
         </div>
 
         {/* ── 인사말 ── */}
-        <div className="px-4 mb-5">
+        <div className="px-4 mb-[30px]">
           <p className="text-[#565656] text-[18px] tracking-[-0.54px] leading-[1.31]">안녕하세요, 이브님</p>
           <p className="text-[#212121] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">오늘의 뜨개를 시작해볼까요?</p>
         </div>
 
         {/* ── 연속 뜨개 카드 ── */}
         <Link href="/streak">
-          <div className="mx-4 mb-6 bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 py-4 flex items-center gap-3">
+          <div className="mx-4 mb-[30px] bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 py-4 flex items-center gap-3">
             <span style={{ fontSize: 42, lineHeight: 1 }}>🔥</span>
             <div className="flex-1">
               <div className="flex items-center gap-1 mb-2">
@@ -115,7 +115,7 @@ export default function FeedPage() {
           <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">니터즈 매거진</p>
           <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
         </div>
-        <div className="px-4 mb-7 grid grid-cols-2 gap-3">
+        <div className="px-4 mb-[30px] grid grid-cols-2 gap-3">
           {MAGAZINES.map(mag => (
             <div key={mag.id}>
               <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2">
@@ -133,7 +133,7 @@ export default function FeedPage() {
           <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">실시간 커뮤니티 인기글</p>
           <Link href="/community" className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</Link>
         </div>
-        <div className="px-4 mb-7 flex flex-col gap-2">
+        <div className="px-4 mb-[30px] flex flex-col gap-2">
           {COMMUNITY_POSTS.map(post => (
             <div key={post.id} className="bg-[#fafafa] rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
               {/* 작성자 */}
@@ -164,7 +164,7 @@ export default function FeedPage() {
         </div>
 
         {/* ── 팝업 / 이벤트 소식 ── */}
-        <div className="bg-[#ffeeeb] pt-6 pb-6 mb-4">
+        <div className="bg-[#ffeeeb] pt-6 pb-6 mb-[30px]">
           <div className="px-4 mb-3 flex items-center justify-between">
             <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">팝업 / 이벤트 소식</p>
             <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
