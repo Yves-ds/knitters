@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -15,8 +15,12 @@ const MAGAZINES = [
 ]
 
 const COMMUNITY_POSTS = [
-  { id: 1, author: '뜨뜨뜨',  title: '이사벨 니트 소매 폭 좁게 변경 해보신분?',  date: '6월 21일', views: 210, likes: 210, comments: 13 },
-  { id: 2, author: '타래언니', title: '보카시 가디건 테스트 니터 5분 모집해용!', date: '6월 11일', views: 300, likes: 120, comments: 32 },
+  { id: 1, author: '뜨뜨뜨',   title: '이사벨 니트 소매 폭 좁게 변경 해보신분?',      date: '6월 21일', views: 210, likes: 210, comments: 13 },
+  { id: 2, author: '타래언니',  title: '보카시 가디건 테스트 니터 5분 모집해용!',      date: '6월 11일', views: 300, likes: 120, comments: 32 },
+  { id: 3, author: '뜨개하는날', title: '코튼사 추천해주세요! 여름 민소매 뜨려고요', date: '6월 18일', views: 185, likes:  87, comments:  9 },
+  { id: 4, author: '실타래',    title: '대바늘 초보인데 어떤 도안부터 시작할까요?', date: '6월 17일', views: 422, likes: 195, comments: 41 },
+  { id: 5, author: '니팅러버',  title: '뜨개 모임 같이 하실 분 구해요 (서울 마포)',  date: '6월 15일', views:  98, likes:  63, comments: 27 },
+  { id: 6, author: '울덕후',    title: '메리노울 vs 알파카, 어떤 실이 더 좋아요?',  date: '6월 14일', views: 310, likes: 144, comments: 18 },
 ]
 
 const EVENTS = [
@@ -46,6 +50,14 @@ function CommentIcon() {
 export default function FeedPage() {
   const router = useRouter()
   const [hasNewNotification, setHasNewNotification] = useState(true)
+  const [communityPage, setCommunityPage] = useState(0)
+  const communityScrollRef = useRef<HTMLDivElement>(null)
+
+  const handleCommunityScroll = () => {
+    if (!communityScrollRef.current) return
+    const { scrollLeft, clientWidth } = communityScrollRef.current
+    setCommunityPage(Math.round(scrollLeft / clientWidth))
+  }
 
   return (
     <div className="relative bg-[#fafafa] min-h-screen pb-28 overflow-x-hidden max-w-[393px] mx-auto">
@@ -138,34 +150,52 @@ export default function FeedPage() {
           <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">커뮤니티 인기글</p>
           <Link href="/community" className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</Link>
         </div>
-        <div className="px-4 mb-[30px] flex flex-col gap-2">
-          {COMMUNITY_POSTS.map(post => (
-            <div key={post.id} className="bg-[#fafafa] rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
-              {/* 작성자 */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
-                  {post.author[0]}
-                </div>
-                <span className="text-[15px] font-medium text-black tracking-[-0.3px]">{post.author}</span>
-              </div>
-              {/* 제목 */}
-              <p className="text-[15px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
-              {/* 하단 메타 */}
-              <div className="flex items-center justify-between">
-                <span className="text-[12px] text-[#6f6f6f] tracking-[-0.24px]">{post.date} · 조회 {post.views}</span>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <HeartIcon />
-                    <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
+        <div className="mb-[30px]">
+          <div
+            ref={communityScrollRef}
+            onScroll={handleCommunityScroll}
+            className="overflow-x-auto scrollbar-none flex snap-x snap-mandatory"
+          >
+            {COMMUNITY_POSTS.map(post => (
+              <div key={post.id} className="min-w-full shrink-0 snap-start px-4">
+                <div className="bg-[#fafafa] rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
+                      {post.author[0]}
+                    </div>
+                    <span className="text-[15px] font-medium text-black tracking-[-0.3px]">{post.author}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <CommentIcon />
-                    <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                  <p className="text-[15px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-[#6f6f6f] tracking-[-0.24px]">{post.date} · 조회 {post.views}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1">
+                        <HeartIcon />
+                        <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <CommentIcon />
+                        <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          {/* 페이지 도트 */}
+          <div className="flex items-center justify-center gap-[5px] mt-3">
+            {COMMUNITY_POSTS.map((_, i) => (
+              <div
+                key={i}
+                className="h-[6px] rounded-full transition-all duration-300"
+                style={{
+                  width: i === communityPage ? '18px' : '6px',
+                  background: i === communityPage ? '#f72e00' : '#d9d9d9',
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* ── 팝업 / 이벤트 소식 ── */}
