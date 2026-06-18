@@ -1,7 +1,8 @@
 'use client'
 import { useState, Suspense, useEffect } from 'react'
 import { Plus, ChevronDown } from 'lucide-react'
-import { mockPosts, mockNotices } from '@/lib/mockData'
+import { mockNotices } from '@/lib/mockData'
+import { COMMUNITY_POSTS } from '@/lib/communityData'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -80,9 +81,8 @@ function CommunityPageInner() {
   }, [])
 
   const filtered = (() => {
-    let list = category === '전체' ? [...mockPosts] : mockPosts.filter(p => (p as any).category === category)
+    let list = category === '전체' ? [...COMMUNITY_POSTS] : COMMUNITY_POSTS.filter(p => p.category === category)
     if (sortKey === '인기순') list.sort((a, b) => b.likes - a.likes)
-    // 최신순: mockPosts 순서가 최신순이므로 기본 순서 유지 (id 역순)
     else list.sort((a, b) => parseInt(b.id) - parseInt(a.id))
     return list
   })()
@@ -212,41 +212,38 @@ function CommunityPageInner() {
                 <div className="px-4 py-4 active:bg-[#fafafa] transition-colors">
                   {/* 카테고리 배지 */}
                   <span className="inline-block text-[12px] font-medium text-[#646464] bg-[#F6F6F6] rounded-[6px] px-2 py-0.5 mb-3">
-                    {(post as any).category ?? '일반'}
+                    {post.category}
                   </span>
 
                   {/* 작성자 */}
                   <div className="flex items-center gap-2 mb-2">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0"
-                      style={{ background: (post as any).user?.avatarColor ?? '#c9956c' }}
+                      style={{ background: post.avatarColor }}
                     >
-                      {post.user.name[0]}
+                      {post.author[0]}
                     </div>
-                    <span className="text-[14px] font-semibold text-[#212121]">{post.user.name}</span>
-                    {(post as any).user?.following && (
-                      <span className="text-[12px] font-semibold text-[#f72e00]">팔로우</span>
-                    )}
+                    <span className="text-[14px] font-semibold text-[#212121]">{post.author}</span>
                   </div>
 
                   {/* 제목 */}
                   <p className="text-[16px] font-bold text-[#212121] mb-1.5 leading-snug">
-                    {(post as any).title ?? post.user.name}
+                    {post.title}
                   </p>
 
                   {/* 내용 */}
                   <p className="text-[13px] text-[#888] line-clamp-2 leading-relaxed mb-3">
-                    {post.description}
+                    {post.content.split('\n')[0]}
                   </p>
 
                   {/* 푸터 */}
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-[#b0b0b0]">
-                      {post.createdAt} · 조회 {(post as any).views ?? 0}
+                      {post.date} · 조회 {post.views}
                     </span>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1">
-                        <HeartIcon active={post.liked} size={19} />
+                        <HeartIcon active={false} size={19} />
                         <span className="text-[16px] text-[#b0b0b0]">{post.likes}</span>
                       </div>
                       <div className="flex items-center gap-1">

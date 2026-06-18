@@ -75,6 +75,7 @@ export default function CommunityDetailPage() {
   const [liked, setLiked] = useState(false)
   const [likes, setLikes] = useState(post.likes)
   const [comment, setComment] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const relatedPosts = COMMUNITY_POSTS.filter(p => p.id !== post.id).slice(0, 2)
 
@@ -87,18 +88,43 @@ export default function CommunityDetailPage() {
     <div className="min-h-screen bg-[#fafafa] pb-[106px] max-w-[393px] mx-auto">
       {/* 헤더 */}
       <div className="flex items-center justify-between px-4 pt-14 pb-4">
-        <button onClick={() => router.push('/community')} className="w-8 h-8 flex items-center justify-center">
+        <button onClick={() => router.back()} className="w-8 h-8 flex items-center justify-center">
           <svg width="10" height="18" viewBox="0 0 10 18" fill="none">
             <path d="M9 1L1 9l8 8" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <button className="w-8 h-8 flex items-center justify-center">
-          <svg width="4" height="18" viewBox="0 0 4 18" fill="none">
-            <circle cx="2" cy="2" r="2" fill="#212121"/>
-            <circle cx="2" cy="9" r="2" fill="#212121"/>
-            <circle cx="2" cy="16" r="2" fill="#212121"/>
-          </svg>
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            className="w-8 h-8 flex items-center justify-center"
+          >
+            <svg width="4" height="18" viewBox="0 0 4 18" fill="none">
+              <circle cx="2" cy="2" r="2" fill="#212121"/>
+              <circle cx="2" cy="9" r="2" fill="#212121"/>
+              <circle cx="2" cy="16" r="2" fill="#212121"/>
+            </svg>
+          </button>
+          {menuOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 top-9 z-20 bg-white rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.14)] overflow-hidden min-w-[160px]">
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full text-left px-4 py-3 text-[14px] font-medium text-[#212121] hover:bg-[#fafafa] active:bg-[#f5f5f5]"
+                >
+                  이 사용자의 글 보지 않기
+                </button>
+                <div className="h-px bg-[#f0f0f0]" />
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full text-left px-4 py-3 text-[14px] font-medium text-[#f72e00] hover:bg-[#fafafa] active:bg-[#f5f5f5]"
+                >
+                  신고
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* 카테고리 배지 */}
