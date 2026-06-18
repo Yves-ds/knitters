@@ -53,7 +53,7 @@ export default function NotificationsPage() {
   const markRead = (id: number) => setNotis(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
 
   return (
-    <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
+    <div className="min-h-screen bg-white flex flex-col max-w-[393px] mx-auto">
       {/* 헤더 */}
       <div className="flex items-center gap-2 px-4 pt-14 pb-3 bg-white sticky top-0 z-10 border-b border-[#f0f0f0]">
         <button onClick={() => router.back()} className="w-8 h-8 flex items-center justify-center shrink-0">

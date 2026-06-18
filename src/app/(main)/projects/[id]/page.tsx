@@ -148,7 +148,7 @@ function PatternSheet({ isOpen, onClose, pdfUrl }: {
 }) {
   return (
     <div
-      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
@@ -205,7 +205,7 @@ function VideoSheet({ isOpen, onClose, videos }: {
 
   return (
     <div
-      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
@@ -332,7 +332,7 @@ export default function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white max-w-[480px] mx-auto">
+      <div className="min-h-screen flex items-center justify-center bg-white max-w-[393px] mx-auto">
         <p className="text-[14px] text-[#9CA3AF]">프로젝트를 찾을 수 없어요</p>
       </div>
     )
@@ -350,7 +350,7 @@ export default function ProjectDetailPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
+      <div className="min-h-screen bg-white flex flex-col max-w-[393px] mx-auto">
 
         {/* 헤더 */}
         <div className="flex items-center px-4 pt-14 pb-3">
@@ -419,7 +419,7 @@ export default function ProjectDetailPage() {
         />
 
         {/* 하단 컨테이너 */}
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-20">
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white z-20">
           <div className="border-t border-[#F0F0F0] flex items-center px-5" style={{ height: 80, gap: 16 }}>
 
             {/* 영상 버튼 */}
@@ -521,7 +521,7 @@ export default function ProjectDetailPage() {
 
       {/* 기록 삭제 확인 모달 */}
       {deleteOpen && (
-        <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-[80] flex items-center justify-center bg-black/40 px-8">
+        <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] z-[80] flex items-center justify-center bg-black/40 px-8">
           <div className="w-full bg-white rounded-[20px] px-6 py-7 flex flex-col gap-6">
             <div className="text-center flex flex-col gap-1.5">
               <p className="text-[17px] font-bold text-[#212121]">기록을 삭제할까요?</p>

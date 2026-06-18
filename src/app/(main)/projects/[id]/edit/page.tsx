@@ -98,7 +98,7 @@ function CalendarPicker({
   return (
     <>
       <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-8">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-8">
         <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-4" />
         {rangeMode && (
           <div className="flex gap-2 mb-4">
@@ -236,7 +236,7 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
     e.target.value = ''
   }
   return (
-    <div className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+    <div className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{ left: '50%', transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`, transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)', pointerEvents: isOpen ? 'auto' : 'none' }}>
       <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
         {pdfUrl && (
@@ -380,7 +380,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
   const embedUrl = selectedUrl ? (getEmbedUrl(selectedUrl) ?? selectedUrl) : null
 
   return (
-    <div className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+    <div className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{ left: '50%', transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`, transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)', pointerEvents: isOpen ? 'auto' : 'none' }}>
       <div className="flex items-center justify-end px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
         <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">영상</span>
@@ -411,7 +411,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
           </button>
         </div>
         {showClipboardAlert && (
-          <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-[70] flex items-center justify-center bg-black/40 px-8">
+          <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] z-[70] flex items-center justify-center bg-black/40 px-8">
             <div className="w-full bg-white rounded-[16px] px-6 py-6 flex flex-col gap-5">
               <p className="text-[15px] text-[#212121] leading-relaxed text-center">유튜브 영상 링크를 복사한 후<br />다시 눌러주세요.</p>
               <button onClick={() => setShowClipboardAlert(false)} className="w-full py-3 bg-[#F72E00] text-white text-[15px] font-semibold rounded-[10px] active:opacity-80">확인</button>
@@ -479,7 +479,7 @@ function MaterialSheet({ isOpen, onClose, initialTab }: {
 
   return (
     <div
-      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
@@ -794,7 +794,7 @@ export default function EditProjectPage() {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white max-w-[480px] mx-auto">
+      <div className="min-h-screen flex items-center justify-center bg-white max-w-[393px] mx-auto">
         <p className="text-[14px] text-[#9CA3AF]">프로젝트를 찾을 수 없어요</p>
       </div>
     )
@@ -802,7 +802,7 @@ export default function EditProjectPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
+      <div className="min-h-screen bg-white flex flex-col max-w-[393px] mx-auto">
 
         {/* 헤더 */}
         <div className="flex items-center px-4 pt-14 pb-3">
@@ -951,7 +951,7 @@ export default function EditProjectPage() {
         </div>
 
         {/* 하단 바 */}
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-20">
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white z-20">
           <div className="border-t border-[#F0F0F0] flex items-center px-5" style={{ height: 80, gap: 16 }}>
             {/* 사진 버튼 */}
             <label className="flex items-center gap-[8px] cursor-pointer active:opacity-50" onMouseDown={saveRange} onTouchStart={saveRange}>

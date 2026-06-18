@@ -100,7 +100,7 @@ function FilterSheet({
         <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
       )}
       <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-10"
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-10"
         style={{
           transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
           transition: 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)',

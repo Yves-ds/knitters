@@ -92,7 +92,7 @@ export default function CommunityDetailPage() {
       </div>
 
       {/* Comment Input */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-border px-4 py-3 flex gap-3 items-center">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white border-t border-border px-4 py-3 flex gap-3 items-center">
         <Avatar name="나" size="sm" />
         <input
           className="flex-1 bg-bg-light rounded-full px-4 py-2.5 text-sm focus:outline-none"

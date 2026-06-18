@@ -119,7 +119,7 @@ function CalendarPicker({
   return (
     <>
       <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-8">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-8">
         <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-4" />
 
         {/* 범위 선택 스텝 표시 */}
@@ -300,7 +300,7 @@ function PatternSheet({ isOpen, onClose, pdfUrl, onPdfChange }: {
 
   return (
     <div
-      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
@@ -534,7 +534,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
 
   return (
     <div
-      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
@@ -589,7 +589,7 @@ function VideoSheet({ isOpen, onClose, videos, onVideosChange }: {
 
           {/* 클립보드 안내 팝업 */}
           {showClipboardAlert && (
-            <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-[70] flex items-center justify-center bg-black/40 px-8">
+            <div className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] z-[70] flex items-center justify-center bg-black/40 px-8">
               <div className="w-full bg-white rounded-[16px] px-6 py-6 flex flex-col gap-5">
                 <p className="text-[15px] text-[#212121] leading-relaxed text-center">
                   유튜브 영상 링크를 복사한 후<br />다시 눌러주세요.
@@ -683,7 +683,7 @@ function MaterialSheet({ isOpen, onClose, initialTab }: {
 
   return (
     <div
-      className="fixed inset-y-0 w-full max-w-[480px] z-[60] bg-white flex flex-col"
+      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
       style={{
         left: '50%',
         transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
@@ -1111,7 +1111,7 @@ export default function NewProjectPage() {
   return (
     <>
 
-      <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
+      <div className="min-h-screen bg-white flex flex-col max-w-[393px] mx-auto">
 
         {/* 헤더 */}
         <div className="flex items-center px-4 pt-14 pb-3">
@@ -1313,7 +1313,7 @@ export default function NewProjectPage() {
         </div>
 
         {/* 하단 컨테이너: 네비게이션 바 + 정보 패널 */}
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-20">
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white z-20">
           {/* 네비게이션 바 */}
           <div className="border-t border-[#F0F0F0] flex items-center px-5" style={{ height: 80, gap: 16 }}>
             {/* 사진 버튼 */}

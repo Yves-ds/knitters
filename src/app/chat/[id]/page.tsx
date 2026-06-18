@@ -71,7 +71,7 @@ export default function ChatDetailPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#fafafa] max-w-[480px] mx-auto">
+    <div className="flex flex-col h-screen bg-[#fafafa] max-w-[393px] mx-auto">
 
       {/* 헤더 */}
       <div className="flex items-center gap-3 px-4 pt-14 pb-3 bg-white border-b border-[#f0f0f0] shrink-0">

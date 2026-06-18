@@ -9,6 +9,9 @@ const STREAK = 2
 const MAGAZINES = [
   { id: 1, title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)' },
   { id: 2, title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)' },
+  { id: 3, title: '가을 분위기 물씬~ 코지 니트 컬렉션' },
+  { id: 4, title: '초보자도 쉽게 따라하는 손뜨개 기초' },
+  { id: 5, title: '겨울 준비! 따뜻한 뜨개 소품 모음' },
 ]
 
 const COMMUNITY_POSTS = [
@@ -53,10 +56,10 @@ export default function FeedPage() {
           style={{ left: 'calc(50% - 50px)', top: 135, width: 244, height: 244, background: '#fecec4' }} />
       </div>
 
-      <div className="relative max-w-[480px] mx-auto" style={{ zIndex: 1 }}>
+      <div className="relative max-w-[393px] mx-auto" style={{ zIndex: 1 }}>
 
         {/* ── 헤더 ── */}
-        <div className="flex items-center justify-between px-4 pt-14 pb-3">
+        <div className="flex items-center justify-between px-4 pt-14 pb-0">
           <span style={{ fontFamily: "'Rubik Bubbles', cursive", color: '#f72e00', fontSize: 28 }}>Knitters</span>
           <div className="flex items-center gap-2">
             <button className="w-8 h-8 flex items-center justify-center" onClick={() => router.push('/chat')}>
@@ -80,7 +83,7 @@ export default function FeedPage() {
         </div>
 
         {/* ── 인사말 ── */}
-        <div className="px-4 mb-[30px]">
+        <div className="px-4 mb-[30px] mt-[100px]">
           <p className="text-[#565656] text-[18px] tracking-[-0.54px] leading-[1.31]">안녕하세요, 이브님</p>
           <p className="text-[#212121] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">오늘의 뜨개를 시작해볼까요?</p>
         </div>
@@ -115,7 +118,7 @@ export default function FeedPage() {
           <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">니터즈 매거진</p>
           <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
         </div>
-        <div className="px-4 mb-[30px] flex gap-3">
+        <div className="px-4 mb-[30px] flex gap-3 overflow-x-auto scrollbar-none">
           {MAGAZINES.map(mag => (
             <div key={mag.id} className="w-[173px] shrink-0">
               <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2 w-[173px]">

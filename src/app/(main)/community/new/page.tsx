@@ -124,7 +124,7 @@ export default function NewPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col max-w-[480px] mx-auto">
+    <div className="min-h-screen bg-white flex flex-col max-w-[393px] mx-auto">
 
       {/* 헤더 */}
       <div className="flex items-center px-4 pt-14 pb-3">
@@ -219,7 +219,7 @@ export default function NewPostPage() {
       </div>
 
       {/* 하단 고정 바 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#F0F0F0] z-20">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white border-t border-[#F0F0F0] z-20">
         <div className="flex items-center px-5" style={{ height: 80, gap: 16 }}>
 
           {/* 사진 버튼 */}

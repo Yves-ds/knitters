@@ -17,7 +17,7 @@ export default function RootPage() {
 
   return (
     <div
-      className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] flex flex-col items-center justify-center transition-opacity duration-500"
+      className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] flex flex-col items-center justify-center transition-opacity duration-500"
       style={{ backgroundColor: '#fdfcf8', opacity: visible ? 1 : 0 }}
     >
       <div className="flex flex-col items-center text-center w-[258px]" style={{ gap: '4px' }}>

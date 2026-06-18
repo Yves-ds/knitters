@@ -104,7 +104,7 @@ const navItems = [
 export default function BottomNav() {
   const pathname = usePathname()
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-border z-50" style={{ height: 80 }}>
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white border-t border-border z-50" style={{ height: 80 }}>
       <div className="flex items-center justify-around h-full">
         {navItems.map(({ href, label }) => {
           const isActive = pathname.startsWith(href)

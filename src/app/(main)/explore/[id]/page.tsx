@@ -96,7 +96,7 @@ export default function PatternDetailPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] px-4 pb-6 pt-3 bg-white border-t border-border">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] px-4 pb-6 pt-3 bg-white border-t border-border">
         <button className="btn-primary rounded-2xl py-4 flex items-center justify-center gap-2 text-base">
           {pattern.price === 0 ? '무료 다운로드' : `${pattern.price.toLocaleString()}원 구매하기`}
           <ExternalLink size={18} />

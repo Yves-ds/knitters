@@ -82,7 +82,7 @@ export default function CommunityFeedPage() {
     setBookmarked(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
-    <div className="min-h-screen bg-white max-w-[480px] mx-auto pb-24">
+    <div className="min-h-screen bg-white max-w-[393px] mx-auto pb-24">
 
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-0 border-b border-[#F0F0F0] sticky top-0 z-10">
