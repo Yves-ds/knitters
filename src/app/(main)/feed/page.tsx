@@ -48,7 +48,7 @@ export default function FeedPage() {
   const [hasNewNotification, setHasNewNotification] = useState(true)
 
   return (
-    <div className="relative bg-[#fafafa] min-h-screen pb-28 overflow-x-hidden">
+    <div className="relative bg-[#fafafa] min-h-screen pb-28 overflow-x-hidden max-w-[393px] mx-auto">
 
       {/* 배경 장식 */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>

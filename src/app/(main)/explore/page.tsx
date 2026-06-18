@@ -200,7 +200,7 @@ export default function ExplorePage() {
   )
 
   return (
-    <div className="min-h-screen bg-white pb-28">
+    <div className="min-h-screen bg-white pb-28 max-w-[393px] mx-auto">
 
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-3 flex items-center justify-between">
