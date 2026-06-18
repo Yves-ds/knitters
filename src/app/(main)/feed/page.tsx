@@ -146,60 +146,61 @@ export default function FeedPage() {
         </div>
 
         {/* ── 커뮤니티 인기글 ── */}
-        <div className="px-4 mb-3 flex items-center justify-between">
-          <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">커뮤니티 인기글</p>
-          <Link href="/community" className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</Link>
-        </div>
-        <div className="mb-[30px]">
+        <div className="bg-[#ffeeeb] pt-6 pb-6 mb-[30px]">
+          <div className="px-4 mb-3 flex items-center justify-between">
+            <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">커뮤니티 인기글</p>
+            <Link href="/community" className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</Link>
+          </div>
           <div
             ref={communityScrollRef}
             onScroll={handleCommunityScroll}
             className="overflow-x-auto scrollbar-none flex snap-x snap-mandatory"
           >
-            {COMMUNITY_POSTS.map(post => (
-              <div key={post.id} className="min-w-full shrink-0 snap-start px-4">
-                <div className="bg-[#fafafa] rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
-                      {post.author[0]}
-                    </div>
-                    <span className="text-[15px] font-medium text-black tracking-[-0.3px]">{post.author}</span>
-                  </div>
-                  <p className="text-[15px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-[#6f6f6f] tracking-[-0.24px]">{post.date} · 조회 {post.views}</span>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1">
-                        <HeartIcon />
-                        <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
+            {Array.from({ length: Math.ceil(COMMUNITY_POSTS.length / 2) }, (_, pageIdx) =>
+              COMMUNITY_POSTS.slice(pageIdx * 2, pageIdx * 2 + 2)
+            ).map((pagePosts, pageIdx) => (
+              <div key={pageIdx} className="min-w-full shrink-0 snap-start px-4">
+                <div className="grid grid-cols-2 gap-2">
+                  {pagePosts.map(post => (
+                    <div key={post.id} className="bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-3 pt-3 pb-3">
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                          {post.author[0]}
+                        </div>
+                        <span className="text-[12px] font-medium text-black tracking-[-0.3px] truncate">{post.author}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <CommentIcon />
-                        <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                      <p className="text-[13px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2 line-clamp-2">{post.title}</p>
+                      <p className="text-[11px] text-[#6f6f6f] tracking-[-0.22px] mb-1.5">{post.date}</p>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          <HeartIcon />
+                          <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <CommentIcon />
+                          <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
-          {/* 페이지 도트 */}
+          {/* 페이지 도트 — 모두 원형 */}
           <div className="flex items-center justify-center gap-[5px] mt-3">
-            {COMMUNITY_POSTS.map((_, i) => (
+            {Array.from({ length: Math.ceil(COMMUNITY_POSTS.length / 2) }, (_, i) => (
               <div
                 key={i}
-                className="h-[6px] rounded-full transition-all duration-300"
-                style={{
-                  width: i === communityPage ? '18px' : '6px',
-                  background: i === communityPage ? '#f72e00' : '#d9d9d9',
-                }}
+                className="w-[6px] h-[6px] rounded-full transition-all duration-300"
+                style={{ background: i === communityPage ? '#f72e00' : '#d9d9d9' }}
               />
             ))}
           </div>
         </div>
 
         {/* ── 팝업 / 이벤트 소식 ── */}
-        <div className="bg-[#ffeeeb] pt-6 pb-6 mb-[30px]">
+        <div className="pt-6 pb-6 mb-[30px]">
           <div className="px-4 mb-3 flex items-center justify-between">
             <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">팝업 / 이벤트 소식</p>
             <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
