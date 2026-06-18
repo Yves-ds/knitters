@@ -66,7 +66,7 @@ export default function MagazinePage() {
       {/* 헤더 */}
       <div className="relative flex items-center h-[60px] px-4 pt-14">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push('/feed')}
           className="absolute left-4 flex items-center justify-center w-8 h-8"
         >
           <svg width="10" height="18" viewBox="0 0 10 18" fill="none">
@@ -77,7 +77,7 @@ export default function MagazinePage() {
       </div>
 
       {/* 탭 바 */}
-      <div className="flex px-4 border-b border-[#f0f0f0]">
+      <div className="flex px-4 border-b border-[#f0f0f0] mt-3">
         {TABS.map(tab => (
           <button
             key={tab}
