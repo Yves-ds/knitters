@@ -165,7 +165,7 @@ export default function FeedPage() {
               <div key={pageIdx} className="min-w-full shrink-0 snap-start px-4">
                 <div className="flex flex-col gap-2">
                   {pagePosts.map(post => (
-                    <div key={post.id} className="bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
+                    <div key={post.id} className="bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3 cursor-pointer active:bg-[#fafafa]" onClick={() => router.push(`/community/${post.id}`)}>
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
                           {post.author[0]}
