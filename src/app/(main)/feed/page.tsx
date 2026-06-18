@@ -133,9 +133,9 @@ export default function FeedPage() {
           ))}
         </div>
 
-        {/* ── 실시간 커뮤니티 인기글 ── */}
+        {/* ── 커뮤니티 인기글 ── */}
         <div className="px-4 mb-3 flex items-center justify-between">
-          <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">실시간 커뮤니티 인기글</p>
+          <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">커뮤니티 인기글</p>
           <Link href="/community" className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</Link>
         </div>
         <div className="px-4 mb-[30px] flex flex-col gap-2">
