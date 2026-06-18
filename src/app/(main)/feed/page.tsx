@@ -115,10 +115,10 @@ export default function FeedPage() {
           <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">니터즈 매거진</p>
           <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
         </div>
-        <div className="px-4 mb-[30px] grid grid-cols-2 gap-3">
+        <div className="px-4 mb-[30px] flex gap-3">
           {MAGAZINES.map(mag => (
-            <div key={mag.id}>
-              <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2">
+            <div key={mag.id} className="w-[173px] shrink-0">
+              <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2 w-[173px]">
                 <div className="absolute top-[8px] left-[12px] bg-[#feeae5] rounded-[10px] h-[24px] px-[10px] flex items-center">
                   <span className="text-[#f72e00] text-[12px] font-medium tracking-[-0.36px]">도안</span>
                 </div>
@@ -169,7 +169,7 @@ export default function FeedPage() {
             <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">팝업 / 이벤트 소식</p>
             <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
           </div>
-          <div className="px-4 flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+          <div className="px-4 flex gap-3 overflow-x-auto pb-1 scrollbar-none">
             {EVENTS.map(event => (
               <div key={event.id} className="shrink-0 w-[160px]">
                 <div className="relative bg-[#d9d9d9] rounded-[10px] h-[200px] mb-2">
