@@ -160,25 +160,27 @@ export default function FeedPage() {
               COMMUNITY_POSTS.slice(pageIdx * 2, pageIdx * 2 + 2)
             ).map((pagePosts, pageIdx) => (
               <div key={pageIdx} className="min-w-full shrink-0 snap-start px-4">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-2">
                   {pagePosts.map(post => (
-                    <div key={post.id} className="bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-3 pt-3 pb-3">
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                    <div key={post.id} className="bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
                           {post.author[0]}
                         </div>
-                        <span className="text-[12px] font-medium text-black tracking-[-0.3px] truncate">{post.author}</span>
+                        <span className="text-[15px] font-medium text-black tracking-[-0.3px]">{post.author}</span>
                       </div>
-                      <p className="text-[13px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2 line-clamp-2">{post.title}</p>
-                      <p className="text-[11px] text-[#6f6f6f] tracking-[-0.22px] mb-1.5">{post.date}</p>
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                          <HeartIcon />
-                          <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <CommentIcon />
-                          <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                      <p className="text-[15px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[12px] text-[#6f6f6f] tracking-[-0.24px]">{post.date} · 조회 {post.views}</span>
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1">
+                            <HeartIcon />
+                            <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <CommentIcon />
+                            <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
