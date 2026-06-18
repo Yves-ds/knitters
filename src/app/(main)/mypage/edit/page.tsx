@@ -9,7 +9,7 @@ export default function EditProfilePage() {
   const update = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
   return (
-    <div className="min-h-screen bg-bg-light pb-8">
+    <div className="min-h-screen bg-bg-light pb-8 max-w-[393px] mx-auto">
       <header className="bg-white sticky top-0 z-40 border-b border-border">
         <div className="flex items-center justify-between h-14 px-4">
           <button onClick={() => router.back()} className="p-2 -ml-2"><ArrowLeft size={22} className="text-dark" /></button>

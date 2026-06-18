@@ -56,7 +56,7 @@ export default function SettingsPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-[#fafafa] pb-12">
+    <div className="min-h-screen bg-[#fafafa] pb-12 max-w-[393px] mx-auto">
 
       {/* 헤더 */}
       <div className="bg-white flex items-center justify-center px-4 pt-14 pb-4 relative">

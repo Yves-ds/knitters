@@ -45,7 +45,7 @@ export default function MyPage() {
   const hasMore = projects.length > 4
 
   return (
-    <div className="min-h-screen bg-[#fafafa] pb-28">
+    <div className="min-h-screen bg-[#fafafa] pb-28 max-w-[393px] mx-auto">
 
       {/* 헤더 */}
       <div className="flex items-center justify-between px-4 pt-14 pb-4 bg-white">

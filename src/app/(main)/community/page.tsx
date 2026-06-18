@@ -88,7 +88,7 @@ function CommunityPageInner() {
   })()
 
   return (
-    <div className="min-h-screen bg-[#fafafa] pb-28">
+    <div className="min-h-screen bg-[#fafafa] pb-28 max-w-[393px] mx-auto">
 
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-0">
@@ -268,7 +268,7 @@ function CommunityPageInner() {
         href="/community/new"
         className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-30"
         style={{
-          right: 'max(16px, calc(50% - 224px))',
+          right: 'max(16px, calc(50% - 181px))',
           borderRadius: scrolled ? '50%' : '16px',
           width: scrolled ? '52px' : 'auto',
           height: scrolled ? '52px' : 'auto',

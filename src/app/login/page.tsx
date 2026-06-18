@@ -42,7 +42,7 @@ export default function LoginPage() {
   const router = useRouter()
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ backgroundColor: '#fdfcf8' }}>
+    <div className="relative min-h-screen flex flex-col max-w-[393px] mx-auto" style={{ backgroundColor: '#fdfcf8' }}>
       {/* 중앙 콘텐츠 */}
       <div className="flex-1 flex flex-col items-center justify-center px-7">
         {/* 로고 */}

@@ -62,7 +62,7 @@ function CommunitySearchInner() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white max-w-[393px] mx-auto">
       {/* 검색바 */}
       <div className="flex items-center gap-2 px-4 pt-14 pb-3">
         {/* 뒤로가기: 결과뷰 → 제안뷰, 제안뷰 → 커뮤니티 */}
