@@ -170,9 +170,9 @@ export default function FeedPage() {
                         <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
                           {post.author[0]}
                         </div>
-                        <span className="text-[15px] font-medium text-black tracking-[-0.3px]">{post.author}</span>
+                        <span className="text-[15px] font-semibold text-black tracking-[-0.3px]">{post.author}</span>
                       </div>
-                      <p className="text-[15px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
+                      <p className="text-[15px] font-medium text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
                       <div className="flex items-center justify-between">
                         <span className="text-[12px] text-[#6f6f6f] tracking-[-0.24px]">{post.date} · 조회 {post.views}</span>
                         <div className="flex items-center gap-3">
