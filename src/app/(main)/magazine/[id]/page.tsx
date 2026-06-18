@@ -1,12 +1,10 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { use } from 'react'
 import { MAGAZINE_ARTICLES } from '@/lib/magazineData'
 
-export default function MagazineDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function MagazineDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  const { id } = use(params)
-  const article = MAGAZINE_ARTICLES.find(a => a.id === Number(id))
+  const article = MAGAZINE_ARTICLES.find(a => a.id === Number(params.id))
 
   if (!article) {
     return (
