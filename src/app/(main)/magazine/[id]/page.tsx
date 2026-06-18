@@ -17,7 +17,7 @@ export default function MagazineDetailPage({ params }: { params: { id: string } 
   return (
     <div className="min-h-screen bg-[#fafafa] pb-28 max-w-[393px] mx-auto">
       {/* 헤더 */}
-      <div className="flex items-center justify-between px-4 pt-14 h-[60px]">
+      <div className="flex items-center justify-between px-4 pt-14 pb-4">
         <button
           onClick={() => router.back()}
           className="w-8 h-8 flex items-center justify-center"
