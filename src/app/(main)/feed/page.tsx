@@ -23,6 +23,8 @@ const EVENTS = [
   { id: 1, title: '연희동 뜨개거리',  date: '2026. 06. 12(금) ~ 06. 14(일)', location: '서울 연희동',           ended: true  },
   { id: 2, title: '베른샵 뜨개 팝업', date: '2026. 06. 19(금) ~ 07. 02(목)', location: '롯데백화점 전주점 1F', ended: false },
   { id: 3, title: '핸드페어',         date: '2026. 06. 19(금) ~ 07. 02(목)', location: '서울 삼성동',           ended: false },
+  { id: 4, title: '니팅 페스타',       date: '2026. 07. 05(토) ~ 07. 06(일)', location: '서울 성수동',           ended: false },
+  { id: 5, title: '울 마켓',           date: '2026. 07. 12(토)',               location: '서울 마포구',           ended: false },
 ]
 
 function HeartIcon() {
@@ -83,7 +85,7 @@ export default function FeedPage() {
         </div>
 
         {/* ── 인사말 ── */}
-        <div className="px-4 mb-[30px] mt-[100px]">
+        <div className="px-4 mb-[30px] mt-[80px]">
           <p className="text-[#565656] text-[18px] tracking-[-0.54px] leading-[1.31]">안녕하세요, 이브님</p>
           <p className="text-[#212121] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">오늘의 뜨개를 시작해볼까요?</p>
         </div>
