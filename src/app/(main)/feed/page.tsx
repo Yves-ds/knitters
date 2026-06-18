@@ -2,240 +2,202 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useProjectStore } from '@/store/projectStore'
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일']
 const STREAK = 2
 
 const MAGAZINES = [
-  { id: 1, season: '2026 S/S', title: '브랜드별 여름 콘사 모음', bg: 'linear-gradient(to bottom, #e8c4bc, #a06070)' },
-  { id: 2, season: '이달의 브랜드', title: '바늘이야기 김대리님 초대석', bg: 'linear-gradient(to bottom, #c4b8e8, #6070a0)' },
+  { id: 1, title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)' },
+  { id: 2, title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)' },
 ]
 
-const GUIDE_TABS = ['전체', '뜨개 기초', '도안', '실']
-
-const GUIDES = [
-  { id: 1, title: '해외 영문 도안 단어 정리집', desc: '이제 영문 도안도 어렵지 않아!', saved: false, emoji: '📖' },
-  { id: 2, title: '겉뜨기, 안뜨기 마스터하기', desc: '이것만 익혀도 대부분 뜰 수 있어요', saved: true, emoji: '🧶' },
-  { id: 3, title: '뜨개 실 고르는 꿀팁!', desc: '다양한 뜨개 실 고르는 기준 딱 알려드려요', saved: false, emoji: '🪡' },
+const COMMUNITY_POSTS = [
+  { id: 1, author: '뜨뜨뜨',  title: '이사벨 니트 소매 폭 좁게 변경 해보신분?',  date: '6월 21일', views: 210, likes: 210, comments: 13 },
+  { id: 2, author: '타래언니', title: '보카시 가디건 테스트 니터 5분 모집해용!', date: '6월 11일', views: 300, likes: 120, comments: 32 },
 ]
 
-function formatTime(s: number) {
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const sec = s % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+const EVENTS = [
+  { id: 1, title: '연희동 뜨개거리',  date: '2026. 06. 12(금) ~ 06. 14(일)', location: '서울 연희동',           ended: true  },
+  { id: 2, title: '베른샵 뜨개 팝업', date: '2026. 06. 19(금) ~ 07. 02(목)', location: '롯데백화점 전주점 1F', ended: false },
+  { id: 3, title: '핸드페어',         date: '2026. 06. 19(금) ~ 07. 02(목)', location: '서울 삼성동',           ended: false },
+]
+
+function HeartIcon() {
+  return (
+    <svg width="18" height="19" viewBox="0 0 18 19" fill="none">
+      <path d="M15.3931 10.716C13.5181 14.9989 8.92815 17.2076 8.73315 17.3026C8.58368 17.3644 8.41762 17.3644 8.26815 17.3026C8.08065 17.2076 3.48315 14.9989 1.60815 10.716C0.445649 8.04806 1.09065 5.17431 2.35815 3.93931C2.80212 3.53771 3.32999 3.25298 3.89842 3.10848C4.46685 2.96398 5.05965 2.96384 5.62815 3.10806C6.7914 3.38717 7.80728 4.13042 8.46315 5.18222C9.12023 4.12816 10.1393 3.38453 11.3056 3.10806C11.8741 2.96384 12.4669 2.96398 13.0354 3.10848C13.6038 3.25298 14.1317 3.53771 14.5756 3.93931C15.9106 5.17431 16.5631 8.04806 15.3931 10.716Z" stroke="#9A9A9A" strokeWidth="1.3" fill="none"/>
+    </svg>
+  )
+}
+
+function CommentIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 23 23" fill="none">
+      <path fillRule="evenodd" clipRule="evenodd" d="M4.956 5.915C3.833 7.037 3.833 8.845 3.833 12.459V17.812C3.833 18.665 4.865 19.093 5.469 18.49L7.526 16.432C7.595 16.363 7.63 16.328 7.674 16.31C7.718 16.292 7.767 16.292 7.866 16.292H13.416C15.203 16.292 16.096 16.292 16.799 15.9C17.739 15.511 18.485 14.865 18.874 13.926C19.166 13.221 19.166 12.328 19.166 10.542C19.166 8.756 19.166 7.862 18.874 7.159C18.682 6.694 18.399 6.271 18.044 5.915C17.688 5.559 17.265 5.276 16.8 5.083C16.096 4.792 15.203 4.792 13.416 4.792H11.5C7.886 4.792 6.078 4.792 4.956 5.915Z" stroke="#9A9A9A" strokeWidth="1.3" fill="none"/>
+    </svg>
+  )
 }
 
 export default function FeedPage() {
   const router = useRouter()
-  const [guideTab, setGuideTab] = useState('전체')
-  const [savedGuides, setSavedGuides] = useState<Record<number, boolean>>({ 2: true })
   const [hasNewNotification, setHasNewNotification] = useState(true)
-  const projects = useProjectStore(s => s.projects)
-  const currentProject = projects.find(p => p.status === '뜨는 중') ?? projects[0] ?? null
-  const sharedProjects = projects.filter(p => p.isShared)
-
-  const toggleSave = (id: number) =>
-    setSavedGuides(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
-    <div className="relative bg-[#fafafa] min-h-screen pb-24 overflow-x-hidden">
-      {/* 장식 타원 — 모든 콘텐츠 아래 배경 레이어 */}
+    <div className="relative bg-[#fafafa] min-h-screen pb-28 overflow-x-hidden">
+
+      {/* 배경 장식 */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>
-        <div className="absolute left-[-17px] top-[45px] w-[267px] h-[267px] rounded-full bg-[#ffd6cc] opacity-70 blur-[60px]" />
-        <div className="absolute left-[calc(50%-50px)] top-[135px] w-[244px] h-[244px] rounded-full bg-[#fecec4] opacity-50 blur-[70px]" />
+        <div className="absolute rounded-full opacity-70 blur-[60px]"
+          style={{ left: -17, top: 45, width: 267, height: 267, background: '#ffd6cc' }} />
+        <div className="absolute rounded-full opacity-50 blur-[70px]"
+          style={{ left: 'calc(50% - 50px)', top: 135, width: 244, height: 244, background: '#fecec4' }} />
       </div>
 
-      {/* 콘텐츠 레이어 — 타원 위 */}
-      <div className="relative" style={{ zIndex: 1 }}>
+      <div className="relative max-w-[480px] mx-auto" style={{ zIndex: 1 }}>
 
-      {/* 헤더 */}
-      <div className="flex items-center justify-between px-4 pt-14 pb-3">
-        <span
-          className="text-[28px] text-[#f72e00] not-italic leading-normal"
-          style={{ fontFamily: "'Rubik Bubbles', cursive" }}
-        >
-          Knitters
-        </span>
-        <div className="flex items-center gap-2">
-          {/* 메시지 아이콘 */}
-          <button className="w-8 h-8 flex items-center justify-center" onClick={() => router.push('/chat')}>
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path opacity="0.3" d="M12 4C16.4184 4 20 7.5816 20 12C20 16.4184 16.4184 20 12 20H5.6C5.17565 20 4.76869 19.8314 4.46863 19.5314C4.16857 19.2313 4 18.8243 4 18.4V12C4 7.5816 7.5816 4 12 4Z" fill="#F72E00"/>
-              <path d="M14.2507 10H9.7501C9.55892 10.0002 9.37503 10.0816 9.23601 10.2274C9.09698 10.3732 9.01333 10.5725 9.00212 10.7845C8.99092 10.9965 9.05301 11.2053 9.17572 11.3682C9.29843 11.5311 9.47249 11.6357 9.66234 11.6608L9.7501 11.6667H14.2507C14.4419 11.6664 14.6258 11.5851 14.7648 11.4393C14.9038 11.2935 14.9875 11.0942 14.9987 10.8822C15.0099 10.6701 14.9478 10.4614 14.8251 10.2985C14.7024 10.1356 14.5283 10.0309 14.3385 10.0058L14.2507 10ZM12.0004 13.3333H9.7501C9.55116 13.3333 9.36037 13.4211 9.2197 13.5774C9.07903 13.7337 9 13.9457 9 14.1667C9 14.3877 9.07903 14.5996 9.2197 14.7559C9.36037 14.9122 9.55116 15 9.7501 15H12.0004C12.1994 15 12.3901 14.9122 12.5308 14.7559C12.6715 14.5996 12.7505 14.3877 12.7505 14.1667C12.7505 13.9457 12.6715 13.7337 12.5308 13.5774C12.3901 13.4211 12.1994 13.3333 12.0004 13.3333Z" fill="#F72E00"/>
-            </svg>
-          </button>
-          {/* 알림 아이콘 */}
-          <button className="w-8 h-8 flex items-center justify-center relative" onClick={() => { setHasNewNotification(false); router.push('/notifications') }}>
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M10.1268 17.1C9.9746 17.4168 9.90526 17.7671 9.92524 18.118C9.94521 18.4689 10.0539 18.809 10.241 19.1065C10.4282 19.404 10.6877 19.6492 10.9954 19.8192C11.3031 19.9891 11.6488 20.0783 12.0003 20.0783C12.3518 20.0783 12.6975 19.9891 13.0052 19.8192C13.3128 19.6492 13.5724 19.404 13.7595 19.1065C13.9467 18.809 14.0553 18.4689 14.0753 18.118C14.0953 17.7671 14.026 17.4168 13.8738 17.1H10.1268Z" fill="#F72E00"/>
-              <path fillRule="evenodd" clipRule="evenodd" d="M11.8883 5.1C10.6154 5.10003 9.39456 5.60571 8.49442 6.5058L8.30602 6.6942C7.40593 7.59434 6.90025 8.81515 6.90022 10.0881V10.9698C6.90022 12.5898 6.25672 14.1438 5.11072 15.2898C4.96246 15.4381 4.86151 15.6271 4.82064 15.8328C4.77976 16.0385 4.80078 16.2517 4.88106 16.4454C4.96133 16.6392 5.09724 16.8048 5.27162 16.9213C5.446 17.0378 5.651 17.1 5.86072 17.1H18.1397C18.3495 17.1 18.5546 17.0379 18.729 16.9213C18.9035 16.8048 19.0394 16.6392 19.1197 16.4454C19.2 16.2516 19.221 16.0383 19.1801 15.8325C19.1391 15.6268 19.0381 15.4378 18.8897 15.2895C18.3223 14.7222 17.8723 14.0488 17.5652 13.3075C17.2582 12.5663 17.1002 11.7718 17.1002 10.9695V10.0881C17.1002 8.81515 16.5945 7.59434 15.6944 6.6942L15.506 6.5058C14.6059 5.60571 13.3851 5.10003 12.1121 5.1H11.8883Z" fill="#FBB4A4"/>
-              <path fillRule="evenodd" clipRule="evenodd" d="M12.6004 5.1249V4.2C12.6004 4.04087 12.5372 3.88826 12.4247 3.77573C12.3121 3.66321 12.1595 3.6 12.0004 3.6C11.8413 3.6 11.6886 3.66321 11.5761 3.77573C11.4636 3.88826 11.4004 4.04087 11.4004 4.2V5.1249C11.5626 5.10832 11.7255 5.1 11.8885 5.1H12.1123C12.2763 5.1 12.439 5.1083 12.6004 5.1249Z" fill="#FC6744"/>
-            </svg>
-            {hasNewNotification && <span className="absolute top-0 right-0 w-2 h-2 bg-[#f72e00] rounded-full border border-white" />}
-          </button>
+        {/* ── 헤더 ── */}
+        <div className="flex items-center justify-between px-4 pt-14 pb-3">
+          <span style={{ fontFamily: "'Rubik Bubbles', cursive", color: '#f72e00', fontSize: 28 }}>Knitters</span>
+          <div className="flex items-center gap-2">
+            <button className="w-8 h-8 flex items-center justify-center" onClick={() => router.push('/chat')}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path opacity="0.3" d="M12 4C16.4184 4 20 7.5816 20 12C20 16.4184 16.4184 20 12 20H5.6C5.17565 20 4.76869 19.8314 4.46863 19.5314C4.16857 19.2313 4 18.8243 4 18.4V12C4 7.5816 7.5816 4 12 4Z" fill="#F72E00"/>
+                <path d="M14.2507 10H9.7501C9.55892 10.0002 9.37503 10.0816 9.23601 10.2274C9.09698 10.3732 9.01333 10.5725 9.00212 10.7845C8.99092 10.9965 9.05301 11.2053 9.17572 11.3682C9.29843 11.5311 9.47249 11.6357 9.66234 11.6608L9.7501 11.6667H14.2507C14.4419 11.6664 14.6258 11.5851 14.7648 11.4393C14.9038 11.2935 14.9875 11.0942 14.9987 10.8822C15.0099 10.6701 14.9478 10.4614 14.8251 10.2985C14.7024 10.1356 14.5283 10.0309 14.3385 10.0058L14.2507 10ZM12.0004 13.3333H9.7501C9.55116 13.3333 9.36037 13.4211 9.2197 13.5774C9.07903 13.7337 9 13.9457 9 14.1667C9 14.3877 9.07903 14.5996 9.2197 14.7559C9.36037 14.9122 9.55116 15 9.7501 15H12.0004C12.1994 15 12.3901 14.9122 12.5308 14.7559C12.6715 14.5996 12.7505 14.3877 12.7505 14.1667C12.7505 13.9457 12.6715 13.7337 12.5308 13.5774C12.3901 13.4211 12.1994 13.3333 12.0004 13.3333Z" fill="#F72E00"/>
+              </svg>
+            </button>
+            <button className="w-8 h-8 flex items-center justify-center relative"
+              onClick={() => { setHasNewNotification(false); router.push('/notifications') }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path fillRule="evenodd" clipRule="evenodd" d="M10.1268 17.1C9.9746 17.4168 9.90526 17.7671 9.92524 18.118C9.94521 18.4689 10.0539 18.809 10.241 19.1065C10.4282 19.404 10.6877 19.6492 10.9954 19.8192C11.3031 19.9891 11.6488 20.0783 12.0003 20.0783C12.3518 20.0783 12.6975 19.9891 13.0052 19.8192C13.3128 19.6492 13.5724 19.404 13.7595 19.1065C13.9467 18.809 14.0553 18.4689 14.0753 18.118C14.0953 17.7671 14.026 17.4168 13.8738 17.1H10.1268Z" fill="#F72E00"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M11.8883 5.1C10.6154 5.10003 9.39456 5.60571 8.49442 6.5058L8.30602 6.6942C7.40593 7.59434 6.90025 8.81515 6.90022 10.0881V10.9698C6.90022 12.5898 6.25672 14.1438 5.11072 15.2898C4.96246 15.4381 4.86151 15.6271 4.82064 15.8328C4.77976 16.0385 4.80078 16.2517 4.88106 16.4454C4.96133 16.6392 5.09724 16.8048 5.27162 16.9213C5.446 17.0378 5.651 17.1 5.86072 17.1H18.1397C18.3495 17.1 18.5546 17.0379 18.729 16.9213C18.9035 16.8048 19.0394 16.6392 19.1197 16.4454C19.2 16.2516 19.221 16.0383 19.1801 15.8325C19.1391 15.6268 19.0381 15.4378 18.8897 15.2895C18.3223 14.7222 17.8723 14.0488 17.5652 13.3075C17.2582 12.5663 17.1002 11.7718 17.1002 10.9695V10.0881C17.1002 8.81515 16.5945 7.59434 15.6944 6.6942L15.506 6.5058C14.6059 5.60571 13.3851 5.10003 12.1121 5.1H11.8883Z" fill="#FBB4A4"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M12.6004 5.1249V4.2C12.6004 4.04087 12.5372 3.88826 12.4247 3.77573C12.3121 3.66321 12.1595 3.6 12.0004 3.6C11.8413 3.6 11.6886 3.66321 11.5761 3.77573C11.4636 3.88826 11.4004 4.04087 11.4004 4.2V5.1249C11.5626 5.10832 11.7255 5.1 11.8885 5.1H12.1123C12.2763 5.1 12.439 5.1083 12.6004 5.1249Z" fill="#FC6744"/>
+              </svg>
+              {hasNewNotification && (
+                <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-[#f72e00] rounded-full border border-white" />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* 인사말 */}
-      <div className="relative z-10 px-4 mb-5">
-        <p className="text-[#565656] text-[18px] tracking-[-0.54px] leading-[1.31]">안녕하세요, 익명의 니터님</p>
-        <p className="text-[#212121] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">오늘의 뜨개를 시작해볼까요?</p>
-      </div>
+        {/* ── 인사말 ── */}
+        <div className="px-4 mb-5">
+          <p className="text-[#565656] text-[18px] tracking-[-0.54px] leading-[1.31]">안녕하세요, 이브님</p>
+          <p className="text-[#212121] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">오늘의 뜨개를 시작해볼까요?</p>
+        </div>
 
-      {/* 진행 중 프로젝트 카드 */}
-      <Link href={currentProject ? `/projects/${currentProject.id}` : '/projects'}>
-        <div className="mx-4 mb-3 bg-white rounded-[10px] shadow-[4px_4px_8px_4px_rgba(0,0,0,0.04)] px-4 py-4 flex items-center gap-3">
-          <div className="flex-1 min-w-0">
-            <p className="text-[#212121] text-[14px] font-bold tracking-[-0.42px] mb-2 truncate">
-              {currentProject?.title ?? '캔디 헨리넥 스웨터'}
-            </p>
-            <div className="flex items-center gap-3">
-              <span className="bg-[#e8f2ff] text-[#148fff] text-[10px] font-semibold px-2.5 py-[3px] rounded-[10px] tracking-[-0.3px] whitespace-nowrap">
-                진행 중
-              </span>
-              <span className="text-[#949494] text-[12px] font-semibold tracking-[0.36px]">{formatTime(currentProject?.timerSecs ?? 0)}</span>
+        {/* ── 연속 뜨개 카드 ── */}
+        <Link href="/streak">
+          <div className="mx-4 mb-6 bg-white rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 py-4 flex items-center gap-3">
+            <span style={{ fontSize: 42, lineHeight: 1 }}>🔥</span>
+            <div className="flex-1">
+              <div className="flex items-center gap-1 mb-2">
+                <span className="text-[#212121] text-[20px] font-bold tracking-[-0.6px]">{STREAK}</span>
+                <span className="text-[#5e5d5d] text-[12px] font-medium tracking-[-0.36px]">일 연속 뜨개 중</span>
+              </div>
+              <div className="flex gap-[6px]">
+                {DAYS.map((day, i) => (
+                  <div key={day}
+                    className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0"
+                    style={{ background: i < STREAK ? '#f72e00' : '#ededed', color: i < STREAK ? '#ffefeb' : '#b8b8b8' }}>
+                    {day}
+                  </div>
+                ))}
+              </div>
             </div>
+            <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="shrink-0">
+              <path d="M1 1l6 6-6 6" stroke="#212121" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-          <div className="w-[53px] h-[53px] rounded-[10px] bg-gradient-to-br from-pink-200 to-rose-300 flex items-center justify-center shrink-0">
-            <span className="text-2xl">🧶</span>
-          </div>
-        </div>
-      </Link>
+        </Link>
 
-      {/* 공유된 기록 */}
-      {sharedProjects.length > 0 && (
-        <div className="px-4 mb-3">
-          <p className="text-[#212121] text-[16px] font-bold tracking-[-0.48px] mb-3">공유된 기록</p>
-          <div className="flex flex-col gap-2">
-            {sharedProjects.map(proj => (
-              <Link key={proj.id} href={`/projects/${proj.id}`}>
-                <div className="bg-white rounded-[10px] shadow-[4px_4px_8px_4px_rgba(0,0,0,0.04)] px-4 py-3 flex items-center gap-3">
-                  <div
-                    className="w-[48px] h-[48px] rounded-[10px] overflow-hidden shrink-0 flex items-center justify-center"
-                    style={{ background: '#FFF5F4' }}
-                  >
-                    {proj.coverPhoto
-                      ? <img src={proj.coverPhoto} alt="" className="w-full h-full object-cover" /> // eslint-disable-line @next/next/no-img-element
-                      : <span className="text-xl">{proj.emoji ?? '🧶'}</span>
-                    }
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-[#212121] truncate">{proj.title}</p>
-                    <p className="text-[12px] text-[#9A9A9A] mt-0.5">{proj.status}</p>
-                  </div>
-                  <span
-                    className="text-[11px] font-semibold px-2 py-1 rounded-full shrink-0"
-                    style={{ background: '#FFEEEA', color: '#F72E00' }}
-                  >
-                    공유됨
-                  </span>
+        {/* ── 니터즈 매거진 ── */}
+        <div className="px-4 mb-3 flex items-center justify-between">
+          <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">니터즈 매거진</p>
+          <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
+        </div>
+        <div className="px-4 mb-7 grid grid-cols-2 gap-3">
+          {MAGAZINES.map(mag => (
+            <div key={mag.id}>
+              <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2">
+                <div className="absolute top-[8px] left-[12px] bg-[#feeae5] rounded-[10px] h-[24px] px-[10px] flex items-center">
+                  <span className="text-[#f72e00] text-[12px] font-medium tracking-[-0.36px]">도안</span>
                 </div>
-              </Link>
+              </div>
+              <p className="text-[#212121] text-[16px] font-semibold tracking-[-0.48px] leading-[1.31]">{mag.title}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── 실시간 커뮤니티 인기글 ── */}
+        <div className="px-4 mb-3 flex items-center justify-between">
+          <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">실시간 커뮤니티 인기글</p>
+          <Link href="/community" className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</Link>
+        </div>
+        <div className="px-4 mb-7 flex flex-col gap-2">
+          {COMMUNITY_POSTS.map(post => (
+            <div key={post.id} className="bg-[#fafafa] rounded-[10px] shadow-[0px_4px_20px_1px_rgba(0,0,0,0.04)] px-4 pt-3 pb-3">
+              {/* 작성자 */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-[27px] h-[27px] rounded-full bg-gradient-to-br from-[#FFAF9D] to-[#F72E00] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
+                  {post.author[0]}
+                </div>
+                <span className="text-[15px] font-medium text-black tracking-[-0.3px]">{post.author}</span>
+              </div>
+              {/* 제목 */}
+              <p className="text-[15px] font-semibold text-[#2d2d2d] tracking-[-0.3px] leading-[1.4] mb-2">{post.title}</p>
+              {/* 하단 메타 */}
+              <div className="flex items-center justify-between">
+                <span className="text-[12px] text-[#6f6f6f] tracking-[-0.24px]">{post.date} · 조회 {post.views}</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <HeartIcon />
+                    <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.likes}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <CommentIcon />
+                    <span className="text-[11px] text-[#9a9a9a] tracking-[-0.22px]">{post.comments}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── 팝업 / 이벤트 소식 ── */}
+        <div className="bg-[#ffeeeb] pt-6 pb-6 mb-4">
+          <div className="px-4 mb-3 flex items-center justify-between">
+            <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">팝업 / 이벤트 소식</p>
+            <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
+          </div>
+          <div className="px-4 flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+            {EVENTS.map(event => (
+              <div key={event.id} className="shrink-0 w-[160px]">
+                <div className="relative bg-[#d9d9d9] rounded-[10px] h-[200px] mb-2">
+                  {event.ended && (
+                    <div className="absolute top-[12px] left-[12px] bg-[#f72e00] rounded-[4px] h-[21px] px-[10px] flex items-center">
+                      <span className="text-white text-[12px] font-medium tracking-[-0.36px]">종료</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-black text-[16px] font-bold tracking-[-0.54px] leading-[1.31] mb-[2px]">{event.title}</p>
+                <p className="text-black text-[12px] font-medium tracking-[-0.36px] leading-[1.31]">{event.date}</p>
+                <p className="text-black text-[12px] font-medium tracking-[-0.36px] leading-[1.31]">{event.location}</p>
+              </div>
             ))}
           </div>
         </div>
-      )}
 
-      {/* 연속 뜨개 카드 */}
-      <Link href="/streak">
-      <div className="mx-4 mb-6 bg-white rounded-[10px] shadow-[4px_4px_8px_4px_rgba(0,0,0,0.04)] px-4 py-4 flex items-center gap-3">
-        <span className="text-[20px] shrink-0">🧶</span>
-        <div className="flex-1">
-          <div className="flex items-center gap-1 mb-2">
-            <span className="text-[#212121] text-[20px] font-bold tracking-[-0.6px]">{STREAK}</span>
-            <span className="text-[#5e5d5d] text-[12px] font-medium tracking-[-0.36px]">일 연속 뜨개 중</span>
-          </div>
-          <div className="flex gap-[6px]">
-            {DAYS.map((day, i) => (
-              <div
-                key={day}
-                className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[10px] font-semibold"
-                style={{
-                  background: i < STREAK ? '#f72e00' : '#ededed',
-                  color: i < STREAK ? '#ffefeb' : '#b8b8b8',
-                }}
-              >
-                {day}
-              </div>
-            ))}
+        {/* ── 함께 만들어가는 니터즈 배너 ── */}
+        <div className="px-4 pb-4">
+          <div className="bg-[#fcebe8] rounded-[10px] h-[100px] flex items-center px-5 relative overflow-hidden">
+            <div className="flex-1">
+              <p className="text-[#f72e00] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">함께 만들어가는 니터즈</p>
+              <p className="text-[#3e0c00] text-[20px] font-bold tracking-[-0.6px] leading-[1.31]">여러분의 다양한 의견을 기다려요.</p>
+            </div>
+            <span className="absolute right-4 bottom-3 text-[40px]" style={{ transform: 'rotate(-10deg)' }}>✏️</span>
           </div>
         </div>
-        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="shrink-0">
-          <path d="M1 1l6 6-6 6" stroke="#212121" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div>
-      </Link>
 
-      {/* 니터즈 매거진 */}
-      <div className="px-4 mb-3 flex items-center justify-between">
-        <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">니터즈 매거진</p>
-        <Link href="/explore" className="text-[#a7a7a7] text-[14px] font-medium tracking-[-0.42px]">더보기</Link>
-      </div>
-      <div className="px-4 mb-6 grid grid-cols-2 gap-3">
-        {MAGAZINES.map(mag => (
-          <div key={mag.id} className="relative h-[237px] rounded-[10px] overflow-hidden" style={{ background: mag.bg }}>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[rgba(9,2,0,0.6)]" />
-            <div className="absolute bottom-4 left-4 right-2">
-              <p className="text-[#fafafa] text-[12px] font-medium tracking-[-0.36px]">{mag.season}</p>
-              <p className="text-[#fafafa] text-[12px] font-bold tracking-[-0.36px] leading-snug">{mag.title}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 뜨개 가이드 */}
-      <div className="px-4 mb-3">
-        <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">뜨개 가이드</p>
-      </div>
-      {/* 필터 탭 */}
-      <div className="px-4 mb-1 flex gap-2 overflow-x-auto">
-        {GUIDE_TABS.map(tab => (
-          <button
-            key={tab}
-            onClick={() => setGuideTab(tab)}
-            className="h-[30px] px-[10px] rounded-[10px] text-[12px] font-medium tracking-[-0.36px] whitespace-nowrap shrink-0 transition-colors"
-            style={{
-              background: guideTab === tab ? '#feeae5' : '#ededed',
-              color: guideTab === tab ? '#f72e00' : '#141414',
-            }}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-      {/* 가이드 목록 */}
-      <div className="px-4">
-        {GUIDES.map((guide, i) => (
-          <div key={guide.id}>
-            <div className="flex items-center gap-4 py-4">
-              <div className="w-[74px] h-[74px] rounded-[10px] bg-gradient-to-br from-gray-100 to-gray-300 flex items-center justify-center shrink-0">
-                <span className="text-3xl">{guide.emoji}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[16px] text-black font-medium tracking-[-0.48px] mb-1 leading-snug">{guide.title}</p>
-                <p className="text-[#848484] text-[12px] font-medium tracking-[-0.36px] leading-snug">{guide.desc}</p>
-              </div>
-              <button onClick={() => toggleSave(guide.id)} className="shrink-0 p-1">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill={savedGuides[guide.id] ? '#f72e00' : 'none'}>
-                  <path d="M5 3h14a1 1 0 011 1v17l-8-4-8 4V4a1 1 0 011-1z"
-                    stroke={savedGuides[guide.id] ? '#f72e00' : '#c8c8c8'}
-                    strokeWidth="1.6" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-            {i < GUIDES.length - 1 && <div className="h-px bg-[#efefef]" />}
-          </div>
-        ))}
-      </div>
-
-      {/* 뜨개 가이드 더보기 버튼 */}
-      <div className="px-4 mt-2 mb-4">
-        <button className="w-full bg-[#f72e00] text-[#fff2ef] font-semibold text-[14px] tracking-[-0.42px] py-5 rounded-[10px] active:opacity-80 transition-opacity">
-          뜨개 가이드 더보기
-        </button>
-      </div>
       </div>
     </div>
   )
