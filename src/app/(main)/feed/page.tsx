@@ -133,18 +133,18 @@ export default function FeedPage() {
         {/* ── 니터즈 매거진 ── */}
         <div className="px-4 mb-3 flex items-center justify-between">
           <p className="text-[#212121] text-[18px] font-bold tracking-[-0.54px]">니터즈 매거진</p>
-          <button className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
+          <button onClick={() => router.push('/magazine')} className="text-[#828282] text-[12px] font-medium tracking-[-0.36px]">더보기</button>
         </div>
         <div className="px-4 mb-[30px] flex gap-3 overflow-x-auto scrollbar-none">
           {MAGAZINES.map(mag => (
-            <div key={mag.id} className="w-[173px] shrink-0">
+            <button key={mag.id} onClick={() => router.push('/magazine')} className="w-[173px] shrink-0 text-left">
               <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2 w-[173px]">
                 <div className="absolute top-[8px] left-[12px] bg-[#feeae5] rounded-[10px] h-[24px] px-[10px] flex items-center">
                   <span className="text-[#f72e00] text-[12px] font-medium tracking-[-0.36px]">도안</span>
                 </div>
               </div>
               <p className="text-[#212121] text-[16px] font-semibold tracking-[-0.48px] leading-[1.31]">{mag.title}</p>
-            </div>
+            </button>
           ))}
         </div>
 
