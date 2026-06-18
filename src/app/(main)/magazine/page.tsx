@@ -1,55 +1,13 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { MAGAZINE_ARTICLES } from '@/lib/magazineData'
 
 type Tab = '전체' | '추천' | '트렌드' | '인터뷰'
 const TABS: Tab[] = ['전체', '추천', '트렌드', '인터뷰']
 
 const SERIES_OPTIONS = ['전체', '도안', '실', '바늘', '인터뷰']
 const SORT_OPTIONS = ['최신순', '인기순']
-
-const ARTICLES = [
-  {
-    id: 1,
-    series: '도안',
-    title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)',
-    subtitle: '이번 여름엔 직접 떠서 입어봐요',
-    date: '2026년 06월 15일',
-    tab: '추천',
-  },
-  {
-    id: 2,
-    series: '트렌드',
-    title: '가을 분위기 물씬~ 코지 니트 컬렉션',
-    subtitle: '가을 시즌 준비를 미리 시작해보세요',
-    date: '2026년 06월 12일',
-    tab: '트렌드',
-  },
-  {
-    id: 3,
-    series: '인터뷰',
-    title: '초보자도 쉽게 따라하는 손뜨개 기초',
-    subtitle: '처음 시작하는 분들을 위한 완벽 가이드',
-    date: '2026년 06월 10일',
-    tab: '인터뷰',
-  },
-  {
-    id: 4,
-    series: '도안',
-    title: '겨울 준비! 따뜻한 뜨개 소품 모음',
-    subtitle: '코지한 겨울을 위한 소품 아이디어',
-    date: '2026년 06월 08일',
-    tab: '추천',
-  },
-  {
-    id: 5,
-    series: '트렌드',
-    title: '2026 S/S 뜨개 컬러 트렌드 리포트',
-    subtitle: '올 시즌 주목해야 할 컬러와 소재',
-    date: '2026년 06월 05일',
-    tab: '트렌드',
-  },
-]
 
 export default function MagazinePage() {
   const router = useRouter()
@@ -59,7 +17,7 @@ export default function MagazinePage() {
   const [selectedSeries, setSelectedSeries] = useState('시리즈')
   const [selectedSort, setSelectedSort] = useState('최신순')
 
-  const filtered = ARTICLES.filter(a => activeTab === '전체' || a.tab === activeTab)
+  const filtered = MAGAZINE_ARTICLES.filter(a => activeTab === '전체' || a.tab === activeTab)
 
   return (
     <div className="min-h-screen bg-[#fafafa] pb-28 max-w-[393px] mx-auto">
@@ -159,10 +117,12 @@ export default function MagazinePage() {
       {/* 아티클 리스트 */}
       <div className="flex flex-col gap-8 px-4">
         {filtered.map(article => (
-          <div key={article.id} className="flex flex-col gap-3">
-            {/* 이미지 */}
+          <button
+            key={article.id}
+            onClick={() => router.push(`/magazine/${article.id}`)}
+            className="flex flex-col gap-3 text-left"
+          >
             <div className="w-full h-[240px] bg-[#d9d9d9] rounded-[10px]" />
-            {/* 텍스트 */}
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
                 <span className="text-[12px] font-semibold text-[#6a6a6a] tracking-[-0.36px]">{article.series}</span>
@@ -174,7 +134,7 @@ export default function MagazinePage() {
               <p className="text-[14px] font-medium text-[#212121] tracking-[-0.42px] leading-[1.31]">{article.subtitle}</p>
               <p className="text-[12px] text-[#9d9d9d] tracking-[-0.36px] leading-[1.31]">{article.date}</p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>

@@ -8,10 +8,10 @@ const STREAK = 2
 
 const MAGAZINES = [
   { id: 1, title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)' },
-  { id: 2, title: '진짜 예쁜 여름 뜨개 옷 담아왔어요 (상의 ver.)' },
-  { id: 3, title: '가을 분위기 물씬~ 코지 니트 컬렉션' },
-  { id: 4, title: '초보자도 쉽게 따라하는 손뜨개 기초' },
-  { id: 5, title: '겨울 준비! 따뜻한 뜨개 소품 모음' },
+  { id: 2, title: '가을 분위기 물씬~ 코지 니트 컬렉션' },
+  { id: 3, title: '초보자도 쉽게 따라하는 손뜨개 기초' },
+  { id: 4, title: '겨울 준비! 따뜻한 뜨개 소품 모음' },
+  { id: 5, title: '2026 S/S 뜨개 컬러 트렌드 리포트' },
 ]
 
 const COMMUNITY_POSTS = [
@@ -137,7 +137,7 @@ export default function FeedPage() {
         </div>
         <div className="px-4 mb-[30px] flex gap-3 overflow-x-auto scrollbar-none">
           {MAGAZINES.map(mag => (
-            <button key={mag.id} onClick={() => router.push('/magazine')} className="w-[173px] shrink-0 text-left">
+            <button key={mag.id} onClick={() => router.push(`/magazine/${mag.id}`)} className="w-[173px] shrink-0 text-left">
               <div className="relative bg-[#d9d9d9] rounded-[10px] h-[124px] mb-2 w-[173px]">
                 <div className="absolute top-[8px] left-[12px] bg-[#feeae5] rounded-[10px] h-[24px] px-[10px] flex items-center">
                   <span className="text-[#f72e00] text-[12px] font-medium tracking-[-0.36px]">도안</span>
