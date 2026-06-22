@@ -14,7 +14,7 @@ function StatusBadge({ status }: { status: string }) {
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF', opacity: 0.5 }} />
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#209BFF' }} />
       </div>
-      <span className="text-[14px] font-semibold" style={{ color: '#209BFF' }}>뜨는 중</span>
+      <span className="text-[14px] font-semibold whitespace-nowrap" style={{ color: '#209BFF' }}>뜨는 중</span>
     </div>
   )
   if (status === '쉬는 중') return (
@@ -41,7 +41,7 @@ function StatusBadge({ status }: { status: string }) {
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B', opacity: 0.5 }} />
         <span className="w-[7px] h-[7px] rounded-full" style={{ background: '#3B3B3B' }} />
       </div>
-      <span className="text-[14px] font-semibold" style={{ color: '#3B3B3B' }}>준비 중</span>
+      <span className="text-[14px] font-semibold whitespace-nowrap" style={{ color: '#3B3B3B' }}>준비 중</span>
     </div>
   )
 }
