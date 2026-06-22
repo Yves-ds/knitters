@@ -478,17 +478,24 @@ function MaterialSheet({ isOpen, onClose, initialTab }: {
   )
 
   return (
-    <div
-      className="fixed inset-y-0 w-full max-w-[393px] z-[60] bg-white flex flex-col"
-      style={{
-        left: '50%',
-        transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-        transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)',
-        pointerEvents: isOpen ? 'auto' : 'none',
-      }}
-    >
-      <div className="relative flex items-center justify-between px-5 pt-12 pb-3 flex-shrink-0">
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-1 bg-[#E0E0E0] rounded-full" />
+    <>
+      <div
+        className="fixed w-full max-w-[393px] z-[59] bg-black/30"
+        style={{ left: '50%', transform: 'translateX(-50%)', top: 90, bottom: 0, opacity: isOpen ? 1 : 0, pointerEvents: isOpen ? 'auto' : 'none', transition: 'opacity 0.3s' }}
+        onClick={onClose}
+      />
+      <div
+        className="fixed bottom-0 w-full max-w-[393px] z-[60] bg-white flex flex-col rounded-t-[20px]"
+        style={{
+          top: 90,
+          left: '50%',
+          transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
+          transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)',
+          pointerEvents: isOpen ? 'auto' : 'none',
+        }}
+      >
+      <div className="relative flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0">
+        <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-10 h-1 bg-[#E0E0E0] rounded-full" />
         <div className="w-8" />
         <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -559,6 +566,7 @@ function MaterialSheet({ isOpen, onClose, initialTab }: {
         )}
       </div>
     </div>
+    </>
   )
 }
 
@@ -586,7 +594,6 @@ export default function EditProjectPage() {
   const [pdfUrl,        setPdfUrl]        = useState<string | null>(project?.pdfUrl  ?? null)
   const [videos,        setVideos]        = useState<string[]>(project?.videos ?? [])
   const [hasPhotos,     setHasPhotos]     = useState(false)
-  const [infoOpen,      setInfoOpen]      = useState(false)
   const [materialSheetOpen, setMaterialSheetOpen] = useState(false)
   const [materialSheetTab, setMaterialSheetTab] = useState<'전체' | '실' | '바늘'>('전체')
 
@@ -979,7 +986,7 @@ export default function EditProjectPage() {
               <span className="text-[14px] font-normal" style={{ color: pdfUrl ? '#F72E00' : '#646464' }}>도안</span>
             </button>
             {/* 정보 버튼 */}
-            <button onClick={() => setInfoOpen(v => !v)} className="flex items-center gap-[8px] active:opacity-50">
+            <button onClick={() => { setMaterialSheetTab('전체'); setMaterialSheetOpen(true) }} className="flex items-center gap-[8px] active:opacity-50">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                 <path fillRule="evenodd" clipRule="evenodd" d="M20 12C20 16.4184 16.4184 20 12 20C7.5816 20 4 16.4184 4 12C4 7.5816 7.5816 4 12 4C16.4184 4 20 7.5816 20 12Z" fill="#D2D2D2"/>
                 <path d="M14.845 10.3821L13.6281 9.16451C12.797 8.33174 12.3809 7.91576 11.9346 8.01422C11.4882 8.11267 11.2864 8.66567 10.881 9.77001L10.607 10.5183C10.4987 10.8136 10.4453 10.9605 10.3477 11.0737C10.3042 11.125 10.2546 11.1708 10.2 11.2099C10.0786 11.2977 9.9276 11.3396 9.62565 11.4232C8.94461 11.6103 8.60328 11.7038 8.47528 11.927C8.42002 12.0234 8.39115 12.1326 8.39159 12.2437C8.39323 12.5013 8.64266 12.7508 9.14236 13.2512L9.50913 13.6188L8.17989 14.9496C8.06455 15.0652 7.99985 15.2218 8 15.385C8.00015 15.5483 8.06516 15.7048 8.18071 15.8201C8.29627 15.9354 8.4529 16.0002 8.61617 16C8.77943 15.9998 8.93595 15.9348 9.05128 15.8193L10.3789 14.4893L10.767 14.8774C11.27 15.3804 11.5219 15.6322 11.7803 15.6322C11.8894 15.6325 11.9966 15.6043 12.0913 15.5502C12.3161 15.4222 12.4105 15.0792 12.5992 14.3933C12.6813 14.0914 12.7239 13.9404 12.8109 13.819C12.8492 13.7654 12.893 13.7173 12.9422 13.6746C13.0554 13.5761 13.2015 13.5212 13.4944 13.4121L14.2509 13.1274C15.3438 12.7171 15.8903 12.512 15.9863 12.0665C16.0823 11.621 15.6704 11.2083 14.845 10.3821Z" fill="#838383"/>
@@ -988,26 +995,6 @@ export default function EditProjectPage() {
             </button>
           </div>
 
-          {/* 정보 패널 */}
-          <div style={{ maxHeight: infoOpen ? 240 : 0, overflow: 'hidden', transition: 'max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-            <div className="border-t border-[#F0F0F0] px-8 pt-6 pb-8 grid grid-cols-4 gap-y-6">
-              {[{ emoji: '🧶', label: '실' }, { emoji: '🪡', label: '바늘' }, { emoji: '📏', label: '게이지' }, { emoji: '🔗', label: '링크' }, { emoji: '📍', label: '장소' }, { emoji: '📎', label: '파일' }].map(item => (
-                <button
-                  key={item.label}
-                  className="flex flex-col items-center gap-2 active:opacity-50"
-                  onClick={() => {
-                    if (item.label === '실' || item.label === '바늘') {
-                      setMaterialSheetTab(item.label)
-                      setMaterialSheetOpen(true)
-                    }
-                  }}
-                >
-                  <span className="text-[36px] leading-none">{item.emoji}</span>
-                  <span className="text-[14px] text-[#343434]">{item.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* 달력 */}
