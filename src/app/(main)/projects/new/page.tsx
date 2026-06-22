@@ -828,7 +828,7 @@ export default function NewProjectPage() {
         badge.textContent = '대표 사진 설정'
         badge.style.cssText =
           'position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.52);color:#FFFFFF;' +
-          'font-size:12px;font-weight:500;padding:6px 8px;border-radius:10px;' +
+          'font-size:12px;font-weight:500;height:28px;display:flex;align-items:center;padding:0 8px;border-radius:10px;' +
           'cursor:pointer;z-index:2;letter-spacing:0.6px;white-space:nowrap;'
       }
       // firstChild는 정리 후 항상 img 요소 — 그 앞에 배지 삽입
