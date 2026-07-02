@@ -1,9 +1,21 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Heart, Bookmark, Share2, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Bookmark, Share2, ExternalLink } from 'lucide-react'
 import { mockPatterns } from '@/lib/mockData'
 import { useState } from 'react'
 import Badge from '@/components/ui/Badge'
+
+function HeartIcon({ active }: { active: boolean }) {
+  return active ? (
+    <svg width="20" height="20" viewBox="0 0 18 19" fill="none">
+      <path d="M15.3931 10.716C13.5181 14.9989 8.92815 17.2076 8.73315 17.3026C8.58368 17.3644 8.41762 17.3644 8.26815 17.3026C8.08065 17.2076 3.48315 14.9989 1.60815 10.716C0.445649 8.04806 1.09065 5.17431 2.35815 3.93931C2.80212 3.53771 3.32999 3.25298 3.89842 3.10848C4.46685 2.96398 5.05965 2.96384 5.62815 3.10806C6.7914 3.38717 7.80728 4.13042 8.46315 5.18222C9.12023 4.12816 10.1393 3.38453 11.3056 3.10806C11.8741 2.96384 12.4669 2.96398 13.0354 3.10848C13.6038 3.25298 14.1317 3.53771 14.5756 3.93931C15.9106 5.17431 16.5631 8.04806 15.3931 10.716Z" fill="#FBB4A4"/>
+    </svg>
+  ) : (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M21.1894 12.6826C18.6894 18.0926 12.5694 20.8826 12.3094 21.0026C12.1101 21.0806 11.8887 21.0806 11.6894 21.0026C11.4394 20.8826 5.3094 18.0926 2.8094 12.6826C1.2594 9.31256 2.1194 5.68256 3.8094 4.12256C4.40136 3.61528 5.10518 3.25562 5.8631 3.0731C6.62101 2.89057 7.4114 2.89039 8.1694 3.07256C9.7204 3.42512 11.0749 4.36396 11.9494 5.69256C12.8255 4.36111 14.1843 3.42179 15.7394 3.07256C16.4974 2.89039 17.2878 2.89057 18.0457 3.0731C18.8036 3.25562 19.5074 3.61528 20.0994 4.12256C21.8794 5.68256 22.7494 9.31256 21.1894 12.6826Z" fill="#E3E2E2"/>
+    </svg>
+  )
+}
 
 const DIFFICULTY_VARIANT: Record<string, 'default' | 'primary' | 'success' | 'warning'> = {
   '입문': 'success', '초급': 'default', '중급': 'warning', '고급': 'primary'
@@ -59,7 +71,7 @@ export default function PatternDetailPage() {
           </div>
           <div className="flex items-center gap-4 pt-3 border-t border-border">
             <button onClick={toggleLike} className="flex items-center gap-2">
-              <Heart size={20} className={liked ? 'text-primary fill-primary' : 'text-sub'} />
+              <HeartIcon active={liked} />
               <span className="text-sm text-sub">{likes.toLocaleString()}</span>
             </button>
             <button className="flex items-center gap-2">

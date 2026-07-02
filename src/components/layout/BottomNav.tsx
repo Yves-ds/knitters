@@ -96,7 +96,7 @@ function HomeIconInactive() {
 const navItems = [
   { href: '/feed', label: '홈' },
   { href: '/projects', label: '기록' },
-  { href: '/community', label: '커뮤니티' },
+  { href: '/community', label: '니팅룸' },
   { href: '/explore', label: '탐색' },
   { href: '/mypage', label: '마이' },
 ]

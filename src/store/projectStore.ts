@@ -1,6 +1,19 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import { mockProjects } from '@/lib/mockData'
+
+// localStorage 용량 초과(QuotaExceededError) 시 에러가 addProject까지 전파되지 않도록 감쌈
+const safeLocalStorage = {
+  getItem: (name: string) => {
+    try { return localStorage.getItem(name) } catch { return null }
+  },
+  setItem: (name: string, value: string) => {
+    try { localStorage.setItem(name, value) } catch { /* quota exceeded — 메모리에만 유지 */ }
+  },
+  removeItem: (name: string) => {
+    try { localStorage.removeItem(name) } catch {}
+  },
+}
 
 export interface Project {
   id: string
@@ -63,6 +76,6 @@ export const useProjectStore = create<ProjectStore>()(
           projects: state.projects.filter(p => p.id !== id),
         })),
     }),
-    { name: 'knitters-projects' }
+    { name: 'knitters-projects', storage: createJSONStorage(() => safeLocalStorage) }
   )
 )
