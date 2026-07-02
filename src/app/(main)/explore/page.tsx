@@ -309,23 +309,6 @@ export default function ExplorePage() {
 
       <div className="h-2 bg-[#f5f5f5]" />
 
-      {/* 함뜨 인기 플레이스 */}
-      <div className="bg-white pt-5 px-4">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <p className="text-[20px] font-semibold text-[#2d2b2a] tracking-[-0.6px] leading-[1.31]">함뜨 인기 플레이스</p>
-            <p className="text-[12px] font-medium text-[#6b6b6b] tracking-[-0.24px] leading-[1.4] mt-[2px]">내가 원하는 요일에 가능한 함뜨</p>
-          </div>
-          <button className="text-[12px] font-medium text-[#b1b1b1] tracking-[-0.24px]">전체보기</button>
-        </div>
-        <div className="flex gap-3 pb-5">
-          <div className="flex-1 h-[206px] bg-[#d9d9d9] rounded-[10px]" />
-          <div className="flex-1 h-[206px] bg-[#d9d9d9] rounded-[10px]" />
-        </div>
-      </div>
-
-      <div className="h-2 bg-[#f5f5f5]" />
-
       {/* 원하는 모임이 없나요? */}
       <div className="bg-white pt-5 px-4 pb-5">
         <div className="flex items-start justify-between mb-4">
