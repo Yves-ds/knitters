@@ -95,13 +95,6 @@ export default function CommunityFeedPage() {
             >
               커뮤니티
             </button>
-            <button
-              onClick={() => router.push('/community/together')}
-              className="text-[24px] font-bold active:opacity-60"
-              style={{ color: '#9A9A9A' }}
-            >
-              함뜨해요
-            </button>
             <span className="text-[24px] font-bold" style={{ color: '#F72E00' }}>피드</span>
           </div>
           {/* 검색 */}
