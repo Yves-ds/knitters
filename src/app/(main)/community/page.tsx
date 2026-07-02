@@ -96,6 +96,13 @@ function CommunityPageInner() {
           <div className="flex items-center gap-3 pb-3">
             <span className="text-[24px] font-bold" style={{ color: '#F72E00' }}>커뮤니티</span>
             <button
+              onClick={() => router.push('/community/together')}
+              className="text-[24px] font-bold active:opacity-60"
+              style={{ color: '#9A9A9A' }}
+            >
+              함뜨해요
+            </button>
+            <button
               onClick={() => router.push('/community/feed')}
               className="text-[24px] font-bold active:opacity-60"
               style={{ color: '#9A9A9A' }}
