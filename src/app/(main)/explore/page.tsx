@@ -231,11 +231,6 @@ export default function ExplorePage() {
           ))}
         </div>
 
-        {/* 더보기 버튼 */}
-        <button className="w-full h-[52px] bg-[#ffccc1] rounded-[10px] flex items-center justify-center gap-[4px] mb-5">
-          <span className="text-[16px] font-semibold text-[#f72e00] tracking-[-0.32px]">추천 함뜨 더보기</span>
-          <ChevronIcon />
-        </button>
       </div>
 
       <div className="h-2 bg-[#f5f5f5]" />
@@ -301,10 +296,6 @@ export default function ExplorePage() {
           ))}
         </div>
 
-        <button className="w-full h-[52px] bg-[#ffccc1] rounded-[10px] flex items-center justify-center gap-[4px] mb-5">
-          <span className="text-[16px] font-semibold text-[#f72e00] tracking-[-0.32px]">더보기</span>
-          <ChevronIcon />
-        </button>
       </div>
 
       <div className="h-2 bg-[#f5f5f5]" />
