@@ -1,14 +1,8 @@
 'use client'
 import { useState } from 'react'
-import { mockExploreItems, mockBrands } from '@/lib/mockData'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-type Tab = '도안' | '실' | '바늘' | '브랜드'
-const TABS: Tab[] = ['도안', '실', '바늘', '브랜드']
-
-type PriceFilter = '전체' | '무료' | '유료'
-type SortFilter = '인기순' | '최신순'
-
-/* ── 아이콘 ── */
 function HeartIcon({ active }: { active: boolean }) {
   return active ? (
     <svg width="24" height="24" viewBox="0 0 18 19" fill="none">
@@ -23,322 +17,337 @@ function HeartIcon({ active }: { active: boolean }) {
 
 function SearchIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="10.5" cy="10.5" r="6.5" stroke="#9A9A9A" strokeWidth="1.8" />
-      <path d="M15.5 15.5L20 20" stroke="#9A9A9A" strokeWidth="1.8" strokeLinecap="round" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <circle cx="10.5" cy="10.5" r="5.5" stroke="#FFAF9D" strokeWidth="2"/>
+      <path d="M15 15L19 19" stroke="#FFAF9D" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
 
-function FilterIcon() {
+function BellIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 6h16M7 12h10M10 18h4" stroke="#343434" strokeWidth="1.8" strokeLinecap="round" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path fillRule="evenodd" clipRule="evenodd" d="M10.1268 17.1C9.9746 17.4168 9.90526 17.7671 9.92524 18.118C9.94521 18.4689 10.0539 18.809 10.241 19.1065C10.4282 19.404 10.6877 19.6492 10.9954 19.8192C11.3031 19.9891 11.6488 20.0783 12.0003 20.0783C12.3518 20.0783 12.6975 19.9891 13.0052 19.8192C13.3128 19.6492 13.5724 19.404 13.7595 19.1065C13.9467 18.809 14.0553 18.4689 14.0753 18.118C14.0953 17.7671 14.026 17.4168 13.8738 17.1H10.1268Z" fill="#F72E00"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M11.8883 5.1C10.6154 5.10003 9.39456 5.60571 8.49442 6.5058L8.30602 6.6942C7.40593 7.59434 6.90025 8.81515 6.90022 10.0881V10.9698C6.90022 12.5898 6.25672 14.1438 5.11072 15.2898C4.96246 15.4381 4.86151 15.6271 4.82064 15.8328C4.77976 16.0385 4.80078 16.2517 4.88106 16.4454C4.96133 16.6392 5.09724 16.8048 5.27162 16.9213C5.446 17.0378 5.651 17.1 5.86072 17.1H18.1397C18.3495 17.1 18.5546 17.0379 18.729 16.9213C18.9035 16.8048 19.0394 16.6392 19.1197 16.4454C19.2 16.2516 19.221 16.0383 19.1801 15.8325C19.1391 15.6268 19.0381 15.4378 18.8897 15.2895C18.3223 14.7222 17.8723 14.0488 17.5652 13.3075C17.2582 12.5663 17.1002 11.7718 17.1002 10.9695V10.0881C17.1002 8.81515 16.5945 7.59434 15.6944 6.6942L15.506 6.5058C14.6059 5.60571 13.3851 5.10003 12.1121 5.1H11.8883Z" fill="#FBB4A4"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M12.6004 5.1249V4.2C12.6004 4.04087 12.5372 3.88826 12.4247 3.77573C12.3121 3.66321 12.1595 3.6 12.0004 3.6C11.8413 3.6 11.6886 3.66321 11.5761 3.77573C11.4636 3.88826 11.4004 4.04087 11.4004 4.2V5.1249C11.5626 5.10832 11.7255 5.1 11.8885 5.1H12.1123C12.2763 5.1 12.439 5.1083 12.6004 5.1249Z" fill="#FC6744"/>
     </svg>
   )
 }
 
-function ExternalLinkIcon() {
+function LocationIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M15 3h6v6M10 14L21 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#6f6f6f"/>
     </svg>
   )
 }
 
-function BookmarkIcon({ active }: { active: boolean }) {
+function PersonIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
-        fill={active ? '#FBB4A4' : 'none'}
-        stroke={active ? '#F72E00' : '#CFCFCF'}
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" fill="#9a9a9a"/>
     </svg>
   )
 }
 
-function SmallHeartIcon() {
+function ChevronIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-      <path d="M21.1894 12.6826C18.6894 18.0926 12.5694 20.8826 12.3094 21.0026C12.1101 21.0806 11.8887 21.0806 11.6894 21.0026C11.4394 20.8826 5.3094 18.0926 2.8094 12.6826C1.2594 9.31256 2.1194 5.68256 3.8094 4.12256C4.40136 3.61528 5.10518 3.25562 5.8631 3.0731C6.62101 2.89057 7.4114 2.89039 8.1694 3.07256C9.7204 3.42512 11.0749 4.36396 11.9494 5.69256C12.8255 4.36111 14.1843 3.42179 15.7394 3.07256C16.4974 2.89039 17.2878 2.89057 18.0457 3.0731C18.8036 3.25562 19.5074 3.61528 20.0994 4.12256C21.8794 5.68256 22.7494 9.31256 21.1894 12.6826Z" fill="#E3E2E2"/>
+    <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+      <path d="M2 1.5L5 4L2 6.5" stroke="#f72e00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
 
-/* ── 필터 바텀 시트 ── */
-function FilterSheet({
-  isOpen,
-  onClose,
-  price,
-  onPriceChange,
-  sort,
-  onSortChange,
-}: {
-  isOpen: boolean
-  onClose: () => void
-  price: PriceFilter
-  onPriceChange: (v: PriceFilter) => void
-  sort: SortFilter
-  onSortChange: (v: SortFilter) => void
-}) {
-  return (
-    <>
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
-      )}
-      <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[393px] bg-white rounded-t-[20px] z-50 px-5 pt-3 pb-10"
-        style={{
-          transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-          transition: 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
-          pointerEvents: isOpen ? 'auto' : 'none',
-        }}
-      >
-        <div className="w-10 h-1 bg-[#E0DCD3] rounded-full mx-auto mb-5" />
+const CATEGORIES = [
+  { label: '온라인 모임' },
+  { label: '오프라인 모임' },
+  { label: '주말 모임' },
+  { label: '평일 모임' },
+  { label: '소규모 모임' },
+  { label: '대규모 모임' },
+  { label: '동네 모임' },
+  { label: '뜨개 원데이' },
+]
 
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-[18px] font-bold text-[#2A0B04]">필터</span>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center active:opacity-60">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M2 2L16 16M16 2L2 16" stroke="#343434" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
+const RECOMMENDED = [
+  {
+    id: 1,
+    title: '자기 전 힐링 뜨개',
+    type: '온라인',
+    location: '마포구',
+    date: '11/19 (화) 오후 8:00',
+    participants: '10명 참여',
+    liked: false,
+  },
+  {
+    id: 2,
+    title: '요뜨: 뜨개 요가',
+    type: '오프라인',
+    location: '성북구',
+    date: '11/19 (화) 오후 8:00',
+    participants: '3자리 남음 · 진행 확정',
+    liked: false,
+  },
+]
 
-        {/* 가격 */}
-        <div className="mb-6">
-          <p className="text-[14px] font-semibold text-[#2A0B04] mb-3">가격</p>
-          <div className="flex gap-2">
-            {(['전체', '무료', '유료'] as PriceFilter[]).map(opt => (
-              <button
-                key={opt}
-                onClick={() => onPriceChange(opt)}
-                className="h-8 px-4 rounded-[10px] text-[13px] font-medium transition-colors"
-                style={
-                  price === opt
-                    ? { background: '#F72E00', color: '#fff' }
-                    : { background: '#F0F0F0', color: '#646464' }
-                }
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
+const DAYS = [
+  { date: 16, day: '일' },
+  { date: 17, day: '월' },
+  { date: 18, day: '화' },
+  { date: 19, day: '수' },
+  { date: 20, day: '목' },
+  { date: 21, day: '금' },
+  { date: 22, day: '토' },
+]
 
-        {/* 정렬 */}
-        <div className="mb-8">
-          <p className="text-[14px] font-semibold text-[#2A0B04] mb-3">정렬</p>
-          <div className="flex gap-2">
-            {(['인기순', '최신순'] as SortFilter[]).map(opt => (
-              <button
-                key={opt}
-                onClick={() => onSortChange(opt)}
-                className="h-8 px-4 rounded-[10px] text-[13px] font-medium transition-colors"
-                style={
-                  sort === opt
-                    ? { background: '#F72E00', color: '#fff' }
-                    : { background: '#F0F0F0', color: '#646464' }
-                }
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
+const DAY_MEETINGS = [
+  {
+    id: 1,
+    title: 'CGV 뜨개 상영회',
+    type: '오프라인',
+    location: '마포구',
+    time: '오늘 17:00',
+    participants: '25명 참석중',
+  },
+  {
+    id: 2,
+    title: '차와 함께 뜨뜨 🍵 + 🧶',
+    type: '오프라인',
+    location: '종로구',
+    time: '오늘 14:00',
+    participants: '3자리 남음',
+  },
+]
 
-        <button
-          onClick={onClose}
-          className="w-full h-[52px] rounded-[10px] bg-[#F72E00] text-white text-[15px] font-semibold active:opacity-80"
-        >
-          적용하기
-        </button>
-      </div>
-    </>
-  )
-}
-
-/* ══════════════════════════════════════════════ */
 export default function ExplorePage() {
-  const [tab, setTab] = useState<Tab>('도안')
-  const [search, setSearch] = useState('')
-  const [filterOpen, setFilterOpen] = useState(false)
-  const [heartActive, setHeartActive] = useState(false)
-  const [price, setPrice] = useState<PriceFilter>('전체')
-  const [sort, setSort] = useState<SortFilter>('인기순')
-  const [bookmarks, setBookmarks] = useState<Record<string, boolean>>(
-    Object.fromEntries(mockBrands.map(b => [b.id, b.bookmarked]))
-  )
+  const router = useRouter()
+  const [selectedDay, setSelectedDay] = useState(0)
+  const [likes, setLikes] = useState<Record<number, boolean>>({})
+  const [carouselPage, setCarouselPage] = useState(0)
 
-  const toggleBookmark = (id: string) =>
-    setBookmarks(prev => ({ ...prev, [id]: !prev[id] }))
-
-  const productItems = tab !== '브랜드' ? mockExploreItems[tab as '도안' | '실' | '바늘'] : []
-  const filteredItems = productItems.filter(item => {
-    if (search && !item.name.includes(search) && !item.brand.includes(search)) return false
-    return true
-  })
-  const sortedItems = [...filteredItems].sort((a, b) =>
-    sort === '인기순' ? b.likes - a.likes : 0
-  )
-
-  const filteredBrands = mockBrands.filter(b =>
-    !search || b.nameKo.includes(search) || b.nameEn.toLowerCase().includes(search.toLowerCase())
-  )
+  const toggleLike = (id: number) =>
+    setLikes(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
-    <div className="min-h-screen bg-white pb-28 max-w-[393px] mx-auto">
+    <div className="min-h-screen bg-[#fafafa] pb-28 max-w-[393px] mx-auto overflow-x-hidden">
 
       {/* 헤더 */}
-      <div className="bg-white px-4 pt-14 pb-3 flex items-center justify-between">
-        <span className="text-[24px] font-bold text-[#2A0B04]">탐색</span>
-        <button onClick={() => setHeartActive(v => !v)} className="active:opacity-60">
-          <HeartIcon active={heartActive} />
-        </button>
-      </div>
-
-      {/* 텍스트 탭 */}
-      <div className="bg-white border-b border-[#F0F0F0] flex px-4">
-        {TABS.map(t => (
-          <button
-            key={t}
-            onClick={() => { setTab(t); setSearch('') }}
-            className="flex-1 py-3 text-[15px] font-semibold transition-colors relative"
-            style={{ color: tab === t ? '#F72E00' : '#9A9A9A' }}
-          >
-            {t}
-            {tab === t && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#F72E00] rounded-full" />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* 검색 + 필터 */}
-      <div className="bg-white px-4 py-3 flex items-center gap-2 border-b border-[#F0F0F0]">
-        <div className="flex-1 flex items-center gap-2 bg-[#F6F6F6] rounded-[10px] px-3 h-[42px]">
-          <SearchIcon />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="키워드 검색"
-            className="flex-1 bg-transparent text-[14px] text-[#343434] placeholder-[#9A9A9A] outline-none"
-          />
+      <div className="bg-white px-4 pt-14 pb-3 flex items-center justify-between sticky top-0 z-10">
+        <span className="text-[20px] font-bold tracking-[-0.6px]" style={{ color: '#313131' }}>함뜨해요</span>
+        <div className="flex items-center gap-2">
+          <button><SearchIcon /></button>
+          <button onClick={() => router.push('/notifications')}><BellIcon /></button>
         </div>
-        <button
-          onClick={() => setFilterOpen(true)}
-          className="w-[42px] h-[42px] flex items-center justify-center bg-[#F6F6F6] rounded-[10px] active:opacity-60 shrink-0"
+      </div>
+
+      {/* 히어로 캐러셀 */}
+      <div className="bg-white pt-3 pb-4">
+        <div
+          className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory px-[42px] gap-3"
+          onScroll={e => {
+            const el = e.currentTarget
+            setCarouselPage(Math.round(el.scrollLeft / (el.clientWidth - 84)))
+          }}
         >
-          <FilterIcon />
+          {[0, 1, 2, 3, 4].map(i => (
+            <div key={i} className="shrink-0 w-[308px] h-[292px] bg-[#d9d9d9] rounded-[10px] snap-center" />
+          ))}
+        </div>
+        <div className="flex items-center justify-center gap-[6px] mt-3">
+          {[0, 1, 2, 3, 4].map(i => (
+            <div
+              key={i}
+              className="h-[2px] rounded-[10px] transition-all duration-300"
+              style={{ width: 17, background: i === carouselPage ? '#f72e00' : '#ead2cc' }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 카테고리 */}
+      <div className="bg-white pt-5 pb-5 px-4">
+        <div className="grid grid-cols-4 gap-y-4">
+          {CATEGORIES.map(cat => (
+            <button key={cat.label} className="flex flex-col items-center gap-2">
+              <div className="w-[40px] h-[40px] bg-[#d9d9d9] rounded-[12px]" />
+              <span className="text-[12px] font-medium text-[#6f6f6f] tracking-[-0.24px] leading-[1.4] text-center">{cat.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="h-2 bg-[#f5f5f5]" />
+
+      {/* 추천 함뜨 */}
+      <div className="bg-white pt-5 px-4">
+        <div className="flex items-start justify-between mb-1">
+          <div>
+            <p className="text-[20px] font-semibold text-[#2d2b2a] tracking-[-0.6px] leading-[1.31]">추천 함뜨</p>
+            <p className="text-[12px] font-medium text-[#6b6b6b] tracking-[-0.24px] leading-[1.4] mt-[2px]">니터즈를 대표하는 호스트와 함께</p>
+          </div>
+          <button className="text-[12px] font-medium text-[#b1b1b1] tracking-[-0.24px]">전체보기</button>
+        </div>
+
+        <div className="flex flex-col gap-3 mt-4 pb-4">
+          {RECOMMENDED.map(item => (
+            <div key={item.id} className="bg-[#fff0ed] rounded-[10px] h-[127px] relative flex items-stretch overflow-hidden">
+              {/* 이미지 영역 */}
+              <div className="w-[106px] shrink-0 bg-[#d9d9d9] rounded-l-[10px]" />
+              {/* 정보 영역 */}
+              <div className="flex-1 px-3 pt-3 pb-3 flex flex-col justify-between">
+                {/* 배지 + 하트 */}
+                <div className="flex items-center justify-between">
+                  <div
+                    className="h-[23px] px-3 rounded-full flex items-center"
+                    style={{
+                      background: item.type === '온라인' ? 'rgba(190,255,111,0.3)' : 'rgba(253,146,156,0.2)',
+                    }}
+                  >
+                    <span
+                      className="text-[10px] font-medium tracking-[-0.2px]"
+                      style={{ color: item.type === '온라인' ? '#81bf54' : '#fd929c' }}
+                    >
+                      {item.type}
+                    </span>
+                  </div>
+                  <button onClick={() => toggleLike(item.id)}>
+                    <HeartIcon active={likes[item.id] ?? false} />
+                  </button>
+                </div>
+                {/* 제목 */}
+                <p className="text-[16px] font-semibold text-black tracking-[-0.32px] leading-[1.4]">{item.title}</p>
+                {/* 위치 */}
+                <div className="flex items-center gap-1">
+                  <LocationIcon />
+                  <span className="text-[13px] font-medium text-[#6f6f6f] tracking-[-0.26px]">{item.location} · {item.date}</span>
+                </div>
+                {/* 참여 */}
+                <div className="flex items-center gap-1">
+                  <PersonIcon />
+                  <span className="text-[13px] font-medium text-[#9a9a9a] tracking-[-0.26px]">{item.participants}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 더보기 버튼 */}
+        <button className="w-full h-[52px] bg-[#ffccc1] rounded-[10px] flex items-center justify-center gap-[4px] mb-5">
+          <span className="text-[16px] font-semibold text-[#f72e00] tracking-[-0.32px]">추천 함뜨 더보기</span>
+          <ChevronIcon />
         </button>
       </div>
 
-      {/* 상품 피드 — 도안/실/바늘 (3열 그리드) */}
-      {tab !== '브랜드' && (
-        <div className="px-4 pt-4">
-          {sortedItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-2">
-              <span className="text-[32px]">🔍</span>
-              <p className="text-[15px] font-semibold text-[#2A0B04]">검색 결과가 없어요</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-3 gap-3">
-              {sortedItems.map(item => (
-                <div key={item.id} className="flex flex-col">
-                  {/* 정사각 이미지 */}
+      <div className="h-2 bg-[#f5f5f5]" />
+
+      {/* 요일별 함뜨 */}
+      <div className="bg-white pt-5 px-4">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-[20px] font-semibold text-[#2d2b2a] tracking-[-0.6px] leading-[1.31]">요일별 함뜨</p>
+            <p className="text-[12px] font-medium text-[#6b6b6b] tracking-[-0.24px] leading-[1.4] mt-[2px]">내가 원하는 요일에 가능한 함뜨</p>
+          </div>
+          <button className="text-[12px] font-medium text-[#b1b1b1] tracking-[-0.24px]">전체보기</button>
+        </div>
+
+        {/* 날짜 선택 */}
+        <div className="flex gap-[6px] mb-5">
+          {DAYS.map((d, i) => (
+            <button
+              key={d.date}
+              onClick={() => setSelectedDay(i)}
+              className="flex-1 h-[52px] rounded-[20px] flex flex-col items-center justify-center gap-[2px]"
+              style={{ background: i === selectedDay ? '#f72e00' : '#f2f2f2' }}
+            >
+              <span
+                className="text-[16px] font-semibold tracking-[-0.32px] leading-[1.4]"
+                style={{ color: i === selectedDay ? '#f7f7f7' : '#8d8d8d' }}
+              >
+                {d.date}
+              </span>
+              <span
+                className="text-[11px] font-medium tracking-[-0.22px] leading-[1.4]"
+                style={{ color: i === selectedDay ? '#f7f7f7' : '#acacac' }}
+              >
+                {d.day}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* 요일별 모임 목록 */}
+        <div className="flex flex-col pb-4">
+          {DAY_MEETINGS.map((item, idx) => (
+            <div key={item.id}>
+              <div className="flex items-stretch gap-3 py-3">
+                {/* 정보 */}
+                <div className="flex-1 flex flex-col justify-between gap-2">
                   <div
-                    className="relative w-full rounded-[10px] overflow-hidden"
-                    style={{ aspectRatio: '1/1', background: item.bg }}
+                    className="self-start h-[21px] px-3 rounded-full flex items-center"
+                    style={{ background: 'rgba(253,146,156,0.2)' }}
                   >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[28px] opacity-40">🧶</span>
-                    </div>
-                    {/* 외부 링크 버튼 */}
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      className="absolute top-[6px] right-[6px] w-[22px] h-[22px] rounded-full bg-black/40 flex items-center justify-center active:opacity-70"
-                    >
-                      <ExternalLinkIcon />
-                    </a>
+                    <span className="text-[10px] font-medium text-[#fd929c] tracking-[-0.2px]">{item.type}</span>
                   </div>
-                  {/* 텍스트 */}
-                  <div className="mt-[6px]">
-                    <p className="text-[13px] font-semibold text-[#2A0B04] leading-snug line-clamp-2">
-                      {item.name}
-                    </p>
-                    <p className="text-[11px] text-[#9A9A9A] mt-0.5">{item.brand}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <SmallHeartIcon />
-                      <span className="text-[11px] text-[#9A9A9A]">
-                        {item.likes.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
+                  <p className="text-[16px] font-semibold text-black tracking-[-0.32px] leading-[1.4]">{item.title}</p>
+                  <span className="text-[13px] font-medium text-[#6f6f6f] tracking-[-0.26px]">{item.location} · {item.time} · {item.participants}</span>
                 </div>
-              ))}
+                {/* 이미지 */}
+                <div className="w-[84px] shrink-0 bg-[#d9d9d9] rounded-[10px]" />
+              </div>
+              {idx < DAY_MEETINGS.length - 1 && (
+                <div className="h-px bg-[#f0f0f0]" />
+              )}
             </div>
-          )}
+          ))}
         </div>
-      )}
 
-      {/* 브랜드 피드 — 1행 리스트 */}
-      {tab === '브랜드' && (
-        <div className="px-4 pt-2">
-          {filteredBrands.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-2">
-              <span className="text-[32px]">🔍</span>
-              <p className="text-[15px] font-semibold text-[#2A0B04]">검색 결과가 없어요</p>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              {filteredBrands.map((brand, idx) => (
-                <div key={brand.id}>
-                  {idx > 0 && <div className="h-px bg-[#F0F0F0]" />}
-                  <div className="flex items-center gap-4 py-4">
-                    {/* 정사각 이미지 */}
-                    <div
-                      className="w-[60px] h-[60px] rounded-[10px] flex items-center justify-center shrink-0"
-                      style={{ background: brand.bg }}
-                    >
-                      <span className="text-[24px] opacity-50">🏷️</span>
-                    </div>
-                    {/* 텍스트 */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[16px] font-semibold text-[#2A0B04]">{brand.nameKo}</p>
-                      <p className="text-[13px] text-[#9A9A9A] mt-0.5">{brand.nameEn}</p>
-                    </div>
-                    {/* 즐겨찾기 버튼 */}
-                    <button
-                      onClick={() => toggleBookmark(brand.id)}
-                      className="shrink-0 active:opacity-60"
-                    >
-                      <BookmarkIcon active={bookmarks[brand.id]} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+        <button className="w-full h-[52px] bg-[#ffccc1] rounded-[10px] flex items-center justify-center gap-[4px] mb-5">
+          <span className="text-[16px] font-semibold text-[#f72e00] tracking-[-0.32px]">더보기</span>
+          <ChevronIcon />
+        </button>
+      </div>
+
+      <div className="h-2 bg-[#f5f5f5]" />
+
+      {/* 함뜨 인기 플레이스 */}
+      <div className="bg-white pt-5 px-4">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-[20px] font-semibold text-[#2d2b2a] tracking-[-0.6px] leading-[1.31]">함뜨 인기 플레이스</p>
+            <p className="text-[12px] font-medium text-[#6b6b6b] tracking-[-0.24px] leading-[1.4] mt-[2px]">내가 원하는 요일에 가능한 함뜨</p>
+          </div>
+          <button className="text-[12px] font-medium text-[#b1b1b1] tracking-[-0.24px]">전체보기</button>
         </div>
-      )}
+        <div className="flex gap-3 pb-5">
+          <div className="flex-1 h-[206px] bg-[#d9d9d9] rounded-[10px]" />
+          <div className="flex-1 h-[206px] bg-[#d9d9d9] rounded-[10px]" />
+        </div>
+      </div>
 
-      {/* 필터 바텀 시트 */}
-      <FilterSheet
-        isOpen={filterOpen}
-        onClose={() => setFilterOpen(false)}
-        price={price}
-        onPriceChange={setPrice}
-        sort={sort}
-        onSortChange={setSort}
-      />
+      <div className="h-2 bg-[#f5f5f5]" />
+
+      {/* 원하는 모임이 없나요? */}
+      <div className="bg-white pt-5 px-4 pb-5">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-[20px] font-semibold text-[#2d2b2a] tracking-[-0.6px] leading-[1.31]">원하는 모임이 없나요?</p>
+            <p className="text-[12px] font-medium text-[#6b6b6b] tracking-[-0.24px] leading-[1.4] mt-[2px]">원하는 모임을 직접 만들어보세요</p>
+          </div>
+          <button className="text-[12px] font-medium text-[#b1b1b1] tracking-[-0.24px]">전체보기</button>
+        </div>
+        <div className="bg-[#f72e00] rounded-[10px] h-[101px] px-5 flex flex-col justify-center gap-2 relative overflow-hidden">
+          <p className="text-[#f9f9f9] text-[16px] font-bold tracking-[-0.32px] leading-[1.54]">
+            관심사에 맞는 모임을 직접{'\n'}만들어 보는 건 어때요?
+          </p>
+          <div className="self-start">
+            <div className="bg-[#ffccc1] rounded-[20px] h-[29px] px-4 flex items-center gap-1">
+              <span className="text-[#f72e00] text-[12px] font-medium tracking-[-0.24px]">나만의 함뜨 모임 만들기</span>
+              <ChevronIcon />
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   )
 }
