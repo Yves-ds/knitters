@@ -1,5 +1,7 @@
 'use client'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 function KakaoIcon() {
   return (
@@ -38,130 +40,236 @@ function EmailIcon() {
   )
 }
 
+function CheckCircleIcon() {
+  return (
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+      <circle cx="28" cy="28" r="28" fill="#FFF0EE" />
+      <path d="M17 28l8 8 14-16" stroke="#F72E00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function LoginPage() {
   const router = useRouter()
+  const [view, setView] = useState<'main' | 'email' | 'sent'>('main')
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSendMagicLink = async () => {
+    if (!email.trim()) {
+      setError('이메일을 입력해주세요.')
+      return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('올바른 이메일 형식이 아니에요.')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    const supabase = createClient()
+    const { error: supabaseError } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    setLoading(false)
+
+    if (supabaseError) {
+      setError('링크 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+    } else {
+      setView('sent')
+    }
+  }
 
   return (
     <div className="relative min-h-screen flex flex-col max-w-[393px] mx-auto" style={{ backgroundColor: '#fdfcf8' }}>
-      {/* 중앙 콘텐츠 */}
-      <div className="flex-1 flex flex-col items-center justify-center px-7">
-        {/* 로고 */}
-        <div className="mb-1">
-          <span
-            style={{
-              fontFamily: "'Rubik Bubbles', cursive",
-              color: '#f72e00',
-              fontSize: '40px',
-              lineHeight: 'normal',
-            }}
-          >
-            Knitters
-          </span>
-        </div>
 
-        {/* 서브타이틀 */}
-        <div className="mb-[52px]">
-          <span
-            style={{
-              fontFamily: "'Pretendard', sans-serif",
-              color: '#ff7a5b',
-              fontSize: '14px',
-              letterSpacing: '0.3px',
-            }}
-          >
-            니터들을 위한 뜨개 커뮤니티
-          </span>
-        </div>
-
-        {/* 로그인 버튼 목록 */}
-        <div className="w-full flex flex-col gap-3">
-          {/* 카카오 */}
+      {/* 이메일 입력 뷰 */}
+      {view === 'email' && (
+        <div className="flex-1 flex flex-col px-7 pt-14">
+          {/* 뒤로가기 */}
           <button
-            onClick={() => router.push('/feed')}
-            className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] transition-opacity active:opacity-80"
-            style={{ backgroundColor: '#fee500' }}
+            onClick={() => { setView('main'); setError(''); setEmail('') }}
+            className="mb-8 self-start active:opacity-60"
           >
-            <KakaoIcon />
-            <span
-              style={{
-                fontFamily: "'Pretendard', sans-serif",
-                fontWeight: 600,
-                fontSize: '15px',
-                color: '#191600',
-              }}
-            >
-              카카오로 시작하기
-            </span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M15 19l-7-7 7-7" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
 
-          {/* Apple */}
-          <button
-            onClick={() => router.push('/feed')}
-            className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] transition-opacity active:opacity-80"
-            style={{ backgroundColor: '#111827' }}
-          >
-            <AppleIcon />
-            <span
-              style={{
-                fontFamily: "'Pretendard', sans-serif",
-                fontWeight: 600,
-                fontSize: '15px',
-                color: '#ffffff',
-              }}
-            >
-              Apple로 시작하기
-            </span>
-          </button>
+          <h2 style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 700, fontSize: '22px', color: '#111827', marginBottom: 8 }}>
+            이메일로 시작하기
+          </h2>
+          <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '14px', color: '#9CA3AF', marginBottom: 36, lineHeight: '1.5' }}>
+            입력한 이메일로 로그인 링크를 보내드려요.
+          </p>
 
-          {/* 이메일 */}
-          <button
-            onClick={() => router.push('/feed')}
-            className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] bg-white border transition-opacity active:opacity-80"
-            style={{ borderColor: '#e5e7eb' }}
-          >
-            <EmailIcon />
-            <span
+          {/* 이메일 입력 */}
+          <div className="mb-3">
+            <label style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '13px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 8 }}>
+              이메일
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => { setEmail(e.target.value); setError('') }}
+              onKeyDown={e => e.key === 'Enter' && handleSendMagicLink()}
+              placeholder="example@email.com"
+              autoFocus
+              className="w-full h-[52px] rounded-[14px] px-4 outline-none border transition-colors"
               style={{
                 fontFamily: "'Pretendard', sans-serif",
-                fontWeight: 600,
                 fontSize: '15px',
-                color: '#374151',
+                color: '#111827',
+                backgroundColor: '#ffffff',
+                borderColor: error ? '#F72E00' : '#E5E7EB',
               }}
-            >
-              이메일로 시작하기
+            />
+            {error && (
+              <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '12px', color: '#F72E00', marginTop: 6 }}>
+                {error}
+              </p>
+            )}
+          </div>
+
+          {/* 링크 보내기 버튼 */}
+          <button
+            onClick={handleSendMagicLink}
+            disabled={loading}
+            className="w-full h-[52px] rounded-[14px] flex items-center justify-center transition-opacity active:opacity-80 mt-2"
+            style={{ backgroundColor: '#F72E00', opacity: loading ? 0.6 : 1 }}
+          >
+            <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '15px', color: '#ffffff' }}>
+              {loading ? '전송 중...' : '링크 받기'}
             </span>
           </button>
         </div>
+      )}
 
-        {/* 아이디/비밀번호 찾기 */}
-        <div className="mt-6">
+      {/* 전송 완료 뷰 */}
+      {view === 'sent' && (
+        <div className="flex-1 flex flex-col items-center justify-center px-7 text-center">
+          <div className="mb-6">
+            <CheckCircleIcon />
+          </div>
+          <h2 style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 700, fontSize: '22px', color: '#111827', marginBottom: 12 }}>
+            이메일을 확인해주세요
+          </h2>
+          <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '14px', color: '#9CA3AF', lineHeight: '1.6', marginBottom: 8 }}>
+            <span style={{ color: '#F72E00', fontWeight: 600 }}>{email}</span>으로<br />
+            로그인 링크를 보냈어요.
+          </p>
+          <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '13px', color: '#C4C4C4', lineHeight: '1.6' }}>
+            링크는 1시간 동안 유효해요.
+          </p>
+
           <button
-            style={{
-              fontFamily: "'Pretendard', sans-serif",
-              fontWeight: 600,
-              fontSize: '13px',
-              color: '#aeaeae',
-            }}
+            onClick={() => { setView('email'); setError('') }}
+            className="mt-10 active:opacity-60"
+            style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '13px', color: '#9CA3AF', textDecoration: 'underline' }}
           >
-            아이디/비밀번호 찾기
+            이메일 다시 입력하기
           </button>
         </div>
-      </div>
+      )}
 
-      {/* 고객센터 */}
-      <div className="pb-8 flex justify-center">
-        <button
-          style={{
-            fontFamily: "'Pretendard', sans-serif",
-            fontWeight: 500,
-            fontSize: '12px',
-            color: '#aeaeae',
-            textDecoration: 'underline',
-          }}
-        >
-          고객센터
-        </button>
-      </div>
+      {/* 메인 로그인 뷰 */}
+      {view === 'main' && (
+        <>
+          <div className="flex-1 flex flex-col items-center justify-center px-7">
+            {/* 로고 */}
+            <div className="mb-1">
+              <span
+                style={{
+                  fontFamily: "'Rubik Bubbles', cursive",
+                  color: '#f72e00',
+                  fontSize: '40px',
+                  lineHeight: 'normal',
+                }}
+              >
+                Knitters
+              </span>
+            </div>
+
+            {/* 서브타이틀 */}
+            <div className="mb-[52px]">
+              <span
+                style={{
+                  fontFamily: "'Pretendard', sans-serif",
+                  color: '#ff7a5b',
+                  fontSize: '14px',
+                  letterSpacing: '0.3px',
+                }}
+              >
+                니터들을 위한 뜨개 커뮤니티
+              </span>
+            </div>
+
+            {/* 로그인 버튼 목록 */}
+            <div className="w-full flex flex-col gap-3">
+              {/* 카카오 */}
+              <button
+                onClick={() => router.push('/feed')}
+                className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] transition-opacity active:opacity-80"
+                style={{ backgroundColor: '#fee500' }}
+              >
+                <KakaoIcon />
+                <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '15px', color: '#191600' }}>
+                  카카오로 시작하기
+                </span>
+              </button>
+
+              {/* Apple */}
+              <button
+                onClick={() => router.push('/feed')}
+                className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] transition-opacity active:opacity-80"
+                style={{ backgroundColor: '#111827' }}
+              >
+                <AppleIcon />
+                <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '15px', color: '#ffffff' }}>
+                  Apple로 시작하기
+                </span>
+              </button>
+
+              {/* 이메일 */}
+              <button
+                onClick={() => setView('email')}
+                className="w-full flex items-center justify-center gap-[10px] h-[52px] rounded-[14px] bg-white border transition-opacity active:opacity-80"
+                style={{ borderColor: '#e5e7eb' }}
+              >
+                <EmailIcon />
+                <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '15px', color: '#374151' }}>
+                  이메일로 시작하기
+                </span>
+              </button>
+            </div>
+
+            {/* 아이디/비밀번호 찾기 */}
+            <div className="mt-6">
+              <button
+                style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '13px', color: '#aeaeae' }}
+              >
+                아이디/비밀번호 찾기
+              </button>
+            </div>
+          </div>
+
+          {/* 고객센터 */}
+          <div className="pb-8 flex justify-center">
+            <button
+              style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 500, fontSize: '12px', color: '#aeaeae', textDecoration: 'underline' }}
+            >
+              고객센터
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
