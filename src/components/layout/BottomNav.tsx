@@ -97,7 +97,7 @@ const navItems = [
   { href: '/feed', label: '홈' },
   { href: '/projects', label: '기록' },
   { href: '/community', label: '커뮤니티' },
-  { href: '/explore', label: '함뜨' },
+  { href: '/explore', label: '함뜨해요' },
   { href: '/mypage', label: '마이' },
 ]
 
