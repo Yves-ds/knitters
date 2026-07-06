@@ -84,8 +84,9 @@ export default function LoginPage() {
       } else {
         setView('sent')
       }
-    } catch {
-      setError('연결에 실패했어요. 잠시 후 다시 시도해주세요.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setError('오류: ' + msg)
     } finally {
       setLoading(false)
     }
