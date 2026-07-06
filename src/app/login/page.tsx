@@ -70,20 +70,24 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-    const { error: supabaseError } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    try {
+      const supabase = createClient()
+      const { error: supabaseError } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
 
-    setLoading(false)
-
-    if (supabaseError) {
-      setError('링크 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
-    } else {
-      setView('sent')
+      if (supabaseError) {
+        setError('링크 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+      } else {
+        setView('sent')
+      }
+    } catch {
+      setError('연결에 실패했어요. 잠시 후 다시 시도해주세요.')
+    } finally {
+      setLoading(false)
     }
   }
 
