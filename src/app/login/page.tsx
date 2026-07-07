@@ -80,12 +80,13 @@ export default function LoginPage() {
       })
 
       if (supabaseError) {
-        setError('링크 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+        setError('Supabase 오류: ' + supabaseError.message)
       } else {
         setView('sent')
       }
-    } catch {
-      setError('연결에 실패했어요. 잠시 후 다시 시도해주세요.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setError('오류: ' + msg)
     } finally {
       setLoading(false)
     }
