@@ -269,23 +269,68 @@ export default function ProjectsPage() {
           </div>
           <div className="px-4">
             {projects.length === 0 ? (
-              <div className="fixed inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none">
-                <div className="flex flex-col items-center gap-3 pointer-events-auto">
-                  <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="24" r="22" fill="#FFF0EE"/>
-                    <path d="M16 20C16 18.3431 17.3431 17 19 17H29C30.6569 17 32 18.3431 32 20V32C32 33.6569 30.6569 35 29 35H19C17.3431 35 16 33.6569 16 32V20Z" fill="#FFCFC7"/>
-                    <path d="M21 13C21 11.8954 21.8954 11 23 11H25C26.1046 11 27 11.8954 27 13V17H21V13Z" fill="#F72E00"/>
-                    <path d="M20 23H28M20 27H25" stroke="#F72E00" strokeWidth="1.8" strokeLinecap="round"/>
-                  </svg>
-                  <p className="text-[14px] font-semibold text-[#a7a7a7]">아직 기록된 작품이 없어요</p>
-                  <p className="text-[14px] text-[#C4C4C4]">첫 번째 뜨개 기록을 남겨볼까요?</p>
-                  <Link
-                    href="/projects/new"
-                    className="flex items-center gap-1.5 mt-1 h-[44px] px-5 rounded-[12px] bg-[#F72E00] text-white text-[14px] font-semibold active:opacity-80"
+              <div className="relative">
+                {/* 고스트 카드 미리보기 */}
+                <div className="grid grid-cols-2 gap-3" style={{ opacity: 0.28, pointerEvents: 'none' }}>
+                  {[
+                    { emoji: '🧶', title: '초록 리브 니트', status: '뜨는 중', statusColor: '#F72E00', time: '04:32:10', bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)' },
+                    { emoji: '🐑', title: '베이지 케이블 스웨터', status: '준비 중', statusColor: '#b0b0b0', time: '00:00:00', bg: 'linear-gradient(135deg,#fdf3e7,#ffe0b2)' },
+                    { emoji: '🌸', title: '핑크 레이스 숄', status: '완성', statusColor: '#3CB371', time: '12:08:45', bg: 'linear-gradient(135deg,#fce4ec,#f8bbd0)' },
+                    { emoji: '🧣', title: '머스타드 머플러', status: '쉬는 중', statusColor: '#FF8C69', time: '02:15:30', bg: 'linear-gradient(135deg,#fffde7,#fff9c4)' },
+                  ].map((card, i) => (
+                    <div key={i} className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+                      <div className="aspect-square w-full flex items-center justify-center text-6xl" style={{ background: card.bg }}>
+                        {card.emoji}
+                      </div>
+                      <div className="px-3 pt-3 pb-3">
+                        <p className="text-[15px] font-bold text-[#212121] mb-2 leading-snug line-clamp-1">{card.title}</p>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
+                            <svg width="8" height="9" viewBox="0 0 8 9" fill="none">
+                              <path d="M1 1.5L7 4.5L1 7.5V1.5Z" fill={card.statusColor} />
+                            </svg>
+                            <span className="text-[11px] font-semibold" style={{ color: card.statusColor }}>{card.status}</span>
+                          </div>
+                          <span className="text-[13px] text-[#a7a7a7] font-medium tracking-wider">{card.time}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 하단 그라데이션 페이드 */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none"
+                  style={{ background: 'linear-gradient(to bottom, transparent, #fafafa)' }}
+                />
+
+                {/* CTA 패널 */}
+                <div className="absolute inset-0 flex items-center justify-center" style={{ paddingTop: 60 }}>
+                  <div
+                    className="flex flex-col items-center gap-3 px-7 py-7 mx-2"
+                    style={{
+                      background: 'rgba(255,255,255,0.88)',
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                      borderRadius: 24,
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
+                    }}
                   >
-                    <Plus size={16} strokeWidth={2.5} />
-                    기록하기
-                  </Link>
+                    <span className="text-4xl">🧶</span>
+                    <p className="text-[17px] font-bold text-[#212121] text-center leading-snug">
+                      첫 번째 뜨개 기록을<br />남겨볼까요?
+                    </p>
+                    <p className="text-[13px] text-[#9CA3AF] text-center leading-relaxed">
+                      완성한 작품, 진행 중인 작품 모두<br />여기서 기록할 수 있어요.
+                    </p>
+                    <Link
+                      href="/projects/new"
+                      className="flex items-center gap-1.5 mt-1 h-[46px] px-6 rounded-[14px] bg-[#F72E00] text-white text-[15px] font-semibold active:opacity-80"
+                    >
+                      <Plus size={16} strokeWidth={2.5} />
+                      기록하기
+                    </Link>
+                  </div>
                 </div>
               </div>
             ) : (
