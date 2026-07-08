@@ -168,7 +168,11 @@ export default function ExplorePage() {
       <div className="bg-white pt-5 pb-5 px-4">
         <div className="grid grid-cols-4 gap-y-4">
           {CATEGORIES.map(cat => (
-            <button key={cat.label} className="flex flex-col items-center gap-2">
+            <button
+              key={cat.label}
+              onClick={() => router.push(`/explore/category/${encodeURIComponent(cat.label)}`)}
+              className="flex flex-col items-center gap-2 active:opacity-60"
+            >
               <div className="w-[40px] h-[40px] bg-[#d9d9d9] rounded-[12px]" />
               <span className="text-[12px] font-medium text-[#6f6f6f] tracking-[-0.24px] leading-[1.4] text-center">{cat.label}</span>
             </button>
@@ -190,7 +194,7 @@ export default function ExplorePage() {
 
         <div className="flex flex-col gap-3 mt-4 pb-4">
           {RECOMMENDED.map(item => (
-            <div key={item.id} className="bg-[#fff0ed] rounded-[10px] h-[127px] relative flex items-stretch overflow-hidden">
+            <div key={item.id} onClick={() => router.push(`/explore/meeting/${item.id}`)} className="bg-[#fff0ed] rounded-[10px] h-[127px] relative flex items-stretch overflow-hidden cursor-pointer active:opacity-80">
               {/* 이미지 영역 */}
               <div className="w-[106px] shrink-0 bg-[#d9d9d9] rounded-l-[10px]" />
               {/* 정보 영역 */}
@@ -274,7 +278,7 @@ export default function ExplorePage() {
         <div className="flex flex-col pb-4">
           {DAY_MEETINGS.map((item, idx) => (
             <div key={item.id}>
-              <div className="flex items-stretch gap-3 py-3">
+              <div onClick={() => router.push(`/explore/meeting/${item.id}`)} className="flex items-stretch gap-3 py-3 cursor-pointer active:opacity-70">
                 {/* 정보 */}
                 <div className="flex-1 flex flex-col justify-between gap-2">
                   <div
