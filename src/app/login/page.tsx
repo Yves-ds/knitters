@@ -96,63 +96,78 @@ export default function LoginPage() {
 
       {/* 이메일 입력 뷰 */}
       {view === 'email' && (
-        <div className="flex-1 flex flex-col px-7 pt-14">
+        <div className="flex flex-col min-h-screen max-w-[393px] mx-auto" style={{ backgroundColor: '#fdfcf8' }}>
           {/* 뒤로가기 */}
-          <button
-            onClick={() => { setView('main'); setError(''); setEmail('') }}
-            className="mb-8 self-start active:opacity-60"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 19l-7-7 7-7" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
+          <div className="px-5 pt-14">
+            <button
+              onClick={() => { setView('main'); setError(''); setEmail('') }}
+              className="active:opacity-60"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 19l-7-7 7-7" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
 
-          <h2 style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 700, fontSize: '22px', color: '#111827', marginBottom: 8 }}>
-            이메일로 시작하기
-          </h2>
-          <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '14px', color: '#9CA3AF', marginBottom: 36, lineHeight: '1.5' }}>
-            입력한 이메일로 로그인 링크를 보내드려요.
-          </p>
+          {/* 콘텐츠 */}
+          <div className="flex-1 flex flex-col px-7 pt-8">
+            {/* 아이콘 서클 */}
+            <div
+              className="w-[64px] h-[64px] rounded-full flex items-center justify-center mb-7"
+              style={{ backgroundColor: '#FFF0EE' }}
+            >
+              <svg width="28" height="22" viewBox="0 0 20 16" fill="none">
+                <rect x="0.5" y="0.5" width="19" height="15" rx="2.5" stroke="#F72E00" />
+                <path d="M1 1l9 8 9-8" stroke="#F72E00" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+            </div>
 
-          {/* 이메일 입력 */}
-          <div className="mb-3">
-            <label style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '13px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 8 }}>
-              이메일
-            </label>
+            <h2 style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 700, fontSize: '26px', color: '#111827', marginBottom: 8 }}>
+              이메일로 시작하기
+            </h2>
+            <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '15px', color: '#9CA3AF', marginBottom: 32 }}>
+              이메일을 입력해주세요
+            </p>
+
+            {/* 이메일 입력 */}
             <input
               type="email"
               value={email}
               onChange={e => { setEmail(e.target.value); setError('') }}
               onKeyDown={e => e.key === 'Enter' && handleSendMagicLink()}
-              placeholder="example@email.com"
+              placeholder="Email Address"
               autoFocus
-              className="w-full h-[52px] rounded-[14px] px-4 outline-none border transition-colors"
+              className="w-full h-[56px] rounded-[14px] px-5 outline-none"
               style={{
                 fontFamily: "'Pretendard', sans-serif",
-                fontSize: '15px',
+                fontSize: '16px',
                 color: '#111827',
-                backgroundColor: '#ffffff',
-                borderColor: error ? '#F72E00' : '#E5E7EB',
+                backgroundColor: '#F3F4F6',
               }}
             />
             {error && (
-              <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '12px', color: '#F72E00', marginTop: 6 }}>
+              <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '12px', color: '#F72E00', marginTop: 8 }}>
                 {error}
               </p>
             )}
           </div>
 
-          {/* 링크 보내기 버튼 */}
-          <button
-            onClick={handleSendMagicLink}
-            disabled={loading}
-            className="w-full h-[52px] rounded-[14px] flex items-center justify-center transition-opacity active:opacity-80 mt-2"
-            style={{ backgroundColor: '#F72E00', opacity: loading ? 0.6 : 1 }}
-          >
-            <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '15px', color: '#ffffff' }}>
-              {loading ? '전송 중...' : '링크 받기'}
-            </span>
-          </button>
+          {/* 하단 고정 버튼 */}
+          <div className="px-7 pb-10 pt-4">
+            <button
+              onClick={handleSendMagicLink}
+              disabled={!email.trim() || loading}
+              className="w-full h-[56px] rounded-[16px] flex items-center justify-center transition-colors"
+              style={{
+                backgroundColor: email.trim() && !loading ? '#F72E00' : '#E5E7EB',
+                color: email.trim() && !loading ? '#ffffff' : '#9CA3AF',
+              }}
+            >
+              <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '16px' }}>
+                {loading ? '전송 중...' : '다음'}
+              </span>
+            </button>
+          </div>
         </div>
       )}
 
