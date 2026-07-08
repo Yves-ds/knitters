@@ -86,26 +86,15 @@ export default function CommunityFeedPage() {
 
       {/* 헤더 */}
       <div className="bg-white px-4 pt-14 pb-0 border-b border-[#F0F0F0] sticky top-0 z-10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 pb-3">
-            <button
-              onClick={() => router.push('/community')}
-              className="text-[24px] font-bold active:opacity-60"
-              style={{ color: '#9A9A9A' }}
-            >
-              커뮤니티
-            </button>
-            <span className="text-[24px] font-bold" style={{ color: '#F72E00' }}>피드</span>
-          </div>
-          {/* 검색 */}
-          <div className="pb-3">
-            <Link href="/community/search?tab=피드">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <circle cx="10.5" cy="10.5" r="5.5" stroke="#FFAF9D" strokeWidth="2"/>
-                <path d="M15 15L19 19" stroke="#FFAF9D" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </Link>
-          </div>
+        <div className="flex items-center pb-3 gap-3">
+          <button
+            onClick={() => router.push('/community')}
+            className="text-[24px] font-bold active:opacity-60"
+            style={{ color: '#9A9A9A' }}
+          >
+            커뮤니티
+          </button>
+          <span className="text-[24px] font-bold" style={{ color: '#F72E00' }}>피드</span>
         </div>
       </div>
 
