@@ -1,7 +1,7 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { COMMUNITY_POSTS } from '@/lib/communityData'
+import { useCommunityStore } from '@/store/communityStore'
 
 function ShareIcon() {
   return (
@@ -71,13 +71,14 @@ function SendIcon() {
 export default function CommunityDetailPage() {
   const { id } = useParams()
   const router = useRouter()
-  const post = COMMUNITY_POSTS.find(p => p.id === String(id)) ?? COMMUNITY_POSTS[0]
+  const posts = useCommunityStore(s => s.posts)
+  const post = posts.find(p => p.id === String(id)) ?? posts[0]
   const [liked, setLiked] = useState(false)
   const [likes, setLikes] = useState(post.likes)
   const [comment, setComment] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const relatedPosts = COMMUNITY_POSTS.filter(p => p.id !== post.id).slice(0, 2)
+  const relatedPosts = posts.filter(p => p.id !== post.id).slice(0, 2)
 
   const toggleLike = () => {
     setLiked(l => !l)
