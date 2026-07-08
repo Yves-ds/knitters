@@ -2,7 +2,7 @@
 import { useState, Suspense, useEffect } from 'react'
 import { Plus, ChevronDown } from 'lucide-react'
 import { mockNotices } from '@/lib/mockData'
-import { COMMUNITY_POSTS } from '@/lib/communityData'
+import { useCommunityStore } from '@/store/communityStore'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -69,6 +69,7 @@ type SortKey = '최신순' | '인기순'
 
 function CommunityPageInner() {
   const router = useRouter()
+  const posts = useCommunityStore(s => s.posts)
   const [category, setCategory] = useState('전체')
   const [sortKey, setSortKey] = useState<SortKey>('최신순')
   const [sortOpen, setSortOpen] = useState(false)
@@ -81,7 +82,7 @@ function CommunityPageInner() {
   }, [])
 
   const filtered = (() => {
-    let list = category === '전체' ? [...COMMUNITY_POSTS] : COMMUNITY_POSTS.filter(p => p.category === category)
+    let list = category === '전체' ? [...posts] : posts.filter(p => p.category === category)
     if (sortKey === '인기순') list.sort((a, b) => b.likes - a.likes)
     else list.sort((a, b) => parseInt(b.id) - parseInt(a.id))
     return list

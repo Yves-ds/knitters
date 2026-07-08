@@ -2,12 +2,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
+import { useCommunityStore } from '@/store/communityStore'
 
 const CATEGORIES = ['뜨개 잡담', '뜨개 질문', '테스터 모집'] as const
 type Category = typeof CATEGORIES[number]
 
 export default function NewPostPage() {
   const router = useRouter()
+  const addPost = useCommunityStore(s => s.addPost)
   const [category, setCategory] = useState<Category | null>(null)
   const [title, setTitle] = useState('')
   const [isEditorEmpty, setIsEditorEmpty] = useState(true)
@@ -133,7 +135,12 @@ export default function NewPostPage() {
         </button>
         <span className="flex-1 text-center text-[17px] font-bold text-[#212121]">게시글 작성</span>
         <button
-          onClick={() => canSubmit && router.push('/community')}
+          onClick={() => {
+            if (!canSubmit) return
+            const content = editorRef.current?.innerHTML ?? ''
+            addPost({ category: category!, title, content, author: '익명의 니터님' })
+            router.push('/community')
+          }}
           disabled={!canSubmit}
           className="text-[15px] font-semibold shrink-0 transition-colors"
           style={{ color: canSubmit ? '#F72E00' : '#c8c8c8' }}
