@@ -96,7 +96,7 @@ export default function LoginPage() {
 
       {/* 이메일 입력 뷰 */}
       {view === 'email' && (
-        <div className="flex flex-col min-h-screen max-w-[393px] mx-auto" style={{ backgroundColor: '#fdfcf8' }}>
+        <div className="flex flex-col min-h-screen max-w-[393px] mx-auto" style={{ backgroundColor: '#FDFCF8' }}>
           {/* 뒤로가기 */}
           <div className="px-5 pt-14">
             <button
@@ -104,7 +104,7 @@ export default function LoginPage() {
               className="active:opacity-60"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 19l-7-7 7-7" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M15 19l-7-7 7-7" stroke="#3D3530" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
@@ -114,7 +114,7 @@ export default function LoginPage() {
             {/* 아이콘 서클 */}
             <div
               className="w-[64px] h-[64px] rounded-full flex items-center justify-center mb-7"
-              style={{ backgroundColor: '#FFF0EE' }}
+              style={{ backgroundColor: '#F5EAE6' }}
             >
               <svg width="28" height="22" viewBox="0 0 20 16" fill="none">
                 <rect x="0.5" y="0.5" width="19" height="15" rx="2.5" stroke="#F72E00" />
@@ -122,10 +122,10 @@ export default function LoginPage() {
               </svg>
             </div>
 
-            <h2 style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 700, fontSize: '26px', color: '#111827', marginBottom: 8 }}>
+            <h2 style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 700, fontSize: '26px', color: '#2C2420', marginBottom: 8 }}>
               이메일로 시작하기
             </h2>
-            <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '15px', color: '#9CA3AF', marginBottom: 32 }}>
+            <p style={{ fontFamily: "'Pretendard', sans-serif", fontSize: '15px', color: '#A89E97', marginBottom: 32 }}>
               이메일을 입력해주세요
             </p>
 
@@ -141,8 +141,8 @@ export default function LoginPage() {
               style={{
                 fontFamily: "'Pretendard', sans-serif",
                 fontSize: '16px',
-                color: '#111827',
-                backgroundColor: '#F3F4F6',
+                color: '#2C2420',
+                backgroundColor: '#F0EBE6',
               }}
             />
             {error && (
@@ -159,8 +159,8 @@ export default function LoginPage() {
               disabled={!email.trim() || loading}
               className="w-full h-[56px] rounded-[16px] flex items-center justify-center transition-colors"
               style={{
-                backgroundColor: email.trim() && !loading ? '#F72E00' : '#E5E7EB',
-                color: email.trim() && !loading ? '#ffffff' : '#9CA3AF',
+                backgroundColor: email.trim() && !loading ? '#F72E00' : '#E4DDD7',
+                color: email.trim() && !loading ? '#ffffff' : '#B0A9A3',
               }}
             >
               <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '16px' }}>
