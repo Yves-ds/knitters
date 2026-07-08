@@ -142,7 +142,7 @@ export default function LoginPage() {
                 fontFamily: "'Pretendard', sans-serif",
                 fontSize: '16px',
                 color: '#2C2420',
-                backgroundColor: '#F0EBE6',
+                backgroundColor: '#F0F0EE',
               }}
             />
             {error && (
@@ -159,8 +159,8 @@ export default function LoginPage() {
               disabled={!email.trim() || loading}
               className="w-full h-[56px] rounded-[16px] flex items-center justify-center transition-colors"
               style={{
-                backgroundColor: email.trim() && !loading ? '#F72E00' : '#E4DDD7',
-                color: email.trim() && !loading ? '#ffffff' : '#B0A9A3',
+                backgroundColor: email.trim() && !loading ? '#F72E00' : '#E8E8E6',
+                color: email.trim() && !loading ? '#ffffff' : '#AEAEAC',
               }}
             >
               <span style={{ fontFamily: "'Pretendard', sans-serif", fontWeight: 600, fontSize: '16px' }}>
