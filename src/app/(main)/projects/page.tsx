@@ -74,6 +74,7 @@ export default function ProjectsPage() {
   const [sortPanelOpen, setSortPanelOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [fabOpen, setFabOpen] = useState(false)
+  const [sheetOpen, setSheetOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -325,7 +326,7 @@ export default function ProjectsPage() {
                       새로 시작하는 작품부터 완성 작품까지<br />나의 뜨개 기록을 채워보세요.
                     </p>
                     <button
-                      onClick={() => setFabOpen(true)}
+                      onClick={() => setSheetOpen(true)}
                       className="flex items-center gap-2 mt-1 h-[52px] px-10 rounded-full bg-[#F72E00] text-white text-[16px] font-bold active:opacity-80"
                     >
                       <Plus size={16} strokeWidth={2.5} />
@@ -377,7 +378,7 @@ export default function ProjectsPage() {
       )}
       </div>
 
-      {/* Dimmed overlay — fabOpen이면 항상 표시 */}
+      {/* FAB overlay */}
       {fabOpen && (
         <div
           className="fixed inset-0 z-40"
@@ -386,23 +387,73 @@ export default function ProjectsPage() {
         />
       )}
 
-      {/* 액션 시트 — fabOpen이면 항상 표시 */}
+      {/* FAB 플로팅 모달 */}
+      {fabOpen && (
+        <div
+          className="fixed z-50 bg-white overflow-hidden"
+          style={{
+            bottom: '172px',
+            right: 'max(16px, calc(50% - 181px))',
+            borderRadius: '20px',
+            minWidth: '210px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          }}
+        >
+          <button
+            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            className="w-full flex items-center gap-3.5 px-5 py-4 active:bg-[#fafafa] text-left"
+          >
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect x="3" y="9" width="22" height="18" rx="4" fill="#FFC0B0"/>
+                <rect x="9" y="5" width="22" height="18" rx="4" fill="#F72E00"/>
+                <path d="M14 13h12M14 16.5h8" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <span className="text-[15px] font-semibold text-[#212121]">도안 선택하기</span>
+          </button>
+          <div className="h-px bg-[#f0f0f0] mx-4" />
+          <button
+            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            className="w-full flex items-center gap-3.5 px-5 py-4 active:bg-[#fafafa] text-left"
+          >
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect x="4" y="5" width="20" height="24" rx="4" fill="#FFC0B0"/>
+                <rect x="10" y="7" width="20" height="24" rx="4" fill="#F72E00"/>
+                <path d="M15 15h10M15 18.5h10M15 22h6" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <span className="text-[15px] font-semibold text-[#212121]">직접 입력하기</span>
+          </button>
+        </div>
+      )}
+
+      {/* 빈 상태 액션 시트 overlay */}
+      {sheetOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setSheetOpen(false)}
+        />
+      )}
+
+      {/* 빈 상태 액션 시트 */}
       <div
-        className="fixed left-1/2 -translate-x-1/2 w-full max-w-[393px] z-50"
+        className="fixed left-1/2 w-full max-w-[393px] z-50"
         style={{
           bottom: 0,
-          transform: `translateX(-50%) translateY(${fabOpen ? '0' : '100%'})`,
+          transform: `translateX(-50%) translateY(${sheetOpen ? '0' : '100%'})`,
           transition: 'transform 0.32s cubic-bezier(0.32,0.72,0,1)',
         }}
       >
         <div className="bg-white rounded-t-[24px] pb-8 pt-2" style={{ boxShadow: '0 -4px 32px rgba(0,0,0,0.12)' }}>
-          {/* 핸들 */}
           <div className="flex justify-center pt-2 pb-4">
             <div className="w-9 h-1 rounded-full bg-[#e0e0e0]" />
           </div>
           <p className="text-[13px] font-semibold text-[#9a9a9a] px-6 mb-3">기록 방법 선택</p>
           <button
-            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            onClick={() => { setSheetOpen(false); router.push('/projects/new') }}
             className="w-full flex items-center gap-4 px-6 py-4 active:bg-[#fafafa] text-left"
           >
             <div className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: '#fff0ee' }}>
@@ -419,7 +470,7 @@ export default function ProjectsPage() {
           </button>
           <div className="h-px bg-[#f5f5f5] mx-6" />
           <button
-            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            onClick={() => { setSheetOpen(false); router.push('/projects/new') }}
             className="w-full flex items-center gap-4 px-6 py-4 active:bg-[#fafafa] text-left"
           >
             <div className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: '#fff0ee' }}>
