@@ -432,7 +432,7 @@ export default function ProjectsPage() {
       {/* 빈 상태 액션 시트 overlay */}
       {sheetOpen && (
         <div
-          className="fixed inset-0 z-40"
+          className="fixed inset-0 z-[60]"
           style={{ background: 'rgba(0,0,0,0.45)' }}
           onClick={() => setSheetOpen(false)}
         />
@@ -440,7 +440,7 @@ export default function ProjectsPage() {
 
       {/* 빈 상태 액션 시트 */}
       <div
-        className="fixed left-1/2 w-full max-w-[393px] z-50"
+        className="fixed left-1/2 w-full max-w-[393px] z-[70]"
         style={{
           bottom: 0,
           transform: `translateX(-50%) translateY(${sheetOpen ? '0' : '100%'})`,
