@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { X, Plus } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
 
@@ -65,12 +66,14 @@ function SortIcon() {
 
 export default function ProjectsPage() {
   const { projects } = useProjectStore()
+  const router = useRouter()
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('생성일')
   const [statusDisplay, setStatusDisplay] = useState<StatusDisplay>('전체')
   const [sortPanelOpen, setSortPanelOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [fabOpen, setFabOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -261,22 +264,26 @@ export default function ProjectsPage() {
       ) : (
         /* 일반 모드 */
         <>
-          <div className="px-4 pb-4">
-            <p className="text-[14px] text-[#565656]">
-              <span className="font-bold text-[#212121]">{projects.length}</span>
-              <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
-            </p>
-          </div>
+          {projects.length > 0 && (
+            <div className="px-4 pb-4">
+              <p className="text-[14px] text-[#565656]">
+                <span className="font-bold text-[#212121]">{projects.length}</span>
+                <span className="font-normal"> 개의 작품을 뜨고 있어요</span>
+              </p>
+            </div>
+          )}
           <div className="px-4">
             {projects.length === 0 ? (
-              <div className="relative">
-                {/* 고스트 카드 미리보기 */}
-                <div className="grid grid-cols-2 gap-3" style={{ opacity: 0.28, pointerEvents: 'none' }}>
+              <div className="relative" style={{ minHeight: '68vh' }}>
+                {/* 고스트 카드 */}
+                <div className="grid grid-cols-2 gap-3" style={{ opacity: 0.2, pointerEvents: 'none' }}>
                   {[
-                    { emoji: '🧶', title: '초록 리브 니트', status: '뜨는 중', statusColor: '#F72E00', time: '04:32:10', bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)' },
-                    { emoji: '🐑', title: '베이지 케이블 스웨터', status: '준비 중', statusColor: '#b0b0b0', time: '00:00:00', bg: 'linear-gradient(135deg,#fdf3e7,#ffe0b2)' },
-                    { emoji: '🌸', title: '핑크 레이스 숄', status: '완성', statusColor: '#3CB371', time: '12:08:45', bg: 'linear-gradient(135deg,#fce4ec,#f8bbd0)' },
-                    { emoji: '🧣', title: '머스타드 머플러', status: '쉬는 중', statusColor: '#FF8C69', time: '02:15:30', bg: 'linear-gradient(135deg,#fffde7,#fff9c4)' },
+                    { emoji: '🧶', title: '리본 코어 스웨터', status: '완성', statusColor: '#3CB371', time: '02:34:10', bg: 'linear-gradient(135deg,#f8e8e0,#f0c8b8)' },
+                    { emoji: '🌸', title: '코바늘 블랭킷', status: '뜨는 중', statusColor: '#F72E00', time: '08:29:40', bg: 'linear-gradient(135deg,#fce4ec,#f8bbd0)' },
+                    { emoji: '🧣', title: '탠저린 니트', status: '쉬는 중', statusColor: '#FF8C69', time: '37:14:20', bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)' },
+                    { emoji: '🐑', title: '올드 패션드 가디건', status: '준비 중', statusColor: '#b0b0b0', time: '42:10:00', bg: 'linear-gradient(135deg,#f3f0ec,#e8e4de)' },
+                    { emoji: '💜', title: '퍼플 케이블 니트', status: '뜨는 중', statusColor: '#F72E00', time: '05:20:15', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)' },
+                    { emoji: '🌿', title: '그린 레이스 숄', status: '완성', statusColor: '#3CB371', time: '12:08:45', bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)' },
                   ].map((card, i) => (
                     <div key={i} className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
                       <div className="aspect-square w-full flex items-center justify-center text-6xl" style={{ background: card.bg }}>
@@ -298,38 +305,32 @@ export default function ProjectsPage() {
                   ))}
                 </div>
 
-                {/* 하단 그라데이션 페이드 */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none"
-                  style={{ background: 'linear-gradient(to bottom, transparent, #fafafa)' }}
-                />
+                {/* 연한 오버레이 */}
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'rgba(250,248,246,0.72)' }} />
 
-                {/* CTA 패널 */}
-                <div className="absolute inset-0 flex items-center justify-center" style={{ paddingTop: 60 }}>
+                {/* CTA 카드 */}
+                <div className="absolute inset-0 flex items-center justify-center" style={{ paddingBottom: 24 }}>
                   <div
-                    className="flex flex-col items-center gap-3 px-7 py-7 mx-2"
+                    className="bg-white rounded-[28px] px-8 py-9 flex flex-col items-center gap-4"
                     style={{
-                      background: 'rgba(255,255,255,0.88)',
-                      backdropFilter: 'blur(12px)',
-                      WebkitBackdropFilter: 'blur(12px)',
-                      borderRadius: 24,
-                      boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
+                      width: 'calc(100% - 32px)',
+                      boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                     }}
                   >
-                    <span className="text-4xl">🧶</span>
-                    <p className="text-[17px] font-bold text-[#212121] text-center leading-snug">
-                      첫 번째 뜨개 기록을<br />남겨볼까요?
+                    <span className="text-[52px] leading-none">🧶</span>
+                    <p className="text-[22px] font-bold text-[#212121] text-center leading-snug">
+                      첫 뜨개 기록을<br />남겨보세요!
                     </p>
-                    <p className="text-[13px] text-[#9CA3AF] text-center leading-relaxed">
-                      완성한 작품, 진행 중인 작품 모두<br />여기서 기록할 수 있어요.
+                    <p className="text-[14px] text-[#9CA3AF] text-center leading-relaxed">
+                      새로 시작하는 작품부터 완성 작품까지<br />나의 뜨개 기록을 채워보세요.
                     </p>
-                    <Link
-                      href="/projects/new"
-                      className="flex items-center gap-1.5 mt-1 h-[46px] px-6 rounded-[14px] bg-[#F72E00] text-white text-[15px] font-semibold active:opacity-80"
+                    <button
+                      onClick={() => setFabOpen(true)}
+                      className="flex items-center gap-2 mt-1 h-[52px] px-10 rounded-full bg-[#F72E00] text-white text-[16px] font-bold active:opacity-80"
                     >
                       <Plus size={16} strokeWidth={2.5} />
                       기록하기
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -376,23 +377,83 @@ export default function ProjectsPage() {
       )}
       </div>
 
-      {/* FAB — 기록이 하나라도 있고 검색 모드가 아닐 때만 표시 */}
-      {projects.length > 0 && !searchOpen && <Link
-        href="/projects/new"
-        className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-30"
-        style={{
-          right: 'max(16px, calc(50% - 181px))',
-          borderRadius: scrolled ? '50%' : '16px',
-          width: scrolled ? '52px' : 'auto',
-          height: scrolled ? '52px' : 'auto',
-          padding: scrolled ? '0' : '14px 20px',
-          gap: scrolled ? '0' : '8px',
-          transition: 'border-radius 0.25s, width 0.25s, height 0.25s, padding 0.25s',
-        }}
-      >
-        <Plus size={18} strokeWidth={2.5} />
-        {!scrolled && '기록하기'}
-      </Link>}
+      {/* Dimmed overlay — fabOpen이면 항상 표시 */}
+      {fabOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setFabOpen(false)}
+        />
+      )}
+
+      {/* 선택 모달 — fabOpen이면 항상 표시 */}
+      {fabOpen && (
+        <div
+          className="fixed z-50 bg-white overflow-hidden"
+          style={{
+            bottom: projects.length > 0 ? '172px' : '120px',
+            right: 'max(16px, calc(50% - 181px))',
+            borderRadius: '20px',
+            minWidth: '210px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          }}
+        >
+          <button
+            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            className="w-full flex items-center gap-3.5 px-5 py-4 active:bg-[#fafafa] text-left"
+          >
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect x="3" y="9" width="22" height="18" rx="4" fill="#FFC0B0"/>
+                <rect x="9" y="5" width="22" height="18" rx="4" fill="#F72E00"/>
+                <path d="M14 13h12M14 16.5h8" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <span className="text-[15px] font-semibold text-[#212121]">도안 선택하기</span>
+          </button>
+          <div className="h-px bg-[#f0f0f0] mx-4" />
+          <button
+            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            className="w-full flex items-center gap-3.5 px-5 py-4 active:bg-[#fafafa] text-left"
+          >
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect x="4" y="5" width="20" height="24" rx="4" fill="#FFC0B0"/>
+                <rect x="10" y="7" width="20" height="24" rx="4" fill="#F72E00"/>
+                <path d="M15 15h10M15 18.5h10M15 22h6" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <span className="text-[15px] font-semibold text-[#212121]">직접 입력하기</span>
+          </button>
+        </div>
+      )}
+
+      {/* FAB 버튼 — 기록이 있고 검색 모드가 아닐 때만 표시 */}
+      {projects.length > 0 && !searchOpen && (
+        <button
+          onClick={() => setFabOpen(v => !v)}
+          className="fixed bottom-[100px] flex items-center justify-center bg-[#f72e00] text-white font-semibold text-[14px] shadow-lg shadow-[#f72e00]/30 active:scale-95 z-50"
+          style={{
+            right: 'max(16px, calc(50% - 181px))',
+            borderRadius: (fabOpen || scrolled) ? '50%' : '16px',
+            width: (fabOpen || scrolled) ? '52px' : 'auto',
+            height: (fabOpen || scrolled) ? '52px' : 'auto',
+            padding: (fabOpen || scrolled) ? '0' : '14px 20px',
+            gap: (fabOpen || scrolled) ? '0' : '8px',
+            transition: 'border-radius 0.25s, width 0.25s, height 0.25s, padding 0.25s',
+          }}
+        >
+          {fabOpen
+            ? <X size={20} strokeWidth={2.5} />
+            : (
+              <>
+                <Plus size={18} strokeWidth={2.5} />
+                {!scrolled && '기록하기'}
+              </>
+            )
+          }
+        </button>
+      )}
     </div>
   )
 }

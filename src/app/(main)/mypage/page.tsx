@@ -41,8 +41,6 @@ const QUICK_MENU = [
 
 export default function MyPage() {
   const { projects } = useProjectStore()
-  const displayProjects = projects.slice(0, 4)
-  const hasMore = projects.length > 4
 
   return (
     <div className="min-h-screen bg-[#fafafa] pb-28 max-w-[393px] mx-auto">
@@ -106,58 +104,6 @@ export default function MyPage() {
             <p className="text-[13px] font-bold text-[#2A0B04]">{item.label}</p>
           </Link>
         ))}
-      </div>
-
-      {/* 프로젝트 기록 */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between px-4 mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] font-bold text-[#2A0B04]">프로젝트 기록</span>
-            <span className="text-[14px] text-[#9A9A9A]">{projects.length}</span>
-          </div>
-          <Link href="/projects" className="flex items-center gap-0.5 text-[13px] text-[#9A9A9A] active:opacity-60">
-            더보기 <ChevronRightIcon />
-          </Link>
-        </div>
-
-        {projects.length === 0 ? (
-          <div className="mx-4 bg-white rounded-[14px] py-10 flex flex-col items-center gap-2"
-            style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
-            <span className="text-[32px]">🧶</span>
-            <p className="text-[14px] text-[#9A9A9A]">아직 기록된 프로젝트가 없어요</p>
-          </div>
-        ) : (
-          <div className="flex gap-3 overflow-x-auto scrollbar-none px-4">
-            {displayProjects.map(project => (
-              <Link key={project.id} href={`/projects/${project.id}`} className="shrink-0 w-[110px]">
-                <div
-                  className="w-[110px] h-[110px] rounded-[12px] flex items-center justify-center text-4xl overflow-hidden mb-2"
-                  style={{ background: '#f0ede8' }}
-                >
-                  {project.coverPhoto
-                    ? <img src={project.coverPhoto} alt={project.title} className="w-full h-full object-cover" />
-                    : project.emoji ?? '🧶'
-                  }
-                </div>
-                <p className="text-[12px] font-semibold text-[#2A0B04] leading-snug line-clamp-2">
-                  {project.title}
-                </p>
-              </Link>
-            ))}
-
-            {/* 4개 초과 시 '...' 카드 */}
-            {hasMore && (
-              <Link href="/projects" className="shrink-0 w-[110px]">
-                <div className="w-[110px] h-[110px] rounded-[12px] bg-[#F0F0F0] flex items-center justify-center mb-2">
-                  <span className="text-[22px] font-bold text-[#9A9A9A]">···</span>
-                </div>
-                <p className="text-[12px] text-[#9A9A9A] text-center">
-                  +{projects.length - 4}개 더보기
-                </p>
-              </Link>
-            )}
-          </div>
-        )}
       </div>
 
       {/* 활동 배지 */}
