@@ -29,6 +29,10 @@ export interface Project {
   videos: string[]     // YouTube URL 목록
   pdfUrl: string | null // 도안 PDF URL
   isShared?: boolean
+  patternId?: string
+  patternName?: string
+  patternAuthor?: string
+  patternSelectedSize?: string
 }
 
 // mockProjects를 스토어 초기값으로 변환

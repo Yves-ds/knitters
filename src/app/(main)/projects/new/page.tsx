@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
 import { Pattern, MOCK_PATTERNS } from '@/lib/mockPatterns'
+import { PatternInfoCard, PatternDetailSheet, parseSizes } from '@/components/pattern/PatternDetailSheet'
 
 const STATUS_OPTIONS = ['준비 중', '뜨는 중', '쉬는 중', '완성']
 
@@ -965,75 +966,6 @@ function PatternSelectSheet({ isOpen, onClose, onSelectPattern }: {
   )
 }
 
-/* ── 도안 상세 정보 시트 ── */
-function PatternDetailSheet({ isOpen, onClose, pattern }: {
-  isOpen: boolean
-  onClose: () => void
-  pattern: Pattern | null
-}) {
-  if (!pattern) return null
-
-  const details = [
-    { label: '카테고리', value: pattern.category },
-    { label: '사이즈', value: pattern.size },
-    { label: '바늘 사이즈', value: pattern.needleSize },
-    { label: '권장 실', value: pattern.yarn },
-    { label: '난이도', value: pattern.difficulty },
-    { label: '가격', value: pattern.price },
-    { label: '판매처', value: pattern.seller },
-  ]
-
-  return (
-    <div
-      className="fixed inset-y-0 w-full max-w-[393px] z-[70] bg-white flex flex-col"
-      style={{
-        left: '50%',
-        transform: `translateX(-50%) translateY(${isOpen ? '0%' : '100%'})`,
-        transition: 'transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)',
-        pointerEvents: isOpen ? 'auto' : 'none',
-      }}
-    >
-      <div className="flex items-center px-5 pt-14 pb-4 border-b border-[#F0F0F0] relative flex-shrink-0">
-        <span className="absolute left-1/2 -translate-x-1/2 text-[17px] font-bold text-[#111]">도안 정보</span>
-        <button onClick={onClose} className="ml-auto w-8 h-8 flex items-center justify-center active:opacity-60">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M2 2L16 16M16 2L2 16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </button>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-5 py-5">
-        <div className="w-full rounded-[16px] bg-[#F0EDEA] flex items-center justify-center mb-5" style={{ height: 180 }}>
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <rect width="56" height="56" rx="14" fill="#E0D9D0"/>
-            <path d="M18 28c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10z" fill="#C8BEB2"/>
-          </svg>
-        </div>
-
-        <h2 className="text-[22px] font-bold text-[#212121] leading-snug">{pattern.name}</h2>
-        <p className="text-[15px] text-[#646464] mt-1 mb-3">{pattern.author}</p>
-
-        <span className="inline-block px-3 py-1 rounded-full text-[12px] font-semibold bg-[#FFEEEA] text-[#F72E00] mb-5">
-          {pattern.category}
-        </span>
-
-        <div className="h-px bg-[#F0F0F0] mb-4" />
-
-        <p className="text-[14px] text-[#646464] leading-relaxed mb-5">{pattern.description}</p>
-
-        <div className="flex flex-col gap-3.5">
-          {details.map(({ label, value }) => (
-            <div key={label} className="flex items-start gap-3">
-              <span className="text-[13px] font-semibold text-[#9A9A9A] flex-shrink-0 pt-px" style={{ width: 72 }}>{label}</span>
-              <span className="text-[14px] text-[#212121] flex-1 leading-snug">{value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 /* ══════════════════════════════════════════════ */
 export default function NewProjectPage() {
   const router = useRouter()
@@ -1058,6 +990,7 @@ export default function NewProjectPage() {
   const [patternSelectOpen, setPatternSelectOpen] = useState(false)
   const [patternDetailOpen, setPatternDetailOpen] = useState(false)
   const [selectedPattern, setSelectedPattern] = useState<Pattern | null>(null)
+  const [selectedSize, setSelectedSize] = useState('')
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
@@ -1120,6 +1053,8 @@ export default function NewProjectPage() {
     const today = new Date()
     const pad = (n: number) => String(n).padStart(2, '0')
     setStartDate(`${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`)
+    const sizes = parseSizes(pattern.size)
+    setSelectedSize(sizes[0] || '')
   }
 
   /* 상태 드롭다운 외부 클릭 닫기 */
@@ -1389,6 +1324,10 @@ export default function NewProjectPage() {
       coverPhoto: coverImg?.src || undefined,
       videos,
       pdfUrl,
+      patternId: selectedPattern?.id,
+      patternName: selectedPattern?.name,
+      patternAuthor: selectedPattern?.author,
+      patternSelectedSize: selectedSize || undefined,
     })
     router.replace(`/projects/${newId}`)
   }
@@ -1507,47 +1446,13 @@ export default function NewProjectPage() {
         {/* 선택된 도안 정보 카드 */}
         {selectedPattern && (
           <div className="px-4 pb-3">
-            <div className="rounded-[14px] p-4" style={{ background: '#FFF8F7', border: '1px solid #FFE0D9' }}>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-[52px] h-[52px] rounded-[10px] bg-[#F0EDEA] flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-bold text-[#212121] leading-snug line-clamp-1">{selectedPattern.name}</p>
-                  <p className="text-[12px] text-[#9A9A9A] mt-0.5">{selectedPattern.author}</p>
-                </div>
-                <button
-                  onClick={() => setPatternDetailOpen(true)}
-                  className="flex items-center gap-1 flex-shrink-0 active:opacity-60"
-                >
-                  <span className="text-[12px] font-medium text-[#F72E00]">상세 정보</span>
-                  <svg width="5" height="9" viewBox="0 0 5 9" fill="none">
-                    <path d="M1 1l3 3.5-3 3.5" stroke="#F72E00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { label: '바늘', value: selectedPattern.needleSize },
-                  { label: '실', value: selectedPattern.yarn },
-                  { label: '사이즈', value: selectedPattern.size },
-                ].filter(item => item.value).map((item) => (
-                  <div key={item.label} className="flex items-center gap-1.5 bg-white rounded-[8px] px-2.5 py-1.5" style={{ border: '1px solid #F0F0F0' }}>
-                    <span className="text-[11px] font-semibold text-[#9A9A9A]">{item.label}</span>
-                    <span className="text-[11px] text-[#212121]">{item.value}</span>
-                  </div>
-                ))}
-                <button
-                  onClick={() => setPatternSelectOpen(true)}
-                  className="flex items-center gap-1 bg-white rounded-[8px] px-2.5 py-1.5 active:opacity-60"
-                  style={{ border: '1px solid #F0F0F0' }}
-                >
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path d="M5 1v8M1 5h8" stroke="#9A9A9A" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  <span className="text-[11px] text-[#9A9A9A]">변경</span>
-                </button>
-              </div>
-            </div>
+            <PatternInfoCard
+              pattern={selectedPattern}
+              selectedSize={selectedSize}
+              onSizeChange={setSelectedSize}
+              onDetailOpen={() => setPatternDetailOpen(true)}
+              onChangePattern={() => setPatternSelectOpen(true)}
+            />
           </div>
         )}
 

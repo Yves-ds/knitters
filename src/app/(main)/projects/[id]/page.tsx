@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
+import { MOCK_PATTERNS } from '@/lib/mockPatterns'
+import { PatternInfoCard, PatternDetailSheet } from '@/components/pattern/PatternDetailSheet'
 
 /* ── 상태 배지 ── */
 function StatusBadge({ status }: { status: string }) {
@@ -286,6 +288,11 @@ export default function ProjectDetailPage() {
   const [patternOpen, setPatternOpen] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [patternDetailOpen, setPatternDetailOpen] = useState(false)
+
+  const selectedPattern = project?.patternId
+    ? MOCK_PATTERNS.find(p => p.id === project.patternId) ?? null
+    : null
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [showBubble, setShowBubble] = useState(false)
   const [timerRunning, setTimerRunning] = useState(false)
@@ -411,6 +418,17 @@ export default function ProjectDetailPage() {
           )}
         </div>
 
+        {/* 도안 정보 카드 (읽기 전용) */}
+        {selectedPattern && (
+          <div className="px-4 pb-3">
+            <PatternInfoCard
+              pattern={selectedPattern}
+              selectedSize={project.patternSelectedSize || ''}
+              onDetailOpen={() => setPatternDetailOpen(true)}
+            />
+          </div>
+        )}
+
         {/* 콘텐츠 영역 */}
         <div
           className="flex-1 px-4 pb-[88px] overflow-y-auto detail-content"
@@ -502,6 +520,13 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* 도안 상세 정보 시트 */}
+      <PatternDetailSheet
+        isOpen={patternDetailOpen}
+        onClose={() => setPatternDetailOpen(false)}
+        pattern={selectedPattern}
+      />
 
       {/* 도안 시트 */}
       <PatternSheet isOpen={patternOpen} onClose={() => setPatternOpen(false)} pdfUrl={project.pdfUrl ?? null} />

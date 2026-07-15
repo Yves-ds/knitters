@@ -3,6 +3,8 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
+import { MOCK_PATTERNS } from '@/lib/mockPatterns'
+import { PatternInfoCard, PatternDetailSheet } from '@/components/pattern/PatternDetailSheet'
 
 const STATUS_OPTIONS = ['준비 중', '뜨는 중', '쉬는 중', '완성']
 
@@ -596,6 +598,12 @@ export default function EditProjectPage() {
   const [hasPhotos,     setHasPhotos]     = useState(false)
   const [materialSheetOpen, setMaterialSheetOpen] = useState(false)
   const [materialSheetTab, setMaterialSheetTab] = useState<'전체' | '실' | '바늘'>('전체')
+  const [patternDetailOpen, setPatternDetailOpen] = useState(false)
+  const [patternSelectedSize, setPatternSelectedSize] = useState(project?.patternSelectedSize ?? '')
+
+  const selectedPattern = project?.patternId
+    ? MOCK_PATTERNS.find(p => p.id === project.patternId) ?? null
+    : null
 
   const titleInputRef    = useRef<HTMLInputElement>(null)
   const titleSizerRef    = useRef<HTMLSpanElement>(null)
@@ -795,6 +803,7 @@ export default function EditProjectPage() {
       coverPhoto: coverImg?.src || project.coverPhoto,
       videos,
       pdfUrl,
+      patternSelectedSize: patternSelectedSize || undefined,
     })
     router.replace(`/projects/${id}`)
   }
@@ -904,6 +913,18 @@ export default function EditProjectPage() {
             )}
           </div>
         </div>
+
+        {/* 도안 정보 카드 */}
+        {selectedPattern && (
+          <div className="px-4 pb-3">
+            <PatternInfoCard
+              pattern={selectedPattern}
+              selectedSize={patternSelectedSize}
+              onSizeChange={setPatternSelectedSize}
+              onDetailOpen={() => setPatternDetailOpen(true)}
+            />
+          </div>
+        )}
 
         {/* 자유 입력 영역 */}
         <div className="relative flex-1 px-4 pb-[72px] cursor-text"
@@ -1020,6 +1041,11 @@ export default function EditProjectPage() {
       <PatternSheet isOpen={patternOpen} onClose={() => setPatternOpen(false)} pdfUrl={pdfUrl} onPdfChange={setPdfUrl} />
       <VideoSheet isOpen={videoOpen} onClose={() => setVideoOpen(false)} videos={videos} onVideosChange={setVideos} />
       <MaterialSheet isOpen={materialSheetOpen} onClose={() => setMaterialSheetOpen(false)} initialTab={materialSheetTab} />
+      <PatternDetailSheet
+        isOpen={patternDetailOpen}
+        onClose={() => setPatternDetailOpen(false)}
+        pattern={selectedPattern}
+      />
     </>
   )
 }
