@@ -1,0 +1,138 @@
+export interface Pattern {
+  id: string
+  name: string
+  author: string
+  category: string
+  brand: string
+  size: string
+  needleSize: string
+  yarn: string
+  difficulty: string
+  price: string
+  seller: string
+  sellerUrl: string
+  description: string
+}
+
+export const MOCK_PATTERNS: Pattern[] = [
+  {
+    id: '1',
+    name: '필 에어 페루 퍼프 래글런 탑다운',
+    author: '바늘이야기',
+    category: '스웨터',
+    brand: '바늘이야기',
+    size: 'XS · S · M · L · XL',
+    needleSize: '4.5mm / 5.0mm',
+    yarn: '페루 알파카 DK 350g',
+    difficulty: '중급',
+    price: '15,000원',
+    seller: '바늘이야기 공식몰',
+    sellerUrl: '',
+    description: '가볍고 따뜻한 퍼프 소매가 특징인 래글런 스웨터 도안입니다. 탑다운 방식으로 이음매 없이 뜨는 구조로 중급 이상에게 적합해요.',
+  },
+  {
+    id: '2',
+    name: '헤이즐 베스트',
+    author: '홍또닛',
+    category: '베스트',
+    brand: '홍또닛',
+    size: 'S · M · L',
+    needleSize: '4.0mm / 4.5mm',
+    yarn: '코튼 블렌드 DK 200g',
+    difficulty: '초급',
+    price: '12,000원',
+    seller: '아이엠니터',
+    sellerUrl: '',
+    description: '심플하고 데일리하게 입을 수 있는 코튼 베스트 도안입니다. 초급자도 쉽게 따라할 수 있어요.',
+  },
+  {
+    id: '3',
+    name: '그래놀라 비니',
+    author: '윌너티 스튜디오',
+    category: '모자',
+    brand: '윌너티 스튜디오',
+    size: '유니섹스 원사이즈',
+    needleSize: '5.0mm (대바늘)',
+    yarn: '메리노 울 Aran 100g',
+    difficulty: '초급',
+    price: '8,000원',
+    seller: '윌너티 스튜디오',
+    sellerUrl: '',
+    description: '클래식한 케이블 패턴의 비니 도안입니다. 초보자도 따라하기 쉬운 구조예요.',
+  },
+  {
+    id: '4',
+    name: '러프 가디건',
+    author: '뜨개 시니',
+    category: '가디건',
+    brand: '뜨개 시니',
+    size: 'XS · S · M · L',
+    needleSize: '6.0mm / 6.5mm',
+    yarn: '퍼지 모헤어 블렌드 250g',
+    difficulty: '중급',
+    price: '18,000원',
+    seller: '뜨개 시니 스마트스토어',
+    sellerUrl: '',
+    description: '포근하고 오버핏 실루엣의 가디건 도안입니다. 앞여밈 없이 착용 가능해요.',
+  },
+  {
+    id: '5',
+    name: '메론 소다 파우치',
+    author: '뉴미 newmee',
+    category: '소품',
+    brand: '뉴미 newmee',
+    size: '17cm × 12cm',
+    needleSize: '2.5mm (코바늘)',
+    yarn: '코튼 25 레이스 80g',
+    difficulty: '초급',
+    price: '5,000원',
+    seller: '뉴미 크래프트',
+    sellerUrl: '',
+    description: '귀여운 일러스트 코바늘 파우치 도안입니다. 빠르게 완성할 수 있어 선물용으로도 좋아요.',
+  },
+  {
+    id: '6',
+    name: '클로버 숄',
+    author: '울앤코',
+    category: '숄/스카프',
+    brand: '울앤코',
+    size: '180cm × 60cm',
+    needleSize: '5.5mm (대바늘)',
+    yarn: '람스울 Lace 200g',
+    difficulty: '중급',
+    price: '20,000원',
+    seller: '울앤코 공방',
+    sellerUrl: '',
+    description: '우아하고 가벼운 레이스 패턴의 삼각 숄 도안입니다. 특별한 날에도 잘 어울려요.',
+  },
+  {
+    id: '7',
+    name: '스트라이프 양말',
+    author: '니들앤스티치',
+    category: '양말/장갑',
+    brand: '니들앤스티치',
+    size: '235 · 250 · 265mm',
+    needleSize: '2.5mm (장갑바늘 4개)',
+    yarn: '소크 울 블렌드 100g',
+    difficulty: '중급',
+    price: '10,000원',
+    seller: '니들앤스티치',
+    sellerUrl: '',
+    description: '발목 길이의 줄무늬 양말 도안입니다. 탑다운 구조로 세 가지 사이즈를 제공해요.',
+  },
+  {
+    id: '8',
+    name: '버블 크롭 가디건',
+    author: '꽃뜨개',
+    category: '가디건',
+    brand: '꽃뜨개',
+    size: 'S · M · L · XL',
+    needleSize: '5.5mm / 6.0mm',
+    yarn: '코튼 린넨 블렌드 300g',
+    difficulty: '중급',
+    price: '16,000원',
+    seller: '꽃뜨개 스마트스토어',
+    sellerUrl: '',
+    description: '봄여름용 가벼운 린넨 크롭 가디건 도안입니다. 보풀이 없어 오래 입을 수 있어요.',
+  },
+]

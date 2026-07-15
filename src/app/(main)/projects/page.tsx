@@ -400,7 +400,7 @@ export default function ProjectsPage() {
           }}
         >
           <button
-            onClick={() => { setFabOpen(false); router.push('/projects/new') }}
+            onClick={() => { setFabOpen(false); router.push('/projects/new?selectPattern=1') }}
             className="w-full flex items-center gap-3.5 px-5 py-4 active:bg-[#fafafa] text-left"
           >
             <div className="w-9 h-9 flex items-center justify-center shrink-0">
@@ -453,7 +453,7 @@ export default function ProjectsPage() {
           </div>
           <p className="text-[13px] font-semibold text-[#9a9a9a] px-6 mb-3">기록 방법 선택</p>
           <button
-            onClick={() => { setSheetOpen(false); router.push('/projects/new') }}
+            onClick={() => { setSheetOpen(false); router.push('/projects/new?selectPattern=1') }}
             className="w-full flex items-center gap-4 px-6 py-4 active:bg-[#fafafa] text-left"
           >
             <div className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: '#fff0ee' }}>
@@ -465,7 +465,7 @@ export default function ProjectsPage() {
             </div>
             <div>
               <p className="text-[15px] font-semibold text-[#212121]">도안 선택하기</p>
-              <p className="text-[12px] text-[#9a9a9a] mt-0.5">도안 파일이나 링크로 시작해요</p>
+              <p className="text-[12px] text-[#9a9a9a] mt-0.5">도안 정보를 자동으로 불러와요</p>
             </div>
           </button>
           <div className="h-px bg-[#f5f5f5] mx-6" />
