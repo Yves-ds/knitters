@@ -12,7 +12,7 @@ const CATEGORIES = ['전체', '스웨터', '베스트', '모자', '가디건', '
 const BRANDS = ['전체', ...Array.from(new Set(MOCK_PATTERNS.map(p => p.brand)))]
 
 interface Counter { id: number; name: string; count: number }
-interface TimelineEntry { id: number; text: string; createdAt: number }
+interface TimelineEntry { id: number; text: string; createdAt: number; photo?: string }
 
 /* ── 상태 배지 ── */
 function StatusBadge({ status }: { status: string }) {
@@ -232,13 +232,24 @@ export default function NewProjectPage() {
   /* ── 기록 탭: 타임라인 ── */
   const [timelineEntries, setTimelineEntries] = useState<TimelineEntry[]>([])
   const [newEntryText, setNewEntryText] = useState('')
+  const [newEntryPhoto, setNewEntryPhoto] = useState<string | undefined>()
   const entryIdRef  = useRef(1)
   const entryInputRef = useRef<HTMLTextAreaElement>(null)
+  const entryPhotoInputRef = useRef<HTMLInputElement>(null)
   const timelineEndRef = useRef<HTMLDivElement>(null)
 
   /* ── refs ── */
   const photoInputRef = useRef<HTMLInputElement>(null)
   const statusBtnRef  = useRef<HTMLDivElement>(null)
+
+  const handleEntryPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => { if (ev.target?.result) setNewEntryPhoto(ev.target.result as string) }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
 
   /* ── URL 파라미터 ── */
   useEffect(() => {
@@ -323,9 +334,10 @@ export default function NewProjectPage() {
   /* ── 타임라인 조작 ── */
   const addEntry = () => {
     const text = newEntryText.trim()
-    if (!text) return
-    setTimelineEntries(prev => [...prev, { id: entryIdRef.current++, text, createdAt: Date.now() }])
+    if (!text && !newEntryPhoto) return
+    setTimelineEntries(prev => [...prev, { id: entryIdRef.current++, text, createdAt: Date.now(), photo: newEntryPhoto }])
     setNewEntryText('')
+    setNewEntryPhoto(undefined)
     entryInputRef.current?.focus()
   }
   const removeEntry = (id: number) =>
@@ -535,6 +547,27 @@ export default function NewProjectPage() {
         {activeTab === '기록' && (
           <div className="flex-1 overflow-y-auto pb-10">
 
+            {/* 커버 사진 (정보 탭과 동일, 상태 공유) */}
+            <div
+              className="w-full bg-[#EBEBEB] cursor-pointer relative overflow-hidden flex-shrink-0"
+              style={{ aspectRatio: '4/3' }}
+              onClick={() => photoInputRef.current?.click()}
+            >
+              {coverPhoto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={coverPhoto} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="#C8C8C8" strokeWidth="1.5"/>
+                    <circle cx="12" cy="12" r="3.5" stroke="#C8C8C8" strokeWidth="1.5"/>
+                    <path d="M9 5l1.5-2h3L15 5" stroke="#C8C8C8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="text-[13px] text-[#C8C8C8] font-medium">커버 사진 추가</span>
+                </div>
+              )}
+            </div>
+
             {/* ── 타이머 섹션 ── */}
             <div className="px-4 pt-5 pb-5 border-b border-[#F5F5F5]">
               <p className="text-[13px] font-semibold text-[#9A9A9A] mb-3 tracking-wide">타이머</p>
@@ -662,31 +695,62 @@ export default function NewProjectPage() {
               <p className="text-[13px] font-semibold text-[#9A9A9A] mb-4 tracking-wide">타임라인</p>
 
               {/* 기록 입력 */}
-              <div className="flex gap-2 mb-6">
-                <textarea
-                  ref={entryInputRef}
-                  value={newEntryText}
-                  onChange={e => {
-                    setNewEntryText(e.target.value)
-                    e.target.style.height = 'auto'
-                    e.target.style.height = e.target.scrollHeight + 'px'
-                  }}
-                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addEntry() } }}
-                  placeholder="기록을 남겨보세요..."
-                  rows={1}
-                  className="flex-1 resize-none rounded-[12px] px-3.5 py-3 text-[14px] text-[#212121] placeholder:text-[#C8C8C8] outline-none leading-relaxed"
-                  style={{ background:'#F5F5F5', overflow:'hidden', minHeight:46 }}
-                />
-                <button
-                  onClick={addEntry}
-                  disabled={!newEntryText.trim()}
-                  className="w-11 h-11 rounded-[12px] flex items-center justify-center self-end flex-shrink-0 active:opacity-70 transition-colors"
-                  style={{ background: newEntryText.trim() ? '#F72E00' : '#EDEDED' }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M8 1v14M1 8h14" stroke={newEntryText.trim() ? 'white' : '#C8C8C8'} strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
+              <div className="mb-6">
+                {/* 첨부 사진 미리보기 */}
+                {newEntryPhoto && (
+                  <div className="relative mb-2 inline-block">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={newEntryPhoto} alt="" className="h-24 rounded-[10px] object-cover" style={{ maxWidth: '100%' }} />
+                    <button
+                      onClick={() => setNewEntryPhoto(undefined)}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ background:'#212121' }}
+                    >
+                      <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                        <path d="M1 1L8 8M8 1L1 8" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  {/* 사진 첨부 버튼 */}
+                  <button
+                    onClick={() => entryPhotoInputRef.current?.click()}
+                    className="w-11 h-11 rounded-[12px] flex items-center justify-center flex-shrink-0 self-end active:opacity-70"
+                    style={{ background:'#F0F0F0' }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="5" width="18" height="14" rx="2" stroke="#9A9A9A" strokeWidth="1.5"/>
+                      <circle cx="12" cy="12" r="3.5" stroke="#9A9A9A" strokeWidth="1.5"/>
+                      <path d="M9 5l1.5-2h3L15 5" stroke="#9A9A9A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  <input ref={entryPhotoInputRef} type="file" accept="image/*" className="hidden" onChange={handleEntryPhotoChange} />
+                  <textarea
+                    ref={entryInputRef}
+                    value={newEntryText}
+                    onChange={e => {
+                      setNewEntryText(e.target.value)
+                      e.target.style.height = 'auto'
+                      e.target.style.height = e.target.scrollHeight + 'px'
+                    }}
+                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addEntry() } }}
+                    placeholder="기록을 남겨보세요..."
+                    rows={1}
+                    className="flex-1 resize-none rounded-[12px] px-3.5 py-3 text-[14px] text-[#212121] placeholder:text-[#C8C8C8] outline-none leading-relaxed"
+                    style={{ background:'#F5F5F5', overflow:'hidden', minHeight:46 }}
+                  />
+                  <button
+                    onClick={addEntry}
+                    disabled={!newEntryText.trim() && !newEntryPhoto}
+                    className="w-11 h-11 rounded-[12px] flex items-center justify-center self-end flex-shrink-0 active:opacity-70 transition-colors"
+                    style={{ background: (newEntryText.trim() || newEntryPhoto) ? '#F72E00' : '#EDEDED' }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 1v14M1 8h14" stroke={(newEntryText.trim() || newEntryPhoto) ? 'white' : '#C8C8C8'} strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               {/* 타임라인 엔트리 */}
@@ -713,7 +777,11 @@ export default function NewProjectPage() {
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] text-[#B0B0B0] mb-1 font-medium">{formatEntryDate(entry.createdAt)}</p>
-                            <p className="text-[14px] text-[#212121] leading-relaxed whitespace-pre-wrap">{entry.text}</p>
+                            {entry.text && <p className="text-[14px] text-[#212121] leading-relaxed whitespace-pre-wrap mb-2">{entry.text}</p>}
+                            {entry.photo && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={entry.photo} alt="" className="rounded-[10px] object-cover max-w-full" style={{ maxHeight: 200, width: 'auto' }} />
+                            )}
                           </div>
                           <button onClick={() => removeEntry(entry.id)} className="w-6 h-6 flex items-center justify-center active:opacity-60 flex-shrink-0 mt-0.5">
                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
