@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { X, Plus } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
+import PatternSelectSheet from '@/components/pattern/PatternSelectSheet'
+import { Pattern } from '@/lib/mockPatterns'
 
 type SortKey = '생성일' | '제목' | '시작일' | '종료일'
 type StatusDisplay = '전체' | '준비 중' | '뜨는 중' | '쉬는 중' | '완성'
@@ -75,7 +77,19 @@ export default function ProjectsPage() {
   const [scrolled, setScrolled] = useState(false)
   const [fabOpen, setFabOpen] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [patternSelectOpen, setPatternSelectOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const handlePatternSelected = (pattern: Pattern) => {
+    setPatternSelectOpen(false)
+    router.push(`/projects/new?patternId=${pattern.id}`)
+  }
+
+  const openPatternSelect = () => {
+    setFabOpen(false)
+    setSheetOpen(false)
+    setPatternSelectOpen(true)
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -400,7 +414,7 @@ export default function ProjectsPage() {
           }}
         >
           <button
-            onClick={() => { setFabOpen(false); router.push('/projects/new?selectPattern=1') }}
+            onClick={openPatternSelect}
             className="w-full flex items-center gap-3.5 px-5 py-4 active:bg-[#fafafa] text-left"
           >
             <div className="w-9 h-9 flex items-center justify-center shrink-0">
@@ -453,7 +467,7 @@ export default function ProjectsPage() {
           </div>
           <p className="text-[13px] font-semibold text-[#9a9a9a] px-6 mb-3">기록 방법 선택</p>
           <button
-            onClick={() => { setSheetOpen(false); router.push('/projects/new?selectPattern=1') }}
+            onClick={openPatternSelect}
             className="w-full flex items-center gap-4 px-6 py-4 active:bg-[#fafafa] text-left"
           >
             <div className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: '#fff0ee' }}>
@@ -487,6 +501,13 @@ export default function ProjectsPage() {
           </button>
         </div>
       </div>
+
+      {/* 도안 선택 시트 */}
+      <PatternSelectSheet
+        isOpen={patternSelectOpen}
+        onClose={() => setPatternSelectOpen(false)}
+        onSelectPattern={handlePatternSelected}
+      />
 
       {/* FAB 버튼 — 기록이 있고 검색 모드가 아닐 때만 표시 */}
       {projects.length > 0 && !searchOpen && (
