@@ -2,40 +2,68 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { mockProjects } from '@/lib/mockData'
 
-// localStorage 용량 초과(QuotaExceededError) 시 에러가 addProject까지 전파되지 않도록 감쌈
 const safeLocalStorage = {
   getItem: (name: string) => {
     try { return localStorage.getItem(name) } catch { return null }
   },
   setItem: (name: string, value: string) => {
-    try { localStorage.setItem(name, value) } catch { /* quota exceeded — 메모리에만 유지 */ }
+    try { localStorage.setItem(name, value) } catch {}
   },
   removeItem: (name: string) => {
     try { localStorage.removeItem(name) } catch {}
   },
 }
 
+export interface YarnItem {
+  id: string
+  name: string
+  brand: string
+  color: string
+  weight?: string
+  photo?: string
+}
+
+export interface NeedleItem {
+  id: string
+  name: string
+  brand: string
+  size: string
+  photo?: string
+}
+
+export interface GaugeItem {
+  id: string
+  stitches: string
+  rows: string
+  swatchWidth: string
+  swatchHeight: string
+  stitchType: string
+  washing: string
+}
+
 export interface Project {
   id: string
   title: string
-  status: string       // '준비 중' | '뜨는 중' | '쉬는 중' | '완성'
+  status: string
   startDate: string
   endDate: string
   content: string
   emoji: string
   timerSecs: number
-  createdAt: number    // Date.now()
-  coverPhoto?: string  // 대표 사진 data URL
-  videos: string[]     // YouTube URL 목록
-  pdfUrl: string | null // 도안 PDF URL
+  createdAt: number
+  coverPhoto?: string
+  videos: string[]
+  pdfUrl: string | null
   isShared?: boolean
   patternId?: string
   patternName?: string
   patternAuthor?: string
   patternSelectedSize?: string
+  yarns?: YarnItem[]
+  needles?: NeedleItem[]
+  gauges?: GaugeItem[]
 }
 
-// mockProjects를 스토어 초기값으로 변환
 const initialProjects: Project[] = mockProjects.map(p => ({
   id: p.id,
   title: p.title,
@@ -64,10 +92,7 @@ export const useProjectStore = create<ProjectStore>()(
       addProject: (p) => {
         const id = String(Date.now())
         set((state) => ({
-          projects: [
-            { ...p, id, createdAt: Date.now() },
-            ...state.projects,
-          ],
+          projects: [{ ...p, id, createdAt: Date.now() }, ...state.projects],
         }))
         return id
       },
