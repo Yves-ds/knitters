@@ -195,7 +195,7 @@ export default function NewProjectPage() {
     const pad = (n: number) => String(n).padStart(2, '0')
     setStartDate(`${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`)
     setStatus('뜨는 중')
-    setActiveTab('도안')
+    setPageMode('direct')
   }
 
   /* ── 상태 드롭다운 외부 클릭 닫기 ── */
@@ -225,15 +225,12 @@ export default function NewProjectPage() {
     setPatternSelectOpen(false)
     const sizes = parseSizes(pattern.size)
     setSelectedSize(sizes[0] || '')
-    // 탭 모드에서만 자동으로 제목·날짜·탭 변경
-    if (pageMode === 'tabs') {
-      setTitle(pattern.name)
-      const today = new Date()
-      const pad = (n: number) => String(n).padStart(2, '0')
-      setStartDate(`${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`)
-      setStatus('뜨는 중')
-      setActiveTab('도안')
-    }
+    setPageMode('direct')
+    setTitle(pattern.name)
+    const today = new Date()
+    const pad = (n: number) => String(n).padStart(2, '0')
+    setStartDate(`${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`)
+    setStatus('뜨는 중')
   }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -280,7 +277,7 @@ export default function NewProjectPage() {
 
   const handleSave = () => {
     if (!canSubmit) return
-    const newId = addProject({
+    addProject({
       title: title.trim(), status, startDate, endDate,
       content: timelineEntries.map(e => `[${formatEntryDate(e.createdAt)}] ${e.text}`).join('\n'),
       emoji: '🧶', timerSecs, coverPhoto, videos: [], pdfUrl: null,
@@ -292,7 +289,7 @@ export default function NewProjectPage() {
       needles: pageMode === 'direct' ? directNeedles : undefined,
       gauges: pageMode === 'direct' ? directGauges : undefined,
     })
-    router.replace(`/projects/${newId}`)
+    router.push('/projects')
   }
 
   /* ── 공통 헤더 ── */
