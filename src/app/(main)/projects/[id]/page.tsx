@@ -413,6 +413,8 @@ export default function ProjectDetailPage() {
   /* ── 사이즈 편집 ── */
   const [sizeDropOpen, setSizeDropOpen] = useState(false)
   const sizeRef = useRef<HTMLDivElement>(null)
+  const [directSizeEditing, setDirectSizeEditing] = useState(false)
+  const [directSizeDraft, setDirectSizeDraft] = useState('')
   useEffect(() => {
     if (!sizeDropOpen) return
     const h = (e: MouseEvent) => { if (!sizeRef.current?.contains(e.target as Node)) setSizeDropOpen(false) }
@@ -582,8 +584,8 @@ export default function ProjectDetailPage() {
               )}
             </div>
 
-            {/* 사이즈 행 (다중 사이즈 도안인 경우) */}
-            {selectedPattern && patternSizes.length > 1 && (
+            {/* 사이즈 행: 도안 다중 사이즈 or 직접 입력 */}
+            {(selectedPattern && patternSizes.length > 1) ? (
               <div className="flex items-center px-4 py-2 border-t border-[#F5F5F5]">
                 <span className="text-[15px] font-semibold text-[#212121] w-16">사이즈</span>
                 <div className="relative flex-1" ref={sizeRef}>
@@ -606,6 +608,33 @@ export default function ProjectDetailPage() {
                   )}
                 </div>
                 <span className="text-[13px] text-[#C8C8C8]">탭해서 변경</span>
+              </div>
+            ) : !selectedPattern && (
+              /* 직접 입력 모드: 사이즈 자유 입력 행 */
+              <div className="flex items-center px-4 py-2 border-t border-[#F5F5F5]">
+                <span className="text-[15px] font-semibold text-[#212121] w-16 flex-shrink-0">사이즈</span>
+                {directSizeEditing ? (
+                  <input autoFocus
+                    value={directSizeDraft}
+                    onChange={e => setDirectSizeDraft(e.target.value)}
+                    onBlur={() => { setDirectSizeEditing(false); if (id) updateProject(id, { patternSelectedSize: directSizeDraft.trim() || undefined }) }}
+                    onKeyDown={e => { if (e.key === 'Enter') { setDirectSizeEditing(false); if (id) updateProject(id, { patternSelectedSize: directSizeDraft.trim() || undefined }) } }}
+                    placeholder="예) M, 90cm, Free size"
+                    className="flex-1 text-[14px] text-[#212121] placeholder:text-[#C8C8C8] outline-none bg-transparent py-2"
+                  />
+                ) : project.patternSelectedSize ? (
+                  <button onClick={() => { setDirectSizeDraft(project.patternSelectedSize ?? ''); setDirectSizeEditing(true) }}
+                    className="flex items-center gap-1.5 active:opacity-70">
+                    <span className="text-[15px] text-[#212121]">{project.patternSelectedSize}</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="#C8C8C8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#C8C8C8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </button>
+                ) : (
+                  <button onClick={() => { setDirectSizeDraft(''); setDirectSizeEditing(true) }}
+                    className="flex items-center gap-1 text-[14px] active:opacity-70" style={{ color: '#C8C8C8' }}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C8C8C8" strokeWidth="1.6" strokeLinecap="round" /></svg>
+                    사이즈 추가
+                  </button>
+                )}
               </div>
             )}
 
