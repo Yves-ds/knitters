@@ -18,6 +18,7 @@
 |---|---|---|
 | 기록_PDF 뷰어 (기본) | [node 5932-43695](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=5932-43695) | ![기본](./assets/pdf-viewer-default.png) |
 | 기록_PDF 뷰어 (메모) | [node 7782-60118](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7782-60118) | ![메모](./assets/pdf-viewer-memo.png) |
+| 기록_PDF 뷰어 (메모, 스낵바) | [node 7798-60359](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7798-60359) | ![메모 스낵바](./assets/pdf-viewer-memo-snackbar.png) |
 | 기록_기록 (메모 연동) | [node 7603-63399](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7603-63399) | ![기록](./assets/record-memo.png) |
 | 기록_기록 (스낵바) | [node 7795-60218](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7795-60218) | ![스낵바](./assets/record-snackbar.png) |
 
@@ -69,7 +70,9 @@
   - Chevron Down 아이콘의 터치 영역은 아이콘보다 넓게(최소 44 × 44px) 잡아요.
   - 입력한 글자가 아이콘에 가려지지 않도록 `textarea` 아래쪽에 아이콘 높이만큼 여백을 둬요.
   - 바깥 영역을 탭하면 입력창만 닫히고, 그 탭이 다른 동작(다른 플로팅 버튼 실행, 상단 버튼 등)으로 이어지지 않게 해요.
-  - 키보드가 올라와도 입력창이 키보드에 가려지지 않아야 해요 (`visualViewport` 기준으로 위치 보정).
+  - 키보드가 올라오면 **입력창 아래쪽을 키보드 위 12px에 맞춰** 입력창만 위로 올려요 (`visualViewport` 기준으로 위치 보정). [기록_PDF 뷰어 (메모, 스낵바)] 화면 참고.
+    - PDF 도안 화면과 상단 GNB는 움직이지 않고 그 자리에 있어요.
+    - 플로팅 버튼(너비 맞춤 / 마크업 / 카운터)은 원래 위치에 있어서 키보드에 가려져요.
   - 열고 닫을 때 짧은 fade + scale 애니메이션을 넣어요 (기존 시트의 `cubic-bezier(0.32, 0.72, 0, 1)` 이징 재사용).
 
 ### 3-3. 메모 저장 및 [기록_기록] 페이지 연동
@@ -100,7 +103,7 @@
   - **[기록_기록] 페이지**: Figma처럼 하단 바(타이머·카운터) 바로 위 12px에 띄워요.
   - **PDF 뷰어**: **키보드 바로 위 12px**에 띄워요. 500자 제한에 걸리는 건 입력 중일 때라 키보드가 올라와 있고, 이때 플로팅 버튼은 키보드에 가려지므로 플로팅 버튼 위치는 고려하지 않아요.
     - 키보드 위치는 `visualViewport` 기준으로 계산해요.
-    - 스낵바가 메모 입력창 아래쪽을 잠깐 가릴 수 있지만, 입력창 위치나 높이는 조절하지 않아요.
+    - 입력창과 스낵바 모두 키보드 위 12px에 맞춰지므로, 스낵바가 떠 있는 동안 입력창 아래쪽 52px을 가려요. 입력창 위치나 높이는 조절하지 않아요. [기록_PDF 뷰어 (메모, 스낵바)] 화면 참고.
 
 ---
 
