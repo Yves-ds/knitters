@@ -21,14 +21,13 @@
 | 기록_기록 (메모 연동) | [node 7603-63399](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7603-63399) | ![기록](./assets/record-memo.png) |
 | 기록_기록 (스낵바) | [node 7795-60218](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7795-60218) | ![스낵바](./assets/record-snackbar.png) |
 
-- 기본 화면 우측 하단 버튼 스택의 맨 위 버튼이 이번에 새로 추가하는 **메모 버튼**이에요.
-
 ---
 
 ## 3. 요구사항
 
 ### 3-1. 우측 하단 버튼에 메모 버튼 추가 — [기록_PDF 뷰어]
 
+- 기본 화면 우측 하단 버튼 스택의 맨 위 버튼이 이번에 새로 추가하는 **메모 버튼**이에요.
 - 우측 하단 플로팅 버튼 스택의 **맨 위**에 메모 버튼을 추가해요.
   - 버튼 순서(위 → 아래): **메모** / 너비 맞춤(Fit Width) / 마크업(Markup) / 카운터(Bottom Counter)
 - 버튼 스펙은 기존 플로팅 버튼과 같아요.
