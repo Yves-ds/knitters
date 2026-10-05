@@ -1,8 +1,6 @@
 # [작업 요청] PDF 뷰어 메모 기능 추가
 
 > 작성일: 2026-10-05
-> 대상 화면: 기록 > 도안(PDF) 뷰어
-> 관련 코드: `src/app/(main)/projects/[id]/edit/page.tsx` (`PatternSheet`, `PdfViewer`), `src/store/projectStore.ts`
 
 ---
 
@@ -18,11 +16,10 @@
 
 | 화면 | 링크 | 스크린샷 |
 |---|---|---|
-| 기록_PDF 뷰어 (기본) | [node 5788-30012](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=5788-30012) | ![기본](./assets/pdf-viewer-default.png) |
-| 기록_PDF 뷰어 (메모) | [node 7589-63328](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7589-63328) | ![메모](./assets/pdf-viewer-memo.png) |
+| 기록_PDF 뷰어 (기본) | [node 5932-43695](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=5932-43695) | ![기본](./assets/pdf-viewer-default.png) |
+| 기록_PDF 뷰어 (메모) | [node 7782-60118](https://www.figma.com/design/z6EFgx2NXyWofDE6pJNoTe/Knitters-App?node-id=7782-60118) | ![메모](./assets/pdf-viewer-memo.png) |
 
-- 기본 화면의 빨간 배지(`1-3` ~ `1-6`)는 기획 주석용 표시이므로 **구현하지 않는다.**
-- `1-3` 위치(버튼 스택 최상단)의 버튼이 이번에 새로 추가되는 **메모 버튼**이다.
+- 기본 화면 우측 하단 버튼 스택의 최상단 버튼이 이번에 새로 추가되는 **메모 버튼**이다.
 
 ---
 
